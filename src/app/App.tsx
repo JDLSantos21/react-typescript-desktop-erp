@@ -1,10 +1,14 @@
-import "../styles/globals.css";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "react-router-dom";
+import { queryClient } from "@/shared/lib/query-client";
+import { router } from "./Router";
+import "@/styles/globals.css";
 
 function App() {
   return (
-    <main className="container">
-      <h1 className="text-red-500">Welcome to Tauri + React</h1>
-    </main>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
 }
 
