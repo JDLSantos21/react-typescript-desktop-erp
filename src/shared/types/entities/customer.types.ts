@@ -8,8 +8,8 @@ export interface Customer {
   addresses: CustomerAddress[];
   notes?: string | null;
   isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type PhoneType = "MOVIL" | "FIJO" | "TRABAJO" | "OTROS";
@@ -25,6 +25,7 @@ export interface CustomerPhone {
 
 export interface CustomerAddress {
   id: number;
+  branchName: string | null;
   direction: string;
   city: string;
   isPrimary: boolean;

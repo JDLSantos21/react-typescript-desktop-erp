@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Button } from "./core/Button";
 
 interface EmptyStateProps {
   title?: string;
@@ -12,7 +13,7 @@ interface EmptyStateProps {
 }
 
 export const EmptyState = ({
-  title = "No hay datos",
+  title,
   description,
   icon,
   action,
@@ -36,20 +37,19 @@ export const EmptyState = ({
 
   return (
     <div
-      className={`flex flex-col items-center justify-center py-12 px-4 text-center ${className}`}
+      className={`flex flex-col items-center justify-center py-4 px-4 text-center ${className}`}
     >
-      <div className="mb-4">{icon || defaultIcon}</div>
-      <h3 className="text-lg font-medium text-gray-900 mb-2">{title}</h3>
+      <div className="mb-2">{icon || defaultIcon}</div>
+      {title && (
+        <h3 className="text-lg font-medium text-gray-900 mb-2">{title}</h3>
+      )}
       {description && (
         <p className="text-sm text-gray-500 max-w-md mb-6">{description}</p>
       )}
       {action && (
-        <button
-          onClick={action.onClick}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-        >
+        <Button onClick={action.onClick} variant="outline">
           {action.label}
-        </button>
+        </Button>
       )}
     </div>
   );

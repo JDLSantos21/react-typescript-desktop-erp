@@ -3,10 +3,11 @@ import { IconBaseProps } from "react-icons";
 import { Spinner } from "./Spinner";
 
 const variants = {
-  primary: "bg-blue-500 text-white hover:bg-blue-600",
-  secondary: "bg-gray-100 border-gray-300 text-gray-800 hover:bg-gray-200",
-  outline: "bg-white text-gray-800 border border-gray-200 hover:bg-gray-100",
-  danger: "bg-red-500 text-white hover:bg-red-600",
+  primary: "bg-primary text-white hover:bg-primary-hover",
+  secondary: "bg-gray-100 border-border text-text-primary hover:bg-gray-200",
+  outline:
+    "bg-white text-text-primary border border-border-light hover:bg-gray-100",
+  danger: "bg-danger text-white hover:bg-danger/70",
 };
 
 const sizes = {
@@ -42,7 +43,8 @@ export const Button = ({
   iconClassName = "",
   ...props
 }: ButtonProps) => {
-  const baseStyles = "rounded-md transition-colors border";
+  const baseStyles =
+    "rounded transition-colors border outline-none focus:ring-1 focus:ring-offset-1 focus:ring-primary/50 disabled:focus:ring-0";
   const hasIconOrLoading = Icon || isLoading;
 
   return (

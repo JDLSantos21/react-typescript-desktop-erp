@@ -1,3 +1,6 @@
+import dayjs from "dayjs";
+import "dayjs/locale/es";
+dayjs.locale("es");
 /**
  * Formatear un número de teléfono dominicano
  * @param phoneNumber - Número de teléfono sin formato
@@ -67,4 +70,8 @@ export const formatName = (name: string): string => {
 export const truncateText = (text: string, maxLength: number): string => {
   if (!text || text.length <= maxLength) return text;
   return `${text.slice(0, maxLength)}...`;
+};
+
+export const formatDate = (dateString: string): string => {
+  return dayjs(dateString).format("DD MMMM [de] YYYY");
 };

@@ -1,6 +1,7 @@
 import { ReactNode, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
+import { IoMdClose } from "react-icons/io";
 
 interface ModalProps {
   isOpen: boolean;
@@ -46,6 +47,7 @@ export const Modal = ({
     if (closeOnOverlayClick) onClose();
   };
 
+  //Renderizar directamente en el body.
   return createPortal(
     <AnimatePresence>
       {isOpen && (
@@ -64,35 +66,25 @@ export const Modal = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className={`relative bg-white rounded-lg shadow-xl ${sizeClasses[size]} w-full max-h-[90vh] overflow-y-auto`}
-            onClick={(e) => e.stopPropagation()}
+            className={`relative bg-white rounded-lg shadow-xl ${sizeClasses[size]} w-full max-h-[90vh] flex flex-col`}
+            onClick={(e) => e.stopPropagation()} // Evitar que se cierre el modal al hacer clic dentro de él.
           >
             {/* Header */}
             {title && (
-              <div className="flex items-center justify-between p-6 border-b">
+              <div className="flex items-center justify-between p-4 border-b border-divider flex-shrink-0">
                 <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
                 <button
                   onClick={onClose}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  className="text-danger hover:text-danger/70 transition-colors cursor-pointer"
                 >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+                  <IoMdClose className="w-7 h-7" />
                 </button>
               </div>
             )}
 
-            <div className="p-6">{children}</div>
+            <div className="p-6 overflow-y-auto scrollbar-hide flex-1">
+              {children}
+            </div>
           </motion.div>
         </div>
       )}
@@ -110,5 +102,7 @@ Modal.Body = ({ children }: { children: ReactNode }) => (
 );
 
 Modal.Footer = ({ children }: { children: ReactNode }) => (
-  <div className="flex justify-end gap-2 mt-6 pt-4 border-t">{children}</div>
+  <div className="flex justify-end gap-2 px-6 py-4 border-t border-divider flex-shrink-0">
+    {children}
+  </div>
 );

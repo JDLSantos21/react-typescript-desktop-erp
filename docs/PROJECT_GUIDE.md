@@ -47,6 +47,14 @@
 
 - **Axios 1.12**: HTTP client con interceptores
 
+### Documentación Adicional
+
+- 📘 [ARCHITECTURE.md](./ARCHITECTURE.md) - Arquitectura técnica detallada
+- 📗 [COMPONENTS_GUIDE.md](./COMPONENTS_GUIDE.md) - Guía de componentes reutilizables
+- 📕 [TABLE_FILTERS_PAGINATION_GUIDE.md](./TABLE_FILTERS_PAGINATION_GUIDE.md) - Sistema de tablas con filtros y paginación
+- 📙 [ERROR_HANDLING_GUIDE.md](./ERROR_HANDLING_GUIDE.md) - Manejo de errores
+- 📔 [LOADING_STATES_GUIDE.md](./LOADING_STATES_GUIDE.md) - Estados de carga
+
 ---
 
 ## 🏗 Arquitectura del Proyecto

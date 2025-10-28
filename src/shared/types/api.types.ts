@@ -38,3 +38,15 @@ export interface ApiError {
     method: HttpMethod;
   };
 }
+
+export type ApiResult<T> = ApiResponse<T> | ApiError;
+
+export function isApiError(response: unknown): response is ApiError {
+  return (
+    typeof response === "object" &&
+    response !== null &&
+    "success" in response &&
+    response.success === false &&
+    "error" in response
+  );
+}

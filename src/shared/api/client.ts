@@ -50,11 +50,17 @@ apiClient.interceptors.response.use(
     // Si el error NO es 401, rechazar inmediatamente
     if (error.response?.status !== 401) return Promise.reject(error);
 
-    if (originalRequest.url?.includes("/refresh-token")) {
-      useAuthStore.getState().clearAuth();
-      window.location.href = "/login";
-      return Promise.reject(error);
-    }
+    const authEndpoints = [
+      "/auth/login",
+      "/auth/register",
+      "/auth/refresh-token",
+    ];
+
+    const isAuthEndpoint = authEndpoints.some((endpoint) =>
+      originalRequest.url?.includes(endpoint)
+    );
+
+    if (isAuthEndpoint) return Promise.reject(error);
 
     if (originalRequest._retry) {
       useAuthStore.getState().clearAuth();

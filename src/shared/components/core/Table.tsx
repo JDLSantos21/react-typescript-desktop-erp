@@ -14,6 +14,9 @@ interface TableProps<T> {
   onRowClick?: (item: T) => void;
   isLoading?: boolean;
   emptyMessage?: string;
+  showFooter?: boolean;
+  minRows?: number; // Mínimo de filas a mostrar para altura consistente
+  maxHeight?: string; // Altura máxima del contenedor scrolleable (ej: "500px", "60vh")
 }
 
 export const Table = <T extends Record<string, any>>({
@@ -23,14 +26,17 @@ export const Table = <T extends Record<string, any>>({
   onRowClick,
   isLoading = false,
   emptyMessage = "No hay datos disponibles",
+  showFooter = false,
+  minRows,
+  maxHeight = "calc(100vh - 300px)",
 }: TableProps<T>) => {
   if (isLoading) {
     return (
       <div className="w-full">
         <div className="animate-pulse">
-          <div className="h-10 bg-gray-200 rounded mb-2"></div>
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-16 bg-gray-100 rounded mb-2"></div>
+          <div className="h-[48.39px] bg-gray-200 rounded mb-1"></div>
+          {[...Array(minRows || 5)].map((_, i) => (
+            <div key={i} className="h-[48.8px] bg-gray-100 mb-1 rounded"></div>
           ))}
         </div>
       </div>
@@ -46,43 +52,70 @@ export const Table = <T extends Record<string, any>>({
   }
 
   return (
-    <div className="w-full overflow-x-auto">
-      <table className="w-full border-collapse">
-        <thead className="bg-gray-50">
-          <tr>
-            {columns.map((column) => (
-              <th
-                key={column.key}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
-              >
-                {column.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {data.map((item) => (
-            <tr
-              key={keyExtractor(item)}
-              onClick={() => onRowClick?.(item)}
-              className={
-                onRowClick
-                  ? "hover:bg-gray-50 cursor-pointer transition-colors"
-                  : ""
-              }
-            >
+    <div className="w-full rounded-lg overflow-hidden">
+      {/* Header fijo */}
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse table-fixed">
+          <thead className="border-b border-border-light sticky top-0 z-10">
+            <tr>
               {columns.map((column) => (
-                <td
+                <th
                   key={column.key}
-                  className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                  className="px-4 py-4 text-left text-xs font-medium text-text-primary uppercase tracking-wider"
                 >
-                  {column.render ? column.render(item) : item[column.key]}
-                </td>
+                  {column.label}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+        </table>
+      </div>
+
+      {/* Body scrolleable */}
+      <div className="overflow-y-auto overflow-x-auto" style={{ maxHeight }}>
+        <table className="w-full border-collapse table-fixed">
+          <tbody className="bg-white divide-y divide-gray-200">
+            {data.map((item) => (
+              <tr
+                key={keyExtractor(item)}
+                onClick={() => onRowClick?.(item)}
+                className={
+                  onRowClick
+                    ? "hover:bg-gray-50 cursor-pointer transition-colors"
+                    : ""
+                }
+              >
+                {columns.map((column) => (
+                  <td
+                    key={column.key}
+                    className="px-4 py-3 whitespace-nowrap text-sm max-xl:text-xs text-gray-900"
+                  >
+                    {column.render ? column.render(item) : item[column.key]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Footer */}
+      {showFooter && (
+        <div className="border-t border-border-light">
+          <table className="w-full">
+            <tfoot>
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="px-6 py-4 text-sm text-gray-900"
+                >
+                  Total de registros: {data.length}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

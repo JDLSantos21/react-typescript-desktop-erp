@@ -1,107 +1,169 @@
-import { Badge, Button, Input, Modal, Table } from "@/shared/components";
+import {
+  Button,
+  FeatureErrorBoundary,
+  Input,
+  Pagination,
+  Table,
+  TableFilters,
+  Select,
+  ErrorState,
+  EmptyState,
+  SearchIcon,
+} from "@/shared/components";
+import { useNavigate } from "react-router-dom";
+import { useTableFilters, useDebounce, useHeaderConfig } from "@/shared/hooks";
 import { useGetCustomers } from "../hooks/useCustomer";
-import { formatPhoneNumber } from "@/shared/utils";
-import { Customer } from "@/shared/types/entities/customer.types";
-import { Column } from "@/shared/components/core/Table";
-import { FaPhoneAlt, FaWhatsapp } from "react-icons/fa";
-import { PiUserPlusLight } from "react-icons/pi";
-import { useState } from "react";
+import { customerTableColumns } from "../config/customerTableConfig";
 
 export function CustomerPage() {
-  const { data: customers, isLoading } = useGetCustomers();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const columns: Column<Customer>[] = [
-    { key: "businessName", label: "Nombre del negocio" },
-    { key: "representativeName", label: "Representante" },
-    {
-      key: "address",
-      label: "Dirección",
-      render: (customer: Customer) => {
-        const primaryAddress = customer.addresses.find(
-          (addr) => addr.isPrimary
-        );
-        return primaryAddress ? primaryAddress.direction : "N/A";
-      },
-    },
-    {
-      key: "phones",
-      label: "Contacto",
-      render: (customer: Customer) => {
-        const primaryPhone = customer.phones.find((phone) => phone.isPrimary);
-        return primaryPhone ? (
-          <div className="flex items-center gap-1">
-            {primaryPhone.hasWhatsapp ? (
-              <FaWhatsapp className="text-green-500" />
-            ) : (
-              <FaPhoneAlt className="text-blue-500" />
-            )}
-            {formatPhoneNumber(primaryPhone.phoneNumber)}
-          </div>
-        ) : (
-          "N/A"
-        );
-      },
-    },
-    {
-      key: "isActive",
-      label: "Estado",
-      render: (customer: Customer) => (
-        <Badge variant={customer.isActive ? "success" : "danger"}>
-          {customer.isActive ? "Activo" : "Inactivo"}
-        </Badge>
-      ),
-    },
-  ];
+  const {
+    filters,
+    updateFilter,
+    clearFilters,
+    setPage,
+    setLimit,
+    queryParams,
+  } = useTableFilters({
+    limit: 5,
+  });
+
+  const debouncedSearch = useDebounce(filters.search || "", 500);
+
+  const {
+    data: customers,
+    isLoading,
+    error,
+    isError,
+    refetch,
+  } = useGetCustomers({
+    ...queryParams,
+    search: debouncedSearch,
+  });
+
+  // Configurar header dinámico
+  useHeaderConfig({
+    title: "Clientes",
+    description: "Busca, añade y gestiona tus clientes.",
+    actions: (
+      <div className="flex gap-2">
+        <Button variant="outline">Exportar</Button>
+        <Button onClick={() => navigate("/customers/new")}>
+          Crear cliente
+        </Button>
+      </div>
+    ),
+  });
+
+  const pagination = customers?.meta.pagination;
+
+  const hasActiveFilters = Object.values(filters).some(
+    (value) => value !== "" && value !== undefined && value !== null
+  );
+
+  const handleRowClick = (customer: { id: string }) => {
+    navigate(`/customers/details/${customer.id}`);
+  };
+
+  const emptyMessage = hasActiveFilters
+    ? {
+        title: "No se encontraron clientes",
+        description: "No hay clientes que coincidan con tu búsqueda",
+      }
+    : {
+        title: "No hay clientes registrados",
+        description: "Agrega tu primer cliente para comenzar",
+      };
+
+  const isEmpty =
+    !isLoading && (!customers?.data || customers.data.length === 0);
 
   return (
-    <div className="space-y-4 p-4">
-      <section className="flex justify-end gap-3 items-center">
-        {/* acciones */}
-        <Button variant="outline">Modificar</Button>
-        <Button onClick={() => setIsModalOpen(true)} icon={PiUserPlusLight}>
-          Nuevo cliente
-        </Button>
-      </section>
-      <section>
-        {/* buscador y filtros */}
-        <Input placeholder="Nombre, teléfono, correo..." />
-      </section>
-      <section>
-        {/* lista de clientes */}
-        <Table
-          columns={columns}
-          data={customers!}
-          keyExtractor={(customer) => customer.id}
-          isLoading={isLoading}
-          emptyMessage="Mensaje vacio personalizado"
-          onRowClick={() => console.log("asd")}
-        />
-      </section>
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        size="xl"
-      >
-        <Modal.Header>
-          <h3 className="text-lg font-semibold">Nuevo cliente</h3>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="space-y-4">
-            <Input label="Nombre del negocio" placeholder="Ej. Tienda ABC" />
-            <Input
-              label="Nombre del representante"
-              placeholder="Ej. Juan Pérez"
-            />
-            <Input label="Teléfono" placeholder="Ej. +57 300 123 4567" />
-            <Input label="Dirección" placeholder="Ej. Calle 123 #45-67" />
+    <div className="flex flex-col justify-between h-full">
+      <div className="space-y-4 p-3 border rounded-sm h-[calc(100%-80px)] overflow-hidden">
+        <div className="flex justify-between">
+          <div>
+            <h2 className="font-semibold">Todos los clientes</h2>
+            <p className="text-xs text-text-secondary">
+              {pagination?.total ?? 0} clientes registrados
+            </p>
           </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="outline">Cancelar</Button>
-          <Button variant="primary">Guardar</Button>
-        </Modal.Footer>
-      </Modal>
+          <TableFilters
+            onClearFilters={clearFilters}
+            hasActiveFilters={hasActiveFilters}
+          >
+            <div className="w-[300px]">
+              <Input
+                placeholder="Nombre, teléfono, correo..."
+                value={filters.search || ""}
+                onChange={(e) => updateFilter("search", e.target.value)}
+                endIcon={<SearchIcon className="text-text-muted" />}
+              />
+            </div>
+
+            <div className="w-full md:w-48">
+              <Select
+                placeholder="Estado"
+                options={[
+                  { value: "active", label: "Activo" },
+                  { value: "inactive", label: "Inactivo" },
+                ]}
+                value={filters.active || ""}
+                onValueChange={(value) => updateFilter("active", value)}
+              />
+            </div>
+          </TableFilters>
+        </div>
+
+        {isEmpty ? (
+          <EmptyState
+            title={emptyMessage.title}
+            description={emptyMessage.description}
+            action={
+              !hasActiveFilters
+                ? {
+                    label: "Agregar cliente",
+                    onClick: () => navigate("/customers/new"),
+                  }
+                : undefined
+            }
+          />
+        ) : isError ? (
+          <ErrorState
+            variant="error"
+            error={error}
+            showDetails={process.env.NODE_ENV === "development"}
+            onRetry={() => refetch()}
+          />
+        ) : (
+          <FeatureErrorBoundary featureName="tabla de clientes">
+            <Table
+              columns={customerTableColumns}
+              data={customers?.data || []}
+              keyExtractor={(customer) => customer.id}
+              isLoading={isLoading}
+              emptyMessage="No se encontraron clientes"
+              onRowClick={handleRowClick}
+              minRows={pagination?.limit}
+            />
+          </FeatureErrorBoundary>
+        )}
+      </div>
+
+      {pagination && pagination.totalPages > 1 && (
+        <div className="w-full left-0 px-3 bg-white py-1 mb-2">
+          <Pagination
+            currentPage={pagination.page}
+            totalPages={pagination.totalPages}
+            totalItems={pagination.total}
+            limit={pagination.limit}
+            onPageChange={setPage}
+            onLimitChange={setLimit}
+            showFirstLast
+          />
+        </div>
+      )}
     </div>
   );
 }
