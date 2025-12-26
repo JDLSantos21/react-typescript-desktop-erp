@@ -6,7 +6,7 @@ import { Button, Input, InputPassword } from "@/shared/components";
 import { CiUser } from "react-icons/ci";
 import { extractApiError } from "@/shared/utils";
 
-export const LoginPage = () => {
+export default function LoginPage() {
   const loginMutation = useLogin();
 
   const { isPending, mutateAsync: login, error } = loginMutation;
@@ -58,4 +58,4 @@ export const LoginPage = () => {
       </div>
     </div>
   );
-};
+}

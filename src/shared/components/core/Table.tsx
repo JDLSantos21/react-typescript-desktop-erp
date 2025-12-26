@@ -5,6 +5,7 @@ export interface Column<T> {
   label: string;
   render?: (item: T) => ReactNode;
   sortable?: boolean;
+  className?: string; // Para controlar ancho de columna
 }
 
 interface TableProps<T> {
@@ -17,6 +18,8 @@ interface TableProps<T> {
   showFooter?: boolean;
   minRows?: number; // Mínimo de filas a mostrar para altura consistente
   maxHeight?: string; // Altura máxima del contenedor scrolleable (ej: "500px", "60vh")
+  className?: string;
+  tableLayout?: "fixed" | "auto"; // Controla el layout de la tabla
 }
 
 export const Table = <T extends Record<string, any>>({
@@ -29,6 +32,8 @@ export const Table = <T extends Record<string, any>>({
   showFooter = false,
   minRows,
   maxHeight = "calc(100vh - 300px)",
+  className = "",
+  tableLayout = "fixed",
 }: TableProps<T>) => {
   if (isLoading) {
     return (
@@ -55,13 +60,19 @@ export const Table = <T extends Record<string, any>>({
     <div className="w-full rounded-lg overflow-hidden">
       {/* Header fijo */}
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse table-fixed">
-          <thead className="border-b border-border-light sticky top-0 z-10">
+        <table
+          className={`w-full border-collapse ${
+            tableLayout === "fixed" ? "table-fixed" : "table-auto"
+          } ${className}`}
+        >
+          <thead className="sticky top-0 z-10">
             <tr>
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className="px-4 py-4 text-left text-xs font-medium text-text-primary uppercase tracking-wider"
+                  className={`py-4 text-left text-xs font-medium text-text-primary uppercase tracking-wider ${
+                    column.className || ""
+                  }`}
                 >
                   {column.label}
                 </th>
@@ -72,8 +83,15 @@ export const Table = <T extends Record<string, any>>({
       </div>
 
       {/* Body scrolleable */}
-      <div className="overflow-y-auto overflow-x-auto" style={{ maxHeight }}>
-        <table className="w-full border-collapse table-fixed">
+      <div
+        className="overflow-y-auto overflow-x-auto tbody-scrolleable"
+        style={{ maxHeight }}
+      >
+        <table
+          className={`w-full border-collapse ${
+            tableLayout === "fixed" ? "table-fixed" : "table-auto"
+          }`}
+        >
           <tbody className="bg-white divide-y divide-gray-200">
             {data.map((item) => (
               <tr
@@ -88,7 +106,9 @@ export const Table = <T extends Record<string, any>>({
                 {columns.map((column) => (
                   <td
                     key={column.key}
-                    className="px-4 py-3 whitespace-nowrap text-sm max-xl:text-xs text-gray-900"
+                    className={`py-3 whitespace-nowrap text-sm max-xl:text-xs text-gray-900 ${
+                      column.className || ""
+                    }`}
                   >
                     {column.render ? column.render(item) : item[column.key]}
                   </td>

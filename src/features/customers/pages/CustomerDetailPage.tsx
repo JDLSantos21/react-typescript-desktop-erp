@@ -1,43 +1,74 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useCustomerById } from "../hooks/useCustomer";
-import { Button, ErrorState } from "@/shared/components";
+import { ErrorState, FeatureErrorBoundary } from "@/shared/components";
 import SectionLoader from "@/shared/components/SectionLoader";
 import { formatDate, formatRNC } from "@/shared/utils";
-import AsideMenu from "../components/AsideMenu";
-import CreateAddressModal from "../components/CreateAddressModal";
-import CreatePhoneModal from "../components/CreatePhoneModal";
+import AddressModal from "../components/AddressModal";
 import CustomerAddressList from "../components/CustomerAddressList";
 import CustomerPhoneList from "../components/CustomerPhoneList";
 import CustomerActivitySection from "../components/CustomerActivitySection";
 import CustomerHistoryModal from "../components/CustomerHistoryModal";
 import { useModal, useHeaderConfig } from "@/shared/hooks";
+import EditCustomerModal from "../components/EditCustomerModal";
+import PhoneModal from "../components/PhoneModal";
+import { useState, useMemo } from "react";
+import {
+  CustomerAddress,
+  CustomerPhone,
+} from "@/shared/types/entities/customer.types";
+import { useRefetchToast } from "@/shared/hooks/useRefetchToast";
+import OrdersHistoryModal from "../components/OrdersHistoryModal";
+import CustomerAsideMenu from "../components/CustomerAsideMenu";
 
 export default function CustomerDetailPage() {
   const { customerId } = useParams();
   const navigate = useNavigate();
+  const [selectedPhone, setSelectedPhone] = useState<CustomerPhone>();
+  const [selectedAddress, setSelectedAddress] = useState<CustomerAddress>();
 
-  const { data, isLoading, error, refetch, isError } = useCustomerById(
-    customerId ?? ""
-  );
+  const { data, isLoading, error, refetch, isError, isRefetching } =
+    useCustomerById(customerId ?? "");
+  useRefetchToast(isRefetching, "Actualizando información del cliente...");
 
   const addressModal = useModal();
   const phoneModal = useModal();
-  const historyModal = useModal();
+  const equipmentModal = useModal();
+  const ordersHistoryModal = useModal();
+  const editModal = useModal();
 
-  useHeaderConfig({
-    title: data?.data.businessName || "Cargando...",
-    description: data?.data.representativeName
-      ? `Representante: ${data.data.representativeName}`
-      : undefined,
-    actions: (
-      <div className="flex gap-2">
-        <Button variant="outline" onClick={() => navigate(-1)}>
-          Volver
-        </Button>
-        <Button variant="danger">Eliminar</Button>
-      </div>
-    ),
-  });
+  const headerConfig = useMemo(
+    () => ({
+      title: "",
+      showBackButton: true,
+      customContent: data?.data ? (
+        <div className="flex items-center px-3 py-1 w-full gap-2">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-text-primary">
+              {data.data.businessName}
+            </h2>
+            <div className="flex gap-2 items-center text-sm text-text-secondary h-8">
+              <p>{data.data.representativeName}</p>
+              {data.data.rnc && (
+                <>
+                  <div className="border-l border-gray-200 h-3 mx-2" />
+                  <p className="font-mono text-xs">
+                    {formatRNC(data.data.rnc)}
+                  </p>
+                </>
+              )}
+              <div className="border-l border-gray-200 h-3 mx-2" />
+              <p className="text-xs text-gray-400">
+                Registrado el {formatDate(data.data.createdAt)}
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : undefined,
+    }),
+    [data?.data, navigate]
+  );
+
+  useHeaderConfig(headerConfig);
 
   if (!customerId) {
     return (
@@ -64,122 +95,147 @@ export default function CustomerDetailPage() {
   };
 
   return (
-    <div className="p-6">
-      <section>
+    <div className="h-full">
+      <section className="h-full">
         {isLoading ? (
-          <SectionLoader placeholder="Cargando información del cliente..." />
+          <SectionLoader
+            className="h-full"
+            placeholder="Cargando información"
+          />
         ) : isError ? (
           <ErrorStateComp />
         ) : (
-          <div className="flex gap-4">
-            <section className="flex-1 space-y-4 relative">
+          <div className="flex h-full">
+            <div className="flex-1 px-8 py-8 space-y-8 max-w-4xl overflow-y-auto">
               {/* Información General */}
-              <div className="bg-background border border-border-light rounded-lg shadow-sm overflow-hidden">
-                <div className="bg-background-secondary px-6 py-4 border-b border-border-light">
-                  <h3 className="text-lg font-semibold text-text-primary">
-                    Información General
-                  </h3>
-                </div>
-                <div className="p-6">
+              <section>
+                <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-4">
+                  Información General
+                </h2>
+                <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-                    <InfoItem
-                      label="Nombre comercial"
-                      value={data!.data.businessName}
-                    />
-                    <InfoItem
-                      label="Representante"
-                      value={data!.data.representativeName}
-                    />
-
-                    {data!.data.rnc && (
-                      <InfoItem label="RNC" value={formatRNC(data!.data.rnc)} />
-                    )}
-
-                    {data!.data.email && (
-                      <InfoItem
-                        label="Correo electrónico"
-                        value={data!.data.email}
-                      />
-                    )}
-
-                    <InfoItem
-                      label="Registrado"
-                      value={formatDate(data!.data.createdAt)}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Actividad Reciente → Equipos + Último Pedido */}
-              <CustomerActivitySection
-                onViewEquipmentHistory={historyModal.open}
-                onViewOrderHistory={historyModal.open}
-              />
-
-              <div className="flex flex-col xl:flex-row gap-4">
-                {/* Direcciones */}
-                <div className="bg-background border border-border-light rounded-lg shadow-sm overflow-hidden xl:w-1/2">
-                  <div className="bg-background-secondary px-6 py-4 border-b border-border-light">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold text-text-primary">
-                        Direcciones
-                      </h3>
+                    <div>
+                      <p className="text-xs text-gray-400 mb-1.5">
+                        Nombre comercial
+                      </p>
+                      <p className="text-gray-900">{data!.data.businessName}</p>
                     </div>
-                  </div>
-                  <div className="p-6">
-                    <CustomerAddressList addresses={data!.data.addresses} />
+                    <div>
+                      <p className="text-xs text-gray-400 mb-1.5">
+                        Representante
+                      </p>
+                      <p className="text-gray-900">
+                        {data!.data.representativeName}
+                      </p>
+                    </div>
+                    {data!.data.email && (
+                      <div>
+                        <p className="text-xs text-gray-400 mb-1.5">
+                          Correo electrónico
+                        </p>
+                        <p className="text-gray-900">{data!.data.email}</p>
+                      </div>
+                    )}
+                    {data!.data.rnc && (
+                      <div>
+                        <p className="text-xs text-gray-400 mb-1.5">RNC</p>
+                        <p className="font-mono text-gray-900">
+                          {formatRNC(data!.data.rnc)}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
+              </section>
+
+              {/* Direcciones y Teléfonos */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 border-t border-gray-100 pt-8">
+                {/* Direcciones */}
+                <section>
+                  <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-4">
+                    Direcciones
+                  </h2>
+                  <CustomerAddressList
+                    addresses={data!.data.addresses}
+                    onSelect={(address) => {
+                      setSelectedAddress(address);
+                      addressModal.open();
+                    }}
+                  />
+                </section>
 
                 {/* Teléfonos */}
-                <div className="bg-background border border-border-light rounded-lg shadow-sm overflow-hidden xl:w-1/2">
-                  <div className="bg-background-secondary px-6 py-4 border-b border-border-light">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold text-text-primary">
-                        Teléfonos
-                      </h3>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <CustomerPhoneList phones={data!.data.phones} />
-                  </div>
-                </div>
+                <section>
+                  <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-4">
+                    Teléfonos
+                  </h2>
+                  <CustomerPhoneList
+                    phones={data!.data.phones}
+                    onSelect={(phone) => {
+                      setSelectedPhone(phone);
+                      phoneModal.open();
+                    }}
+                  />
+                </section>
               </div>
-            </section>
 
-            <AsideMenu
-              onOpenCreatePhoneModal={phoneModal.open}
+              {/* Actividad Reciente */}
+              <section className="border-t border-gray-100 pt-8">
+                <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-4">
+                  Actividad Reciente
+                </h2>
+                <FeatureErrorBoundary featureName="Actividad Reciente">
+                  <CustomerActivitySection
+                    onViewEquipmentHistory={equipmentModal.open}
+                    onViewOrderHistory={ordersHistoryModal.open}
+                  />
+                </FeatureErrorBoundary>
+              </section>
+            </div>
+
+            <CustomerAsideMenu
+              onOpenCreatePhoneModal={() => {
+                setSelectedPhone(undefined);
+                phoneModal.open();
+              }}
               onOpenCreateAddressModal={addressModal.open}
+              onOpenEditModal={editModal.open}
             />
           </div>
         )}
       </section>
-      <CreateAddressModal
+      <AddressModal
         isOpen={addressModal.isOpen}
-        onClose={addressModal.close}
+        onClose={() => {
+          setSelectedAddress(undefined);
+          addressModal.close();
+        }}
         customerId={customerId}
+        address={selectedAddress}
       />
-      <CreatePhoneModal
+      <PhoneModal
         isOpen={phoneModal.isOpen}
         onClose={phoneModal.close}
         customerId={customerId}
+        phone={selectedPhone}
       />
       <CustomerHistoryModal
-        isOpen={historyModal.isOpen}
-        onClose={historyModal.close}
+        isOpen={equipmentModal.isOpen}
+        onClose={equipmentModal.close}
         customerId={customerId}
       />
-    </div>
-  );
-}
-
-function InfoItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-text-muted text-xs font-medium uppercase tracking-wide">
-        {label}
-      </span>
-      <p className="text-text-primary font-medium text-sm">{value}</p>
+      {data?.data && (
+        <EditCustomerModal
+          customer={data.data}
+          isOpen={editModal.isOpen}
+          onClose={editModal.close}
+        />
+      )}
+      <OrdersHistoryModal
+        isOpen={ordersHistoryModal.isOpen}
+        onClose={ordersHistoryModal.close}
+        customerId={customerId}
+      />
     </div>
   );
 }

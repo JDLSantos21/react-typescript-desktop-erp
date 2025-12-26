@@ -70,8 +70,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
           )}
 
           <ShadcnSelect
-            value={value}
-            defaultValue={defaultValue}
+            value={value ?? defaultValue}
             onValueChange={onValueChange}
             disabled={disabled}
             name={name}

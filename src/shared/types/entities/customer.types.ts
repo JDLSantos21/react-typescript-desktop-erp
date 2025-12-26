@@ -14,6 +14,8 @@ export interface Customer {
 
 export type PhoneType = "MOVIL" | "FIJO" | "TRABAJO" | "OTROS";
 
+export interface CustomerEntity extends Omit<Customer, "phones" | "addreses"> {}
+
 export interface CustomerPhone {
   id: number;
   description: string;

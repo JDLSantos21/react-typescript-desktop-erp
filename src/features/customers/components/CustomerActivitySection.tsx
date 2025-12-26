@@ -99,7 +99,7 @@ export default function CustomerActivitySection({
                       </p>
                       <p className="text-xs text-text-muted mt-0.5">
                         Asignado:{" "}
-                        {formatDate(equipment.assignments[0].assignedAt)}
+                        {formatDate(equipment?.assignments[0]?.assignedAt)}
                       </p>
                     </div>
                     <Badge size="sm">{equipment.status}</Badge>

@@ -1,7 +1,7 @@
 import { ReactNode, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
-import { IoMdClose } from "react-icons/io";
+import { CloseIcon } from "../icons";
 
 interface ModalProps {
   isOpen: boolean;
@@ -51,7 +51,7 @@ export const Modal = ({
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -66,23 +66,25 @@ export const Modal = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className={`relative bg-white rounded-lg shadow-xl ${sizeClasses[size]} w-full max-h-[90vh] flex flex-col`}
+            className={`relative bg-white rounded-xl overflow-hidden shadow-xl ${sizeClasses[size]} w-full max-h-[90vh] flex flex-col`}
             onClick={(e) => e.stopPropagation()} // Evitar que se cierre el modal al hacer clic dentro de él.
           >
             {/* Header */}
             {title && (
-              <div className="flex items-center justify-between p-4 border-b border-divider flex-shrink-0">
-                <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+              <div className="flex items-center justify-between px-6 pt-6 flex-shrink-0">
+                <h2 className="text-xl font-bold text-gray-700 font-midimi">
+                  {title}
+                </h2>
                 <button
                   onClick={onClose}
-                  className="text-danger hover:text-danger/70 transition-colors cursor-pointer"
+                  className="text-text-primary hover:text-danger/70 transition-colors cursor-pointer p-2 rounded-md bg-gray-50 hover:bg-red-50"
                 >
-                  <IoMdClose className="w-7 h-7" />
+                  <CloseIcon />
                 </button>
               </div>
             )}
 
-            <div className="p-6 overflow-y-auto scrollbar-hide flex-1">
+            <div className="overflow-y-auto scrollbar-hide flex-1">
               {children}
             </div>
           </motion.div>
@@ -97,12 +99,16 @@ Modal.Header = ({ children }: { children: ReactNode }) => (
   <div className="mb-4">{children}</div>
 );
 
-Modal.Body = ({ children }: { children: ReactNode }) => (
-  <div className="mb-4">{children}</div>
-);
+Modal.Body = ({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) => <div className={`mb-4 p-6 ${className}`}>{children}</div>;
 
 Modal.Footer = ({ children }: { children: ReactNode }) => (
-  <div className="flex justify-end gap-2 px-6 py-4 border-t border-divider flex-shrink-0">
+  <div className="flex justify-end gap-3 bg-gray-100 p-3 flex-shrink-0 w-full">
     {children}
   </div>
 );

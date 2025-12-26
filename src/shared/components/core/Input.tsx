@@ -60,7 +60,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium mb-1.5 text-text-primary">
+          <label
+            htmlFor={props.id}
+            className="block text-xs font-medium mb-1.5 text-input-label"
+          >
             {label}
           </label>
         )}

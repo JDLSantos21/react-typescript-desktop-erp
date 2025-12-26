@@ -4,23 +4,36 @@ import { PageErrorBoundary, PageLoader } from "@/shared/components";
 import { lazy, Suspense } from "react";
 
 // Lazy loaded pages
-const LoginPage = lazy(() =>
-  import("@/features/auth/pages/LoginPage").then((module) => ({
-    default: module.LoginPage,
-  }))
+const LoginPage = lazy(() => import("@/features/auth/pages/LoginPage"));
+
+const DashboardPage = lazy(
+  () => import("@/features/dashboard/pages/DashboardPage")
 );
-const DashboardPage = lazy(() =>
-  import("@/features/dashboard/pages/DashboardPage").then((module) => ({
-    default: module.DashboardPage,
-  }))
+
+const CustomerPage = lazy(
+  () => import("@/features/customers/pages/CustomerPage")
 );
-const CustomerPage = lazy(() =>
-  import("@/features/customers/pages/CustomerPage").then((module) => ({
-    default: module.CustomerPage,
-  }))
-);
+
 const CustomerDetailPage = lazy(
   () => import("@/features/customers/pages/CustomerDetailPage")
+);
+
+const CreateCustomerPage = lazy(
+  () => import("@/features/customers/pages/CreateCustomerPage")
+);
+
+const OrdersPage = lazy(() => import("@/features/orders/pages/OrdersPage"));
+
+const CreateOrderPage = lazy(
+  () => import("@/features/orders/pages/CreateOrderPage")
+);
+
+const OrderDetailPage = lazy(
+  () => import("@/features/orders/pages/OrderDetailPage")
+);
+
+const EditOrderPage = lazy(
+  () => import("@/features/orders/pages/EditOrderPage")
 );
 
 export const router = createBrowserRouter([
@@ -31,11 +44,11 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     element: (
-      <PageErrorBoundary pageName="inicio de sesion">
-        <Suspense fallback={<PageLoader />}>
+      <Suspense fallback={<PageLoader />}>
+        <PageErrorBoundary pageName="inicio de sesion">
           <LoginPage />
-        </Suspense>
-      </PageErrorBoundary>
+        </PageErrorBoundary>
+      </Suspense>
     ),
   },
   {
@@ -44,41 +57,81 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: (
-          <PageErrorBoundary pageName="dashboard">
-            <Suspense fallback={<PageLoader />}>
+          <Suspense fallback={<PageLoader />}>
+            <PageErrorBoundary pageName="dashboard">
               <DashboardPage />
-            </Suspense>
-          </PageErrorBoundary>
+            </PageErrorBoundary>
+          </Suspense>
         ),
       },
       {
         path: "/customers",
         element: (
-          <PageErrorBoundary pageName="clientes">
-            <Suspense fallback={<PageLoader />}>
+          <Suspense fallback={<PageLoader />}>
+            <PageErrorBoundary pageName="clientes">
               <CustomerPage />
-            </Suspense>
-          </PageErrorBoundary>
+            </PageErrorBoundary>
+          </Suspense>
         ),
       },
       {
         path: "/customers/details/:customerId",
         element: (
-          <PageErrorBoundary pageName="detalle de cliente">
-            <Suspense fallback={<PageLoader />}>
+          <Suspense fallback={<PageLoader />}>
+            <PageErrorBoundary pageName="detalle de cliente">
               <CustomerDetailPage />
-            </Suspense>
-          </PageErrorBoundary>
+            </PageErrorBoundary>
+          </Suspense>
         ),
       },
       {
         path: "/customers/new",
         element: (
-          <PageErrorBoundary pageName="nuevo cliente">
-            <Suspense fallback={<PageLoader />}>
-              <CustomerDetailPage />
-            </Suspense>
-          </PageErrorBoundary>
+          <Suspense fallback={<PageLoader />}>
+            <PageErrorBoundary pageName="nuevo cliente">
+              <CreateCustomerPage />
+            </PageErrorBoundary>
+          </Suspense>
+        ),
+      },
+      {
+        path: "/orders",
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PageErrorBoundary pageName="pedidos">
+              <OrdersPage />
+            </PageErrorBoundary>
+          </Suspense>
+        ),
+      },
+      {
+        path: "/orders/new/:customerId?",
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PageErrorBoundary pageName="crear pedido">
+              <CreateOrderPage />
+            </PageErrorBoundary>
+          </Suspense>
+        ),
+      },
+      {
+        path: "/orders/:id/edit",
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PageErrorBoundary pageName="editar pedido">
+              <EditOrderPage />
+            </PageErrorBoundary>
+          </Suspense>
+        ),
+      },
+      {
+        path: "/orders/:id?",
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PageErrorBoundary pageName="detalle del pedido">
+              <OrderDetailPage />
+            </PageErrorBoundary>
+          </Suspense>
         ),
       },
     ],

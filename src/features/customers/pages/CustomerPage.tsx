@@ -11,22 +11,25 @@ import {
   SearchIcon,
 } from "@/shared/components";
 import { useNavigate } from "react-router-dom";
-import { useTableFilters, useDebounce, useHeaderConfig } from "@/shared/hooks";
+import {
+  useTableFilters,
+  useDebounce,
+  useHeaderConfig,
+  usePagination,
+} from "@/shared/hooks";
 import { useGetCustomers } from "../hooks/useCustomer";
 import { customerTableColumns } from "../config/customerTableConfig";
 
-export function CustomerPage() {
+export default function CustomerPage() {
   const navigate = useNavigate();
 
-  const {
-    filters,
-    updateFilter,
-    clearFilters,
-    setPage,
-    setLimit,
-    queryParams,
-  } = useTableFilters({
-    limit: 5,
+  const { setPage, setLimit, paginationParams } = usePagination({
+    defaultLimit: 12,
+    syncWithUrl: true,
+  });
+
+  const { filters, updateFilter, clearFilters } = useTableFilters({
+    initialFilters: {},
   });
 
   const debouncedSearch = useDebounce(filters.search || "", 500);
@@ -38,11 +41,11 @@ export function CustomerPage() {
     isError,
     refetch,
   } = useGetCustomers({
-    ...queryParams,
+    ...filters,
+    ...paginationParams,
     search: debouncedSearch,
   });
 
-  // Configurar header dinámico
   useHeaderConfig({
     title: "Clientes",
     description: "Busca, añade y gestiona tus clientes.",
@@ -81,7 +84,7 @@ export function CustomerPage() {
 
   return (
     <div className="flex flex-col justify-between h-full">
-      <div className="space-y-4 p-3 border rounded-sm h-[calc(100%-80px)] overflow-hidden">
+      <div className="space-y-4 h-[calc(100%-70px)] overflow-hidden p-6">
         <div className="flex justify-between">
           <div>
             <h2 className="font-semibold">Todos los clientes</h2>
@@ -152,7 +155,7 @@ export function CustomerPage() {
       </div>
 
       {pagination && pagination.totalPages > 1 && (
-        <div className="w-full left-0 px-3 bg-white py-1 mb-2">
+        <div className="w-full left-0 px-3 bg-white py-1 border-t border-border">
           <Pagination
             currentPage={pagination.page}
             totalPages={pagination.totalPages}

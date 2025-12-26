@@ -1,14 +1,28 @@
 import { useEffect } from "react";
-import { useHeader, HeaderConfig } from "@/shared/contexts/HeaderContext";
+import {
+  useHeaderDispatch,
+  HeaderConfig,
+} from "@/shared/contexts/HeaderContext";
 
-export function useHeaderConfig(config: HeaderConfig) {
-  const { setHeaderConfig, resetHeader } = useHeader();
+export function useHeaderConfig(config?: HeaderConfig) {
+  const { setHeaderConfig, resetHeader } = useHeaderDispatch();
 
   useEffect(() => {
-    setHeaderConfig(config);
+    if (config) {
+      setHeaderConfig(config);
 
-    return () => {
-      resetHeader();
-    };
-  }, [config.title, config.description, setHeaderConfig, resetHeader]);
+      return () => {
+        resetHeader();
+      };
+    }
+  }, [
+    config?.title,
+    config?.description,
+    config?.customContent,
+    config?.actions,
+    setHeaderConfig,
+    resetHeader,
+  ]);
+
+  return { setHeaderConfig, resetHeader };
 }

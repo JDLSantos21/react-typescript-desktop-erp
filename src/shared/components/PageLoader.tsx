@@ -7,7 +7,7 @@ export const PageLoader = () => {
         <Spinner size="lg" className="mx-auto" />
 
         <div className="space-y-1">
-          <p className="text-sm font-medium text-text-primary">Cargando...</p>
+          <p className="text-sm font-medium text-text-primary">Cargando</p>
           <p className="text-xs text-text-secondary">
             Por favor espera un momento
           </p>

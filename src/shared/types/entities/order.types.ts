@@ -16,7 +16,18 @@ export interface OrderProduct {
   unit: string;
 }
 
+export interface OrderStatusHistoryField {
+  status: OrderStatus;
+  description: string;
+  changedAt: string;
+  changedBy: {
+    id: string;
+    name: string;
+  };
+}
+
 export interface Order {
+  id: number;
   trackingCode: string;
   status: OrderStatus;
   date: string;

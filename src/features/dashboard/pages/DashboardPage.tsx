@@ -2,7 +2,7 @@ import { useLogout } from "@/features/auth/hooks/useAuth";
 import { Button } from "@/shared/components";
 import { useNavigate } from "react-router-dom";
 
-export const DashboardPage = () => {
+export default function DashboardPage() {
   const logoutMutation = useLogout();
   const navigate = useNavigate();
 
@@ -33,4 +33,4 @@ export const DashboardPage = () => {
       </div>
     </div>
   );
-};
+}

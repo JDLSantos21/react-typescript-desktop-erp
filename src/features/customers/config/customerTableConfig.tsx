@@ -6,7 +6,7 @@ import { formatPhoneNumber } from "@/shared/utils";
 const renderCustomerPhone = (customer: Customer) => {
   const primaryPhone = customer.phones.find((phone) => phone.isPrimary);
 
-  if (!primaryPhone) return "N/A";
+  if (!primaryPhone) return <span>No disponible</span>;
 
   const Icon = primaryPhone.hasWhatsapp ? WhatsAppIcon : PhoneIcon;
   const iconColor = primaryPhone.hasWhatsapp ? "text-success" : "text-primary";
@@ -19,11 +19,6 @@ const renderCustomerPhone = (customer: Customer) => {
   );
 };
 
-const renderCustomerAddress = (customer: Customer) => {
-  const primaryAddress = customer.addresses.find((addr) => addr.isPrimary);
-  return primaryAddress?.direction || "N/A";
-};
-
 const renderCustomerStatus = (customer: Customer) => (
   <Badge size="sm" variant={customer.isActive ? "success" : "danger"}>
     {customer.isActive ? "Activo" : "Inactivo"}
@@ -33,17 +28,14 @@ const renderCustomerStatus = (customer: Customer) => (
 export const customerTableColumns: Column<Customer>[] = [
   {
     key: "businessName",
+    className: "w-1/3",
     label: "Nombre del negocio",
   },
   {
     key: "representativeName",
     label: "Representante",
   },
-  {
-    key: "address",
-    label: "Dirección",
-    render: renderCustomerAddress,
-  },
+
   {
     key: "phones",
     label: "Contacto",

@@ -5,19 +5,20 @@ import {
   TfiAngleRight,
   TfiAngleDoubleRight,
 } from "react-icons/tfi";
-import { FaPhoneAlt, FaWhatsapp, FaUserEdit } from "react-icons/fa";
+import { FaWhatsapp, FaUserEdit } from "react-icons/fa";
 import {
   PiUserPlusLight,
   PiUser,
-  PiUsersLight,
   PiPhonePlus,
+  PiPhoneThin,
+  PiClipboardTextLight,
 } from "react-icons/pi";
 import { TbShoppingCartPlus } from "react-icons/tb";
-import { LuMapPinPlus } from "react-icons/lu";
-import { GoHistory, GoStack } from "react-icons/go";
+import { LuMapPinPlus, LuMessageSquareMore } from "react-icons/lu";
+import { GoAlert, GoHistory, GoMail, GoStack } from "react-icons/go";
 import { MdDeleteOutline } from "react-icons/md";
 import { LuLayoutDashboard } from "react-icons/lu";
-import { BsFuelPump } from "react-icons/bs";
+import { BsExclamationCircle, BsFuelPump } from "react-icons/bs";
 import { PiUsersThreeBold } from "react-icons/pi";
 import { BsTruckFlatbed } from "react-icons/bs";
 import { VscPackage } from "react-icons/vsc";
@@ -25,7 +26,15 @@ import { RiFridgeLine } from "react-icons/ri";
 import { LiaCogsSolid } from "react-icons/lia";
 import { AiOutlineBars } from "react-icons/ai";
 import { MdOutlineLogout } from "react-icons/md";
-import { CiSearch } from "react-icons/ci";
+import { CiCalendar, CiFilter, CiLocationOn, CiSearch } from "react-icons/ci";
+import { IoMdCheckmark, IoMdClose } from "react-icons/io";
+import { FiPlusCircle } from "react-icons/fi";
+import { VscSearchStop } from "react-icons/vsc";
+import { CiCircleQuestion } from "react-icons/ci";
+import { IoCopyOutline, IoReturnUpBackOutline } from "react-icons/io5";
+import { SlPrinter } from "react-icons/sl";
+import { GrUserWorker } from "react-icons/gr";
+import { TbEdit } from "react-icons/tb";
 
 // Type para props comunes de iconos
 export type IconProps = ComponentProps<"svg"> & {
@@ -51,6 +60,17 @@ export const ChevronDoubleRightIcon = (props: IconProps) => (
 export const DashboardIcon = (props: IconProps) => (
   <LuLayoutDashboard {...props} />
 );
+export const ReturnIcon = (props: IconProps) => (
+  <IoReturnUpBackOutline {...props} />
+);
+
+export const ClipboardIcon = (props: IconProps) => (
+  <PiClipboardTextLight {...props} />
+);
+
+export const FilterIcon = (props: IconProps) => <CiFilter {...props} />;
+
+export const CalendarIcon = (props: IconProps) => <CiCalendar {...props} />;
 
 export const StackIcon = (props: IconProps) => <GoStack {...props} />;
 
@@ -60,6 +80,8 @@ export const TruckIcon = (props: IconProps) => <BsTruckFlatbed {...props} />;
 
 export const OrderIcon = (props: IconProps) => <VscPackage {...props} />;
 
+export const PlusIcon = (props: IconProps) => <FiPlusCircle {...props} />;
+
 export const FridgeIcon = (props: IconProps) => <RiFridgeLine {...props} />;
 
 export const EquipmentIcon = (props: IconProps) => <LiaCogsSolid {...props} />;
@@ -68,11 +90,18 @@ export const MenuIcon = (props: IconProps) => <AiOutlineBars {...props} />;
 
 export const LogoutIcon = (props: IconProps) => <MdOutlineLogout {...props} />;
 
+export const CloseIcon = (props: IconProps) => <IoMdClose {...props} />;
+
+export const MessagesIcon = (props: IconProps) => (
+  <LuMessageSquareMore {...props} />
+);
+
 // ============================================
 // COMUNICACIÓN
 // ============================================
-export const PhoneIcon = (props: IconProps) => <FaPhoneAlt {...props} />;
-export const WhatsAppIcon = (props: IconProps) => <FaWhatsapp {...props} />;
+export const WhatsAppIcon = (props: IconProps) => (
+  <FaWhatsapp className="text-green-500" {...props} />
+);
 export const PhonePlusIcon = (props: IconProps) => <PiPhonePlus {...props} />;
 
 // ============================================
@@ -94,6 +123,28 @@ export const MapPinPlusIcon = (props: IconProps) => <LuMapPinPlus {...props} />;
 export const HistoryIcon = (props: IconProps) => <GoHistory {...props} />;
 export const DeleteIcon = (props: IconProps) => <MdDeleteOutline {...props} />;
 export const SearchIcon = (props: IconProps) => <CiSearch {...props} />;
+export const CheckIcon = (props: IconProps) => <IoMdCheckmark {...props} />;
+export const SearchOffIcon = (props: IconProps) => <VscSearchStop {...props} />;
+export const HelpIcon = (props: IconProps) => <CiCircleQuestion {...props} />;
+export const WarningIcon = (props: IconProps) => (
+  <BsExclamationCircle {...props} />
+);
+
+export const PhoneIcon = (props: IconProps) => <PiPhoneThin {...props} />;
+
+export const LocationIcon = (props: IconProps) => <CiLocationOn {...props} />;
+
+export const CopyIcon = (props: IconProps) => <IoCopyOutline {...props} />;
+
+export const PrinterIcon = (props: IconProps) => <SlPrinter {...props} />;
+
+export const MailIcon = (props: IconProps) => <GoMail {...props} />;
+
+export const DriverIcon = (props: IconProps) => <GrUserWorker {...props} />;
+
+export const EditIcon = (props: IconProps) => <TbEdit {...props} />;
+
+export const AlertIcon = (props: IconProps) => <GoAlert {...props} />;
 
 // ============================================
 // UTILIDADES

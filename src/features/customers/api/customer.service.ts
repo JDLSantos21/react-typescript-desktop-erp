@@ -3,11 +3,14 @@ import { ApiResponse, PaginatedResponse } from "@/shared/types/api.types";
 import {
   Customer,
   CustomerAddress,
+  CustomerEntity,
   CustomerPhone,
 } from "@/shared/types/entities/customer.types";
 import {
   CreateCustomerAddressDto,
+  CreateCustomerDto,
   CreateCustomerPhoneDto,
+  UpdateCustomerDto,
 } from "../types/customer.dto";
 
 export interface CustomerQueryParams {
@@ -39,6 +42,16 @@ export const CustomerService = {
     return data;
   },
 
+  addCustomer: async (
+    customerData: CreateCustomerDto
+  ): Promise<ApiResponse<Customer>> => {
+    const { data } = await apiClient.post<ApiResponse<Customer>>(
+      `/customers`,
+      customerData
+    );
+    return data;
+  },
+
   addCustomerAddress: async (
     customerId: string,
     addressData: CreateCustomerAddressDto
@@ -57,6 +70,44 @@ export const CustomerService = {
     const { data } = await apiClient.post<ApiResponse<CustomerPhone>>(
       `/customers/${customerId}/phones`,
       phoneData
+    );
+    return data;
+  },
+
+  editCustomerAddress: async (
+    addressId: number,
+    addressData: CreateCustomerAddressDto
+  ): Promise<ApiResponse<CustomerAddress>> => {
+    const { data } = await apiClient.patch<ApiResponse<CustomerAddress>>(
+      `/customers/addresses/${addressId}`,
+      addressData
+    );
+    return data;
+  },
+
+  editCustomerPhone: async (
+    phoneId: number,
+    customerId: string,
+    phoneData: CreateCustomerPhoneDto
+  ): Promise<ApiResponse<CustomerPhone>> => {
+    const { data } = await apiClient.patch<ApiResponse<CustomerPhone>>(
+      `/customers/phones/${phoneId}`,
+      { ...phoneData, customer_id: customerId }
+    );
+    return data;
+  },
+
+  deleteCustomer: async (customerId: string): Promise<void> => {
+    await apiClient.delete(`/customers/${customerId}`);
+  },
+
+  updateCustomer: async (
+    customerId: string,
+    customerData: UpdateCustomerDto
+  ): Promise<ApiResponse<CustomerEntity>> => {
+    const { data } = await apiClient.patch<ApiResponse<CustomerEntity>>(
+      `/customers/${customerId}`,
+      customerData
     );
     return data;
   },
