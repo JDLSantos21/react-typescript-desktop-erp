@@ -1,0 +1,29 @@
+[
+  {
+    "id": 5112,
+    "nombre": "F-32",
+    "lat": 18.5733,
+    "lng": -69.94268,
+    "velocidad": 0,
+    "ultimaActualizacion": "6:50:21 p. m.",
+    "distanciaMetros": 1784
+  },
+  {
+    "id": 5123,
+    "nombre": "F-09",
+    "lat": 18.54392,
+    "lng": -69.92477,
+    "velocidad": 2,
+    "ultimaActualizacion": "6:50:21 p. m.",
+    "distanciaMetros": 2013
+  },
+  {
+    "id": 5245,
+    "nombre": "F-14",
+    "lat": 18.56274,
+    "lng": -69.94501,
+    "velocidad": 0,
+    "ultimaActualizacion": "6:50:21 p. m.",
+    "distanciaMetros": 1342
+  }
+]

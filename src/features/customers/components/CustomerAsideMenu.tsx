@@ -20,12 +20,14 @@ interface AsideMenuProps {
   onOpenCreateAddressModal: () => void;
   onOpenCreatePhoneModal: () => void;
   onOpenEditModal: () => void;
+  onOpenNearbyVehiclesMapModal: () => void;
 }
 
 export default function CustomerAsideMenu({
   onOpenCreateAddressModal,
   onOpenCreatePhoneModal,
   onOpenEditModal,
+  onOpenNearbyVehiclesMapModal,
 }: AsideMenuProps) {
   const { customerId } = useParams();
   const {
@@ -71,11 +73,17 @@ export default function CustomerAsideMenu({
         icon={<HistoryIcon className="w-4 h-4" />}
       />
       <AsideButton
+        label="Ver vehículos cercanos"
+        onClick={() => onOpenNearbyVehiclesMapModal()}
+        icon={<MapPinPlusIcon className="w-4 h-4" />}
+      />
+      <AsideButton
         label="Eliminar cliente"
         onClick={() => confirmModal.open()}
         variant="danger"
         icon={<DeleteIcon className="w-4 h-4" />}
       />
+
       <ConfirmDialog
         title="Eliminar cliente"
         description="¿Estás seguro de que deseas eliminar este cliente?"

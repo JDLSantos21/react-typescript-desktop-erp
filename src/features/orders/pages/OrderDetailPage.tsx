@@ -35,6 +35,8 @@ export default function OrderDetailPage() {
   const statusHistoryModal = useModal();
   const driverAssignModal = useModal();
 
+  console.log(data?.data.address.coordinates);
+
   useEffect(() => {
     if (data?.data) {
       setHeaderConfig({
@@ -162,13 +164,36 @@ export default function OrderDetailPage() {
                   </p>
                   <p className="text-gray-600">{data?.data.address.city}</p>
                 </div>
-                <div>
-                  <p>Dirección exacta</p>
+                <div className="flex flex-col items-end gap-2">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`flex h-2 w-2 rounded-full ${
+                        data?.data.address.coordinates
+                          ? "bg-green-500"
+                          : "bg-gray-300"
+                      }`}
+                    />
+                    <p className="text-sm text-gray-500">
+                      {data?.data.address.coordinates
+                        ? "Ubicación exacta disponible"
+                        : "Sin ubicación exacta"}
+                    </p>
+                  </div>
                   <Button
                     variant="outline"
                     icon={LocationIcon}
                     size="sm"
-                    onClick={() => {}}
+                    disabled={!data?.data.address.coordinates}
+                    onClick={() => {
+                      if (data?.data.address.coordinates) {
+                        const { latitude, longitude } =
+                          data.data.address.coordinates;
+                        window.open(
+                          `https://www.google.com/maps?q=${latitude},${longitude}`,
+                          "_blank"
+                        );
+                      }
+                    }}
                   >
                     Ver en mapa
                   </Button>

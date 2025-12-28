@@ -19,6 +19,7 @@ import {
 import { useRefetchToast } from "@/shared/hooks/useRefetchToast";
 import OrdersHistoryModal from "../components/OrdersHistoryModal";
 import CustomerAsideMenu from "../components/CustomerAsideMenu";
+import NearbyVehiclesMapModal from "../components/NearbyVehiclesMapModal";
 
 export default function CustomerDetailPage() {
   const { customerId } = useParams();
@@ -35,6 +36,7 @@ export default function CustomerDetailPage() {
   const equipmentModal = useModal();
   const ordersHistoryModal = useModal();
   const editModal = useModal();
+  const mapModal = useModal();
 
   const headerConfig = useMemo(
     () => ({
@@ -200,6 +202,7 @@ export default function CustomerDetailPage() {
               }}
               onOpenCreateAddressModal={addressModal.open}
               onOpenEditModal={editModal.open}
+              onOpenNearbyVehiclesMapModal={mapModal.open}
             />
           </div>
         )}
@@ -235,6 +238,10 @@ export default function CustomerDetailPage() {
         isOpen={ordersHistoryModal.isOpen}
         onClose={ordersHistoryModal.close}
         customerId={customerId}
+      />
+      <NearbyVehiclesMapModal
+        isOpen={mapModal.isOpen}
+        onClose={mapModal.close}
       />
     </div>
   );
