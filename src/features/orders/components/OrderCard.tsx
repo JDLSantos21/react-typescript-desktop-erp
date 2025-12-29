@@ -56,7 +56,7 @@ export default function OrderCard({ order }: OrderCardProps) {
             </p>
           )}
           {order.address && (
-            <p className="ml-5 text-xs text-gray-800">
+            <p className="ml-5 text-xs text-gray-800 truncate">
               {order.address.direction} - {order.address.city}
             </p>
           )}

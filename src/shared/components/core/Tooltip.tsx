@@ -1,56 +1,80 @@
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import {
+  Tooltip as ShadcnTooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import { cn } from "@/shared/utils";
 
-interface TooltipProps {
+const tooltipVariants = cva("", {
+  variants: {
+    variant: {
+      default: "bg-gray-900 text-white border-gray-900",
+      info: "bg-blue-600 text-white border-blue-600",
+      warning: "bg-amber-500 text-white border-amber-500",
+      error: "bg-red-600 text-white border-red-600",
+      success: "bg-green-600 text-white border-green-600",
+    },
+    size: {
+      sm: "px-2 py-1 text-xs",
+      md: "px-3 py-1.5 text-xs",
+      lg: "px-4 py-2 text-sm",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+    size: "md",
+  },
+});
+
+const arrowVariants = cva("", {
+  variants: {
+    variant: {
+      default: "bg-gray-900 fill-gray-900",
+      info: "bg-blue-600 fill-blue-600",
+      warning: "bg-amber-500 fill-amber-500",
+      error: "bg-red-600 fill-red-600",
+      success: "bg-green-600 fill-green-600",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+});
+
+interface TooltipProps extends VariantProps<typeof tooltipVariants> {
   children: ReactNode;
-  content: string;
-  position?: "top" | "bottom" | "left" | "right";
+  content: ReactNode;
+  side?: "top" | "bottom" | "left" | "right";
+  align?: "start" | "center" | "end";
+  delayDuration?: number;
   className?: string;
+  asChild?: boolean;
 }
 
 export const Tooltip = ({
   children,
   content,
-  position = "top",
-  className = "",
+  side = "top",
+  align = "center",
+  variant,
+  size,
+  delayDuration = 200,
+  className,
+  asChild = false,
 }: TooltipProps) => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  const positions = {
-    top: "bottom-full left-1/2 -translate-x-1/2 mb-2",
-    bottom: "top-full left-1/2 -translate-x-1/2 mt-2",
-    left: "right-full top-1/2 -translate-y-1/2 mr-2",
-    right: "left-full top-1/2 -translate-y-1/2 ml-2",
-  };
-
-  const arrows = {
-    top: "top-full left-1/2 -translate-x-1/2 border-t-gray-900 border-l-transparent border-r-transparent border-b-transparent",
-    bottom:
-      "bottom-full left-1/2 -translate-x-1/2 border-b-gray-900 border-l-transparent border-r-transparent border-t-transparent",
-    left: "left-full top-1/2 -translate-y-1/2 border-l-gray-900 border-t-transparent border-b-transparent border-r-transparent",
-    right:
-      "right-full top-1/2 -translate-y-1/2 border-r-gray-900 border-t-transparent border-b-transparent border-l-transparent",
-  };
-
   return (
-    <div
-      className="relative inline-block"
-      onMouseEnter={() => setIsVisible(true)}
-      onMouseLeave={() => setIsVisible(false)}
-    >
-      {children}
-      {isVisible && (
-        <div
-          className={`absolute z-50 ${positions[position]} ${className}`}
-          role="tooltip"
-        >
-          <div className="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
-            {content}
-          </div>
-          <div
-            className={`absolute w-0 h-0 border-4 ${arrows[position]}`}
-          ></div>
-        </div>
-      )}
-    </div>
+    <ShadcnTooltip delayDuration={delayDuration}>
+      <TooltipTrigger asChild={asChild}>{children}</TooltipTrigger>
+      <TooltipContent
+        side={side}
+        align={align}
+        className={cn(tooltipVariants({ variant, size }), className)}
+        arrowClassName={arrowVariants({ variant })}
+      >
+        {content}
+      </TooltipContent>
+    </ShadcnTooltip>
   );
 };

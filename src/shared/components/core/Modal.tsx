@@ -10,6 +10,7 @@ interface ModalProps {
   children: ReactNode;
   size?: "sm" | "md" | "lg" | "xl";
   closeOnOverlayClick?: boolean;
+  className?: string;
 }
 
 export const Modal = ({
@@ -19,6 +20,7 @@ export const Modal = ({
   children,
   size = "md",
   closeOnOverlayClick = true,
+  className,
 }: ModalProps) => {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -66,7 +68,9 @@ export const Modal = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className={`relative bg-white rounded-xl overflow-hidden shadow-xl ${sizeClasses[size]} w-full max-h-[90vh] flex flex-col`}
+            className={`relative bg-white rounded-xl overflow-hidden shadow-xl ${
+              sizeClasses[size]
+            } w-full max-h-[90vh] flex flex-col ${className || ""}`}
             onClick={(e) => e.stopPropagation()} // Evitar que se cierre el modal al hacer clic dentro de él.
           >
             {/* Header */}
@@ -102,10 +106,12 @@ Modal.Header = ({ children }: { children: ReactNode }) => (
 Modal.Body = ({
   children,
   className,
+  padding,
 }: {
   children: ReactNode;
   className?: string;
-}) => <div className={`mb-4 p-6 ${className}`}>{children}</div>;
+  padding?: string;
+}) => <div className={`mb-4 p-${padding || 6} ${className}`}>{children}</div>;
 
 Modal.Footer = ({ children }: { children: ReactNode }) => (
   <div className="flex justify-end gap-3 bg-gray-100 p-3 flex-shrink-0 w-full">

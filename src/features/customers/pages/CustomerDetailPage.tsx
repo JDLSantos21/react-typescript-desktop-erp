@@ -31,6 +31,8 @@ export default function CustomerDetailPage() {
     useCustomerById(customerId ?? "");
   useRefetchToast(isRefetching, "Actualizando información del cliente...");
 
+  console.log("Customer Detail Data:", data);
+
   const addressModal = useModal();
   const phoneModal = useModal();
   const equipmentModal = useModal();
@@ -239,10 +241,13 @@ export default function CustomerDetailPage() {
         onClose={ordersHistoryModal.close}
         customerId={customerId}
       />
-      <NearbyVehiclesMapModal
-        isOpen={mapModal.isOpen}
-        onClose={mapModal.close}
-      />
+      {data?.data.addresses && (
+        <NearbyVehiclesMapModal
+          isOpen={mapModal.isOpen}
+          onClose={mapModal.close}
+          addreses={data?.data.addresses}
+        />
+      )}
     </div>
   );
 }

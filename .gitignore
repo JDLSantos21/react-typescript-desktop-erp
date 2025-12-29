@@ -26,3 +26,4 @@ dist-ssr
 *.sw?
 COMPONENTS_GUIDE.md
 docs/dev
+.env

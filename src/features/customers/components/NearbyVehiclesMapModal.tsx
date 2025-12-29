@@ -1,136 +1,232 @@
 import { useEffect, useState } from "react";
-import { MapContainer, Marker, TileLayer, Circle, Popup } from "react-leaflet";
-import { divIcon } from "leaflet";
-import { MapPin, Truck, X, Navigation } from "lucide-react";
-import { renderToString } from "react-dom/server";
-import { calcDistance } from "@/shared/utils";
-import VehiclesData from "@/features/orders/mocks/vehiclesCoordinates.json";
+import {
+  MapContainer,
+  Marker,
+  TileLayer,
+  Circle,
+  Popup,
+  useMap,
+} from "react-leaflet";
+import { formatDate } from "@/shared/utils";
+import { CustomerAddress } from "@/shared/types/entities/customer.types";
+import {
+  Button,
+  MapPinUserIcon,
+  Modal,
+  NavigateIcon,
+  RefreshIcon,
+  Spinner,
+  Tooltip,
+  TruckIcon,
+} from "@/shared/components";
+import {
+  useGetNearbyVehicles,
+  useRefreshVehiclesLocations,
+} from "../hooks/useCustomer";
+import { createIcon } from "./CreateIcon";
 
 interface VehicleGPS {
   id: number;
-  nombre: string;
+  name: string;
   lat: number;
   lng: number;
-  velocidad: number;
-  rumbo: number;
-  ultimaActualizacion: string;
-  conectado: boolean;
+  speed: number;
+  heading: number;
+  lastUpdate: string;
+  distanceKm: number;
+  durationMinutes: number;
+}
+
+interface NearbyVehiclesMapModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  addreses: CustomerAddress[];
+}
+
+interface CurrentPosition {
+  Clat: number;
+  Clng: number;
+}
+
+function RecenterMap({ lat, lng }: { lat: number; lng: number }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView([lat, lng]);
+  }, [lat, lng, map]);
+  return null;
 }
 
 export default function NearbyVehiclesMapModal({
   isOpen,
   onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
-  const [nearbyVehicles, setNearbyVehicles] = useState<VehicleGPS[]>([]);
-  const lat = 18.560477;
-  const lng = -69.932504;
-  const radialDistance = 2500;
+  addreses,
+}: NearbyVehiclesMapModalProps) {
+  const RADIAL_DISTANCE_METERS = 2000;
 
-  useEffect(() => {
-    if (!isOpen) return;
+  const firstWithCoords = addreses.find(
+    (a) => a.coordinates?.latitude && a.coordinates?.longitude
+  );
 
-    const filtered = VehiclesData.filter((vehicle) => {
-      const distance = calcDistance(lat, lng, vehicle.lat, vehicle.lng);
-      return distance <= radialDistance;
-    });
-    setNearbyVehicles(filtered);
-  }, [isOpen]);
+  if (!firstWithCoords?.coordinates) return null;
 
-  const createIcon = (IconComponent: any, color: string, label?: string) => {
-    return divIcon({
-      html: renderToString(
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "4px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "28px",
-              height: "28px",
-              backgroundColor: color,
-              borderRadius: "50%",
-              border: "2px solid white",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-            }}
-          >
-            <IconComponent size={16} color="white" strokeWidth={2.5} />
-          </div>
-          {label && (
-            <div
-              style={{
-                backgroundColor: "white",
-                padding: "3px 8px",
-                borderRadius: "4px",
-                fontSize: "11px",
-                fontWeight: "600",
-                color: "#1f2937",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.15)",
-                whiteSpace: "nowrap",
-                border: "1px solid #e5e7eb",
-              }}
-            >
-              {label}
-            </div>
-          )}
-        </div>
-      ),
-      className: "",
-      iconSize: label ? [120, 60] : [28, 28],
-      iconAnchor: label ? [60, 32] : [14, 14],
+  const [cPostion, setCPosition] = useState<CurrentPosition>({
+    Clat: firstWithCoords.coordinates.latitude,
+    Clng: firstWithCoords.coordinates.longitude,
+  });
+
+  const {
+    data: vehiclesData,
+    isLoading,
+    isRefetching,
+    refetch,
+  } = useGetNearbyVehicles(
+    cPostion.Clat,
+    cPostion.Clng,
+    RADIAL_DISTANCE_METERS / 1000
+  );
+
+  const { mutate: refreshLocations, isPending: isRefreshing } =
+    useRefreshVehiclesLocations();
+
+  const nearbyVehicles: VehicleGPS[] = vehiclesData?.data || [];
+
+  const handleRefresh = () => {
+    refreshLocations(undefined, {
+      onSuccess: () => {
+        refetch();
+      },
     });
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="relative w-full max-w-5xl h-[85vh] bg-white rounded-lg shadow-2xl overflow-hidden m-4">
-        <div className="absolute top-0 left-0 right-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-          <div className="flex items-center justify-between px-6 py-4">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">
-                Vehículos Cercanos
-              </h2>
-              <p className="text-sm text-gray-500 mt-0.5">
-                {nearbyVehicles.length}{" "}
-                {nearbyVehicles.length === 1 ? "vehículo" : "vehículos"} en un
-                radio de {(radialDistance / 1000).toFixed(1)} km
-              </p>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Vehículos cercanos"
+      size="xl"
+      className="h-[80vh]"
+    >
+      <div className="flex flex-col h-full">
+        <div className="flex-none bg-white border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100">
+                <TruckIcon size={14} />
+                <span className="text-sm font-medium">
+                  {nearbyVehicles.length}{" "}
+                  {nearbyVehicles.length === 1 ? "disponible" : "disponibles"}
+                </span>
+              </div>
+              <div className="h-4 w-px bg-gray-200"></div>
+              <div className="flex items-center gap-1.5 text-gray-500">
+                <NavigateIcon size={14} />
+                <span className="text-sm">
+                  Radio {(RADIAL_DISTANCE_METERS / 1000).toFixed(1)} km
+                </span>
+              </div>
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <X size={20} className="text-gray-500" />
-            </button>
+            <div className="flex items-center gap-3">
+              {nearbyVehicles.length > 0 && (
+                <span className="text-xs text-gray-400 font-medium">
+                  Actualizado{" "}
+                  {formatDate(nearbyVehicles[0]?.lastUpdate, "relative")}
+                </span>
+              )}
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                onClick={handleRefresh}
+                disabled={isRefreshing || isRefetching}
+              >
+                <RefreshIcon
+                  size={16}
+                  className={`${
+                    isRefreshing || isRefetching ? "animate-spin" : ""
+                  }`}
+                />
+              </Button>
+            </div>
           </div>
+
+          {addreses.length > 1 && (
+            <div className="flex items-center gap-3 mt-4">
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                Ubicación
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {addreses.map((a) => {
+                  const isActive =
+                    Math.abs(a.coordinates?.latitude! - cPostion.Clat) <
+                      0.00001 &&
+                    Math.abs(a.coordinates?.longitude! - cPostion.Clng) <
+                      0.00001;
+
+                  const hasCoordinates = !!a.coordinates?.latitude;
+
+                  const button = (
+                    <Button
+                      disabled={!hasCoordinates}
+                      onClick={() => {
+                        if (!hasCoordinates) return;
+
+                        setCPosition({
+                          Clat: a.coordinates!.latitude,
+                          Clng: a.coordinates!.longitude,
+                        });
+                      }}
+                      variant={isActive ? "primary" : "outline"}
+                      size="sm"
+                      className={
+                        !hasCoordinates ? "opacity-50 cursor-not-allowed" : ""
+                      }
+                    >
+                      {a.branchName}
+                    </Button>
+                  );
+
+                  if (!hasCoordinates) {
+                    return (
+                      <Tooltip
+                        key={a.id}
+                        content="Esta dirección no tiene coordenadas asignadas"
+                        variant="warning"
+                        asChild
+                      >
+                        {button}
+                      </Tooltip>
+                    );
+                  }
+
+                  return <div key={a.id}>{button}</div>;
+                })}
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="h-full pt-20">
+        <div className="flex-1 relative z-0 bg-gray-50">
           <MapContainer
-            center={[lat, lng]}
-            zoom={14}
+            center={[cPostion.Clat, cPostion.Clng]}
+            zoom={15}
             style={{ height: "100%", width: "100%" }}
-            className="z-0"
           >
+            {(isLoading || isRefetching) && (
+              <div className="absolute inset-0 z-[1000] bg-white/50 flex items-center justify-center backdrop-blur-sm">
+                <Spinner size="lg" className="text-blue-600" />
+              </div>
+            )}
+            <RecenterMap lat={cPostion.Clat} lng={cPostion.Clng} />
             <TileLayer
               url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
               attribution="&copy; OpenStreetMap"
             />
 
             <Marker
-              position={[lat, lng]}
-              icon={createIcon(MapPin, "#3b82f6", "Cliente")}
+              position={[cPostion.Clat, cPostion.Clng]}
+              icon={createIcon(MapPinUserIcon, "#3b82f6", "Cliente")}
             >
               <Popup>
                 <div className="text-sm">
@@ -140,8 +236,8 @@ export default function NearbyVehiclesMapModal({
             </Marker>
 
             <Circle
-              center={[lat, lng]}
-              radius={radialDistance}
+              center={[cPostion.Clat, cPostion.Clng]}
+              radius={RADIAL_DISTANCE_METERS}
               pathOptions={{
                 color: "#3b82f6",
                 fillColor: "#3b82f6",
@@ -152,52 +248,31 @@ export default function NearbyVehiclesMapModal({
             />
 
             {nearbyVehicles.map((vehicle) => {
-              const distance = calcDistance(lat, lng, vehicle.lat, vehicle.lng);
               return (
                 <Marker
                   key={vehicle.id}
                   position={[vehicle.lat, vehicle.lng]}
-                  icon={createIcon(
-                    Truck,
-                    vehicle.conectado ? "#10b981" : "#6b7280",
-                    vehicle.nombre
-                  )}
+                  icon={createIcon(TruckIcon, "#10b981", vehicle.name)}
                 >
                   <Popup>
-                    <div className="min-w-[180px] p-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Truck
-                          size={16}
-                          className={
-                            vehicle.conectado
-                              ? "text-emerald-600"
-                              : "text-gray-500"
-                          }
-                        />
-                        <p className="font-semibold text-sm">
-                          {vehicle.nombre}
-                        </p>
+                    <div className="min-w-[150px] p-1">
+                      <div className="flex items-center gap-2">
+                        <TruckIcon size={16} className="text-emerald-600" />
+                        <p className="font-semibold text-sm">{vehicle.name}</p>
                       </div>
                       <div className="space-y-1 text-xs text-gray-600">
                         <div className="flex items-center gap-1.5">
-                          <Navigation size={12} />
-                          <span>{distance.toFixed(2)} m de distancia</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <div
-                            className={`w-2 h-2 rounded-full ${
-                              vehicle.conectado
-                                ? "bg-emerald-500"
-                                : "bg-gray-400"
-                            }`}
-                          />
+                          <NavigateIcon size={12} />
                           <span>
-                            {vehicle.conectado ? "Conectado" : "Desconectado"}
+                            {vehicle.distanceKm.toFixed(2)} Km de distancia
+                          </span>
+                          <span>
+                            (~{vehicle.durationMinutes.toFixed(1)} minutos)
                           </span>
                         </div>
-                        {vehicle.velocidad > 0 && (
+                        {vehicle.speed > 0 && (
                           <div className="text-gray-500">
-                            {vehicle.velocidad} km/h
+                            {vehicle.speed} km/h
                           </div>
                         )}
                       </div>
@@ -209,6 +284,6 @@ export default function NearbyVehiclesMapModal({
           </MapContainer>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }

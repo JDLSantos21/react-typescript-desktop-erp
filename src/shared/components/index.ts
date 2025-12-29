@@ -26,6 +26,16 @@ export { PageLoader } from "./PageLoader";
 export { NavigationLoader } from "./NavigationLoader";
 export { OverlayLoader } from "./OverlayLoader";
 
+// Maps
+export { Map } from "./core/Map";
+export { MapModal } from "./core/MapModal";
+export type {
+  MapPosition,
+  MapMarkerProps,
+  MapCircleProps,
+  MapProps,
+} from "./core/Map";
+
 // Navigation
 export { Pagination } from "./core/Pagination";
 export { AsideMenu, AsideButton } from "./navigation/AsideMenu";

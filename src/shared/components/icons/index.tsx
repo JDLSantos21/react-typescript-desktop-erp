@@ -22,7 +22,7 @@ import { BsExclamationCircle, BsFuelPump } from "react-icons/bs";
 import { PiUsersThreeBold } from "react-icons/pi";
 import { BsTruckFlatbed } from "react-icons/bs";
 import { VscPackage } from "react-icons/vsc";
-import { RiFridgeLine } from "react-icons/ri";
+import { RiFridgeLine, RiMapPinUserLine } from "react-icons/ri";
 import { LiaCogsSolid } from "react-icons/lia";
 import { AiOutlineBars } from "react-icons/ai";
 import { MdOutlineLogout } from "react-icons/md";
@@ -31,10 +31,16 @@ import { IoMdCheckmark, IoMdClose } from "react-icons/io";
 import { FiPlusCircle } from "react-icons/fi";
 import { VscSearchStop } from "react-icons/vsc";
 import { CiCircleQuestion } from "react-icons/ci";
-import { IoCopyOutline, IoReturnUpBackOutline } from "react-icons/io5";
-import { SlPrinter } from "react-icons/sl";
+import { GiPathDistance } from "react-icons/gi";
+import {
+  IoCopyOutline,
+  IoNavigateOutline,
+  IoReturnUpBackOutline,
+} from "react-icons/io5";
+import { SlPrinter, SlRefresh } from "react-icons/sl";
 import { GrUserWorker } from "react-icons/gr";
 import { TbEdit } from "react-icons/tb";
+import { FiExternalLink } from "react-icons/fi";
 
 // Type para props comunes de iconos
 export type IconProps = ComponentProps<"svg"> & {
@@ -130,6 +136,18 @@ export const WarningIcon = (props: IconProps) => (
   <BsExclamationCircle {...props} />
 );
 
+export const NavigateIcon = (props: IconProps) => (
+  <IoNavigateOutline {...props} />
+);
+
+export const RefreshIcon = (props: IconProps) => <SlRefresh {...props} />;
+
+export const MapPinUserIcon = (props: IconProps) => (
+  <RiMapPinUserLine {...props} />
+);
+
+export const DistanceIcon = (props: IconProps) => <GiPathDistance {...props} />;
+
 export const PhoneIcon = (props: IconProps) => <PiPhoneThin {...props} />;
 
 export const LocationIcon = (props: IconProps) => <CiLocationOn {...props} />;
@@ -145,6 +163,10 @@ export const DriverIcon = (props: IconProps) => <GrUserWorker {...props} />;
 export const EditIcon = (props: IconProps) => <TbEdit {...props} />;
 
 export const AlertIcon = (props: IconProps) => <GoAlert {...props} />;
+
+export const ExternalLinkIcon = (props: IconProps) => (
+  <FiExternalLink {...props} />
+);
 
 // ============================================
 // UTILIDADES

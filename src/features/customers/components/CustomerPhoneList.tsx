@@ -40,11 +40,14 @@ export default function CustomerPhoneList({
           onClick={() => onSelect?.(phone)}
         >
           <div className="flex items-start justify-between gap-3">
-            <div className="flex-1">
-              <div className="flex flex-col gap-1 mb-1">
-                <div className="flex">
+            <div className="flex-1 flex-col">
+              <div className="flex gap-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-sm font-semibold text-text-primary">
+                    {formatPhoneNumber(phone.phoneNumber)}
+                  </span>
                   {phone.isPrimary && (
-                    <Badge variant="primary" size="sm" className="">
+                    <Badge variant="primary" size="sm">
                       Principal
                     </Badge>
                   )}
@@ -55,10 +58,8 @@ export default function CustomerPhoneList({
                     </Badge>
                   )}
                 </div>
-                <span className="text-sm font-semibold text-text-primary font-mono">
-                  {formatPhoneNumber(phone.phoneNumber)}
-                </span>
               </div>
+
               <p className="text-xs text-text-muted">
                 {phoneTypeLabels[phone.type] || phone.type}
                 {phone.description && ` • ${phone.description}`}

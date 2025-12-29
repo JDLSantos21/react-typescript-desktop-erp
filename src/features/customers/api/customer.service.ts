@@ -111,4 +111,27 @@ export const CustomerService = {
     );
     return data;
   },
+
+  getNearbyVehicles: async ({
+    lat,
+    lng,
+    radiusKm,
+  }: {
+    lat: number;
+    lng: number;
+    radiusKm: number;
+  }): Promise<any> => {
+    const { data } = await apiClient.get<any>(`/telemetry/nearby`, {
+      params: {
+        lat,
+        lng,
+        radiusKm,
+      },
+    });
+    return data;
+  },
+
+  refreshVehiclesLocation: async (): Promise<void> => {
+    await apiClient.post(`/telemetry/sync`);
+  },
 };

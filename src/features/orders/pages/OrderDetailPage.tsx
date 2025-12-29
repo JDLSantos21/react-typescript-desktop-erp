@@ -10,8 +10,11 @@ import {
   Badge,
   Button,
   CopyIcon,
+  ErrorState,
   HistoryIcon,
   LocationIcon,
+  MapModal,
+  MapPinUserIcon,
   UserIcon,
   WhatsAppIcon,
 } from "@/shared/components";
@@ -27,18 +30,19 @@ import { handleOpenWhatsapp } from "@/lib/opener";
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, isError } = useGetOrder(id!);
+  const { data, isLoading, isError, refetch, error } = useGetOrder(id!);
   const { setHeaderConfig, resetHeader } = useHeaderConfig();
   const navigate = useNavigate();
 
   const statusModal = useModal();
   const statusHistoryModal = useModal();
   const driverAssignModal = useModal();
+  const mapModal = useModal();
 
-  console.log(data?.data.address.coordinates);
+  const order = data?.data;
 
   useEffect(() => {
-    if (data?.data) {
+    if (order) {
       setHeaderConfig({
         title: "",
         showBackButton: true,
@@ -49,16 +53,16 @@ export default function OrderDetailPage() {
                 Detalles del pedido
               </h2>
               <div className="flex gap-2 items-center text-sm text-text-secondary">
-                <p>Pedido el {formatDate(data.data.date)}</p>
+                <p>Pedido el {formatDate(order.date)}</p>
                 <div className="border-l border-gray-200 h-3 mx-2" />
-                <p className="font-mono text-xs">{data.data.trackingCode}</p>
+                <p className="font-mono text-xs">{order.trackingCode}</p>
                 <Button
                   variant="ghost"
                   size="icon"
                   icon={CopyIcon}
                   onClick={async () => {
                     try {
-                      await copyToClipboard(data.data.trackingCode);
+                      await copyToClipboard(order.trackingCode);
                       toast.info("Código de seguimiento copiado.");
                     } catch (error) {
                       toast.error(
@@ -67,26 +71,22 @@ export default function OrderDetailPage() {
                     }
                   }}
                 />
-                <Badge
-                  className={`${getStatusColor(data.data.status)}`}
-                  size="sm"
-                >
-                  {data.data.status}
+                <Badge className={`${getStatusColor(order.status)}`} size="sm">
+                  {order.status}
                 </Badge>
               </div>
             </div>
             <div className="flex gap-2 self-end">
-              {data.data.status !== "ENTREGADO" &&
-                data.data.status !== "CANCELADO" && (
-                  <Button
-                    icon={HistoryIcon}
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => statusModal.open()}
-                  >
-                    Cambiar estado
-                  </Button>
-                )}
+              {order.status !== "ENTREGADO" && order.status !== "CANCELADO" && (
+                <Button
+                  icon={HistoryIcon}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => statusModal.open()}
+                >
+                  Cambiar estado
+                </Button>
+              )}
             </div>
           </div>
         ),
@@ -94,13 +94,13 @@ export default function OrderDetailPage() {
     }
 
     return () => resetHeader();
-  }, [data, id, setHeaderConfig, resetHeader]);
+  }, [order, id, setHeaderConfig, resetHeader]);
 
   return (
     <div>
       {isLoading ? (
         <SectionLoader placeholder="Cargando detalles del pedido" />
-      ) : data && !isError ? (
+      ) : order && !isError ? (
         <div className="flex h-full">
           <div className="flex-1 px-8 py-4 space-y-2 max-w-4xl max-h-[calc(100vh-96px)] overflow-y-auto show-scrollbar">
             {/* Información del Cliente */}
@@ -111,18 +111,18 @@ export default function OrderDetailPage() {
               <div className="space-y-2">
                 <div>
                   <p className=" text-text-primary">
-                    {data?.data.customer.businessName}
+                    {order.customer.businessName}
                   </p>
                   <p className="text-text-secondary">
-                    {data?.data.customer.representativeName}
+                    {order.customer.representativeName}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 text-text-secondary">
-                  {data?.data.phone.hasWhatsapp && (
+                  {order.phone.hasWhatsapp && (
                     <WhatsAppIcon className="text-green-500 w-4 h-4" />
                   )}
                   <p className="font-mono text-sm">
-                    {formatPhoneNumber(data?.data.phone.phoneNumber)}
+                    {formatPhoneNumber(order.phone.phoneNumber)}
                   </p>
                 </div>
               </div>
@@ -138,7 +138,7 @@ export default function OrderDetailPage() {
 
                 <Button
                   onClick={() =>
-                    navigate(`/customers/details/${data.data.customer.id}`)
+                    navigate(`/customers/details/${order.customer.id}`)
                   }
                   icon={UserIcon}
                   variant="outline"
@@ -157,24 +157,22 @@ export default function OrderDetailPage() {
               <div className="flex justify-between">
                 <div className="space-y-2">
                   <p className="font-medium text-gray-900">
-                    {data?.data.address.branchName}
+                    {order.address.branchName}
                   </p>
-                  <p className="text-gray-600">
-                    {data?.data.address.direction}
-                  </p>
-                  <p className="text-gray-600">{data?.data.address.city}</p>
+                  <p className="text-gray-600">{order.address.direction}</p>
+                  <p className="text-gray-600">{order.address.city}</p>
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   <div className="flex items-center gap-2">
                     <span
                       className={`flex h-2 w-2 rounded-full ${
-                        data?.data.address.coordinates
+                        order.address.coordinates
                           ? "bg-green-500"
                           : "bg-gray-300"
                       }`}
                     />
                     <p className="text-sm text-gray-500">
-                      {data?.data.address.coordinates
+                      {order.address.coordinates?.latitude
                         ? "Ubicación exacta disponible"
                         : "Sin ubicación exacta"}
                     </p>
@@ -183,15 +181,10 @@ export default function OrderDetailPage() {
                     variant="outline"
                     icon={LocationIcon}
                     size="sm"
-                    disabled={!data?.data.address.coordinates}
+                    disabled={!order.address.coordinates?.latitude}
                     onClick={() => {
-                      if (data?.data.address.coordinates) {
-                        const { latitude, longitude } =
-                          data.data.address.coordinates;
-                        window.open(
-                          `https://www.google.com/maps?q=${latitude},${longitude}`,
-                          "_blank"
-                        );
+                      if (order.address.coordinates?.latitude) {
+                        mapModal.open();
                       }
                     }}
                   >
@@ -207,7 +200,7 @@ export default function OrderDetailPage() {
                 Productos
               </h2>
               <div className="space-y-2">
-                {data?.data.products.map((product) => (
+                {order.products.map((product) => (
                   <div
                     key={product.id}
                     className="flex justify-between items-center py-2 border last:border-0 bg-gray-50/50 px-4 rounded-md shadow"
@@ -238,59 +231,57 @@ export default function OrderDetailPage() {
                   <p className="text-xs text-gray-400 mb-1.5">
                     Fecha de pedido
                   </p>
-                  <p className="text-gray-900">{formatDate(data?.data.date)}</p>
+                  <p className="text-gray-900">{formatDate(order.date)}</p>
                 </div>
-                {data?.data.scheduledDate && (
+                {order.scheduledDate && (
                   <div>
                     <p className="text-xs text-gray-400 mb-1.5">
                       Fecha programada
                     </p>
                     <p className="text-gray-900">
-                      {formatDate(data?.data.scheduledDate)}
+                      {formatDate(order.scheduledDate)}
                     </p>
                   </div>
                 )}
-                {data?.data.deliveredDate && (
+                {order.deliveredDate && (
                   <div>
                     <p className="text-xs text-gray-400 mb-1.5">
                       Fecha de entrega
                     </p>
                     <p className="text-gray-900">
-                      {formatDate(data?.data.deliveredDate)}
+                      {formatDate(order.deliveredDate)}
                     </p>
                   </div>
                 )}
-                {data?.data.assignedTo && (
+                {order.assignedTo && (
                   <div>
                     <p className="text-xs text-gray-400 mb-1.5">Asignado a</p>
-                    <p className="text-gray-900">
-                      {data?.data.assignedTo?.name}
-                    </p>
+                    <p className="text-gray-900">{order.assignedTo?.name}</p>
                   </div>
                 )}
               </div>
             </section>
 
             {/* Notas */}
-            {(data?.data.notes || data?.data.deliveryNotes) && (
+            {(order.notes || order.deliveryNotes) && (
               <section className="border-t border-gray-100 pt-4">
                 <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2">
                   Notas
                 </h2>
                 <div className="space-y-2">
-                  {data?.data.notes && (
+                  {order.notes && (
                     <div>
                       <p className="text-xs text-gray-400 mb-1.5">Pedido</p>
                       <p className="text-gray-700 leading-relaxed">
-                        {data?.data.notes}
+                        {order.notes}
                       </p>
                     </div>
                   )}
-                  {data?.data.deliveryNotes && (
+                  {order.deliveryNotes && (
                     <div>
                       <p className="text-xs text-gray-400 mb-1.5">Entrega</p>
                       <p className="text-gray-700 leading-relaxed">
-                        {data?.data.deliveryNotes}
+                        {order.deliveryNotes}
                       </p>
                     </div>
                   )}
@@ -302,28 +293,73 @@ export default function OrderDetailPage() {
             onOpenStatusHistoryModal={() => statusHistoryModal.open()}
             onOpenDriverAssignModal={() => driverAssignModal.open()}
             onOpenEditModal={() => navigate(`/orders/${id}/edit`)}
-            orderStatus={data.data.status}
+            orderStatus={order.status}
           />
           <StatusHistoryModal
-            orderId={data.data.id.toString()}
+            orderId={order.id.toString()}
             isOpen={statusHistoryModal.isOpen}
             onClose={() => statusHistoryModal.close()}
           />
 
           <StatusModal
-            order={data.data}
+            order={order}
             isOpen={statusModal.isOpen}
             onClose={() => statusModal.close()}
           />
 
           <DriverAssignModal
-            order={data.data}
+            order={order}
             isOpen={driverAssignModal.isOpen}
             onClose={() => driverAssignModal.close()}
           />
+          {order.address.coordinates && (
+            <MapModal
+              isOpen={mapModal.isOpen}
+              onClose={() => mapModal.close()}
+              title={`Ubicación - ${order.address.branchName}`}
+              center={{
+                lat: order.address.coordinates.latitude,
+                lng: order.address.coordinates.longitude,
+              }}
+              markers={[
+                {
+                  id: "customer-location",
+                  position: {
+                    lat: order.address.coordinates.latitude,
+                    lng: order.address.coordinates.longitude,
+                  },
+                  icon: MapPinUserIcon,
+                  iconColor: "#3b82f6",
+                  label: order.customer.businessName,
+                  popup: (
+                    <div className="p-1">
+                      <span className="font-semibold text-sm">
+                        {order.address.branchName}
+                      </span>
+                      <span className="text-xs text-gray-600 mt-1 block">
+                        {order.address.direction}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {order.address.city}
+                      </span>
+                    </div>
+                  ),
+                },
+              ]}
+              zoom={16}
+              showOpenInGoogleMaps
+            />
+          )}
         </div>
       ) : (
-        isError && <p>Error al cargar el pedido.</p>
+        <ErrorState
+          title="Ocurrio un problema al cargar el pedido"
+          message="Intenta nuevamente o vuelve a la lista de pedidos."
+          variant="error"
+          onRetry={() => refetch()}
+          retryLabel="Reintentar"
+          error={error}
+        />
       )}
     </div>
   );

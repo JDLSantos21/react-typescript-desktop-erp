@@ -162,3 +162,28 @@ export const useEditCustomer = () => {
     },
   });
 };
+
+export const useGetNearbyVehicles = (
+  lat: number,
+  lng: number,
+  radiusKm: number
+) => {
+  return useQuery({
+    queryKey: ["nearbyVehicles", lat, lng, radiusKm],
+    queryFn: () => CustomerService.getNearbyVehicles({ lat, lng, radiusKm }),
+    enabled: !!lat && !!lng && !!radiusKm,
+  });
+};
+
+export const useRefreshVehiclesLocations = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => CustomerService.refreshVehiclesLocation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["nearbyVehicles"],
+      });
+    },
+  });
+};

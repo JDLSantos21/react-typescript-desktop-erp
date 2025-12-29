@@ -2,6 +2,7 @@ import {
   AsideButton,
   AsideMenu,
   DeleteIcon,
+  DistanceIcon,
   HistoryIcon,
   PhonePlusIcon,
   ShoppingCartPlusIcon,
@@ -73,9 +74,9 @@ export default function CustomerAsideMenu({
         icon={<HistoryIcon className="w-4 h-4" />}
       />
       <AsideButton
-        label="Ver vehículos cercanos"
+        label="Vehículos cercanos"
         onClick={() => onOpenNearbyVehiclesMapModal()}
-        icon={<MapPinPlusIcon className="w-4 h-4" />}
+        icon={<DistanceIcon className="w-4 h-4" />}
       />
       <AsideButton
         label="Eliminar cliente"

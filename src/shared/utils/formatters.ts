@@ -1,5 +1,8 @@
 import dayjs from "dayjs";
 import "dayjs/locale/es";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 dayjs.locale("es");
 /**
  * Formatear un número de teléfono dominicano
@@ -76,5 +79,6 @@ export const formatDate = (
   dateString: string | Date,
   format: string = "DD MMMM [de] YYYY"
 ): string => {
+  if (format === "relative") return dayjs(dateString).fromNow();
   return dayjs(dateString).format(format);
 };

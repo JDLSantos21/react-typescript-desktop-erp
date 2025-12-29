@@ -114,7 +114,7 @@ export default function OrdersPage() {
           />
         </div>
       ) : (
-        <ul className="flex-1 grid grid-cols-3 2xl:grid-cols-4 gap-2 p-4 pt-2 overflow-y-auto show-scrollbar scrollbar-black">
+        <ul className="flex-1 grid grid-cols-3 2xl:grid-cols-4 gap-2 p-4 pt-2 overflow-y-auto show-scrollbar scrollbar-black auto-rows-max content-start">
           {data &&
             data.data.map((order) => (
               <OrderCard key={order.id} order={order} />
