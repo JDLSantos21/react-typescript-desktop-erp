@@ -61,7 +61,7 @@ export default function NearbyVehiclesMapModal({
   onClose,
   addreses,
 }: NearbyVehiclesMapModalProps) {
-  const RADIAL_DISTANCE_METERS = 2000;
+  const RADIAL_DISTANCE_METERS = 1000;
 
   const firstWithCoords = addreses.find(
     (a) => a.coordinates?.latitude && a.coordinates?.longitude
