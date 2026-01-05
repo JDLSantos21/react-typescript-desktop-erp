@@ -8,8 +8,6 @@ import {
 import { useHeaderConfig, usePagination } from "@/shared/hooks";
 import { useNavigate } from "react-router-dom";
 import { useGetOrders } from "../hooks/useOrder";
-
-import DateRangeSelector from "../components/DateRangeSelector";
 import { useCallback, useState } from "react";
 import dayjs from "dayjs";
 import OrderCard from "../components/OrderCard";
@@ -18,8 +16,10 @@ import { OrdersStats } from "../components/OrdersStats";
 import { OrdersFilter } from "../components/OrdersFilter";
 import { OrderStatus } from "@/shared/types/entities/order.types";
 import SectionLoader from "@/shared/components/SectionLoader";
+import { motion } from "motion/react";
 
 export default function OrdersPage() {
+  // ... (Tu lógica de estado se mantiene intacta)
   const [dateRange, setDateRange] = useState(() => {
     const today = new Date();
     const startDate = dayjs().subtract(28, "day").toDate();
@@ -36,19 +36,10 @@ export default function OrdersPage() {
   });
 
   const navigate = useNavigate();
-
   const { setPage, setLimit, paginationParams } = usePagination({
     defaultLimit: 12,
     syncWithUrl: true,
   });
-
-  const handleDateRangeChange = useCallback(
-    (newRange: { start_date: string; end_date: string }) => {
-      setDateRange(newRange);
-      setPage(1);
-    },
-    []
-  );
 
   const handleSearch = useCallback((term: string) => {
     setFilters((prev) => ({ ...prev, search: term }));
@@ -63,67 +54,82 @@ export default function OrdersPage() {
     []
   );
 
-  const { data, isLoading, isError } = useGetOrders({
+  const { data, isLoading, isError, refetch } = useGetOrders({
     ...paginationParams,
-    ...dateRange,
+    ...dateRange, // Nota: DateRangeSelector debería pasarse como filtro o en el header, aquí lo mantengo como lo tenías
     ...filters,
   });
 
   const paginationMeta = data?.meta.pagination;
 
   useHeaderConfig({
-    title: "Pedidos",
-    description: "Gestiona y revisa los pedidos realizados.",
+    title: "Gestión de Pedidos",
+    description: "Monitorea y procesa las solicitudes de tus clientes.",
     actions: (
-      <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          icon={PlusIcon}
-          onClick={() => navigate("/orders/new")}
-        >
-          Nuevo pedido
-        </Button>
-        <DateRangeSelector value={dateRange} onChange={handleDateRangeChange} />
-      </div>
+      <Button
+        onClick={() => navigate("/orders/new")}
+        icon={PlusIcon}
+        className="rounded-xl bg-slate-900 shadow-lg shadow-slate-200"
+      >
+        Crear Pedido
+      </Button>
     ),
   });
 
   return (
-    <div className="flex flex-col justify-between h-full bg-gray-50/50">
-      <div className="w-full bg-white px-4 py-2 flex gap-2 shadow-xs border-b border-border">
-        <OrdersFilter
-          onSearch={handleSearch}
-          onFilterChange={handleFilterChange}
-        />
-        <OrdersStats />
-      </div>
-
-      {isLoading ? (
-        <div className="flex-1 flex flex-col items-center gap-4">
-          <SectionLoader placeholder="Cargando pedidos" />
-        </div>
-      ) : isError ? (
-        <div className="flex-1 flex flex-col items-center justify-center gap-4">
-          <ErrorState title="Ocurrió un problema al cargar los pedidos." />
-        </div>
-      ) : data && data.data.length === 0 ? (
-        <div className="flex-1 flex flex-col items-center justify-center gap-4">
-          <EmptyState
-            title="No hay pedidos"
-            description="No se encontraron pedidos con los criterios seleccionados."
+    <div className="flex flex-col h-full bg-slate-50/50">
+      {/* Barra de Herramientas Unificada */}
+      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200/60 px-6 py-4 space-y-4 md:space-y-0 md:flex md:items-center md:justify-between gap-4">
+        <div className="flex-1 max-w-2xl">
+          <OrdersFilter
+            onSearch={handleSearch}
+            onFilterChange={handleFilterChange}
           />
         </div>
-      ) : (
-        <ul className="flex-1 grid grid-cols-3 2xl:grid-cols-4 gap-2 p-4 pt-2 overflow-y-auto show-scrollbar scrollbar-black auto-rows-max content-start">
-          {data &&
-            data.data.map((order) => (
-              <OrderCard key={order.id} order={order} />
-            ))}
-        </ul>
-      )}
+        <div className="flex-shrink-0">
+          <OrdersStats />
+        </div>
+      </div>
 
+      {/* Contenido Principal */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
+        {isLoading ? (
+          <SectionLoader placeholder="Cargando pedidos..." />
+        ) : isError ? (
+          <ErrorState
+            title="Error de conexión"
+            message="No pudimos cargar los pedidos."
+            onRetry={() => refetch()}
+          />
+        ) : data && data.data.length === 0 ? (
+          <EmptyState
+            title="Sin pedidos recientes"
+            description="No hay pedidos que coincidan con tus filtros actuales."
+            action={{
+              label: "Crear nuevo pedido",
+              onClick: () => navigate("/orders/new"),
+            }}
+          />
+        ) : (
+          <motion.ul
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: { transition: { staggerChildren: 0.05 } },
+            }}
+            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 content-start"
+          >
+            {data &&
+              data.data.map((order) => (
+                <OrderCard key={order.id} order={order} />
+              ))}
+          </motion.ul>
+        )}
+      </div>
+
+      {/* Paginación */}
       {paginationMeta && paginationMeta.totalPages > 1 && (
-        <div className="w-full px-3 bg-white py-1 border-t border-border">
+        <div className="px-6 py-4 bg-white border-t border-slate-100">
           <Pagination
             currentPage={paginationMeta.page}
             totalPages={paginationMeta.totalPages}

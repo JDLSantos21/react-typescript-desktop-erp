@@ -14,20 +14,19 @@ import Step2Products from "../components/steps/Step2Products";
 import Step3DeliveryDetails from "../components/steps/Step3DeliveryDetails";
 import Step4Summary from "../components/steps/Step4Summary";
 import ConfirmDialog from "@/shared/components/core/ConfirmDialog";
+import { motion } from "motion/react";
 
 const STEPS = [
-  { number: 1, title: "Cliente", description: "Seleccionar cliente" },
-  { number: 2, title: "Productos", description: "Agregar productos" },
-  { number: 3, title: "Detalles", description: "Información de entrega" },
-  { number: 4, title: "Resumen", description: "Confirmar pedido" },
+  { number: 1, title: "Cliente", description: "Selección" },
+  { number: 2, title: "Productos", description: "Armado" },
+  { number: 3, title: "Detalles", description: "Logística" },
+  { number: 4, title: "Resumen", description: "Confirmación" },
 ];
 
 export default function CreateOrderPage() {
   const navigate = useNavigate();
   const { customerId } = useParams();
-
   const { mutate: createOrder, isPending } = useCreateOrder();
-
   const {
     currentStep,
     orderData,
@@ -38,11 +37,9 @@ export default function CreateOrderPage() {
     canAdvanceToStep,
     isStepValid,
   } = useOrderSteps(customerId);
-
-  const confirmCancelCreateOrderModal = useModal();
+  const confirmCancel = useModal();
 
   const handleCreateOrder = () => {
-    // Transform orderData to CreateOrderDto
     const orderPayload = {
       customer_id: orderData.customerId!,
       address_id: orderData.customerAddressId!,
@@ -59,145 +56,117 @@ export default function CreateOrderPage() {
     createOrder(
       { orderData: orderPayload },
       {
-        onSuccess: (response) => {
-          toast.success("Pedido creado con éxito", { position: "top-center" });
-          navigate(`/orders/${response.data.id}`);
+        onSuccess: (res) => {
+          toast.success("¡Pedido creado con éxito!");
+          navigate(`/orders/${res.data.id}`);
         },
-        onError: (err) => {
-          toast.error(extractApiError(err as AxiosError).message, {
-            position: "top-center",
-          });
-        },
+        onError: (err) =>
+          toast.error(extractApiError(err as AxiosError).message),
       }
     );
   };
 
-  const canGoNext = isStepValid(currentStep);
-
   useHeaderConfig({
-    title: "Crear nuevo pedido",
-    description: `Paso ${currentStep} de ${STEPS.length}: ${
-      STEPS[currentStep - 1].title
-    }`,
-    actions: (
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          onClick={() => {
-            if (currentStep !== 1) {
-              confirmCancelCreateOrderModal.open();
-              return;
-            }
-            navigate("/orders");
-          }}
-          disabled={isPending}
-        >
-          Cancelar
-        </Button>
-        {currentStep === STEPS.length && (
-          <Button onClick={handleCreateOrder} isLoading={isPending}>
-            Crear Pedido
-          </Button>
-        )}
-      </div>
-    ),
+    title: "Nuevo Pedido",
+    showBackButton: true,
+    onBack: () => confirmCancel.open(),
   });
 
   return (
-    <div className="mx-auto h-full relative">
+    <div className="h-full bg-slate-50/50 flex flex-col items-center py-8 overflow-y-auto custom-scrollbar">
       {isPending && (
-        <OverlayLoader
-          title="Creando pedido"
-          description="Guardando información del pedido..."
-        />
+        <OverlayLoader title="Procesando" description="Creando el pedido..." />
       )}
-      {/* Step Indicator */}
-      <StepIndicator
-        currentStep={currentStep}
-        steps={STEPS}
-        onStepClick={goToStep}
-        canNavigateToStep={canAdvanceToStep}
-      />
 
-      {currentStep === 4 && (
-        <div className="flex justify-between mt-6 ml-6">
-          <Button
-            variant="outline"
-            onClick={prevStep}
-            disabled={isPending}
-            icon={ArrowLeftIcon}
-          >
-            Anterior
-          </Button>
+      <div className="w-full max-w-4xl space-y-6 px-4">
+        {/* Stepper Visual */}
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+          <StepIndicator
+            currentStep={currentStep}
+            steps={STEPS}
+            onStepClick={goToStep}
+            canNavigateToStep={canAdvanceToStep}
+          />
         </div>
-      )}
 
-      {/* Step Content */}
-      <div className="bg-white pt-6 px-6">
-        {currentStep === 1 && (
-          <Step1CustomerInfo
-            orderData={orderData}
-            updateOrderData={updateOrderData}
-            initialCustomerId={customerId}
-          />
-        )}
+        {/* Form Container */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          key={currentStep} // Animación al cambiar de paso
+          className="bg-white rounded-2xl border border-slate-200 shadow-sm min-h-[400px] flex flex-col"
+        >
+          <div className="flex-1 p-6 md:p-8">
+            {currentStep === 1 && (
+              <Step1CustomerInfo
+                orderData={orderData}
+                updateOrderData={updateOrderData}
+                initialCustomerId={customerId}
+              />
+            )}
+            {currentStep === 2 && (
+              <Step2Products
+                orderData={orderData}
+                updateOrderData={updateOrderData}
+              />
+            )}
+            {currentStep === 3 && (
+              <Step3DeliveryDetails
+                orderData={orderData}
+                updateOrderData={updateOrderData}
+              />
+            )}
+            {currentStep === 4 && (
+              <Step4Summary
+                orderData={orderData}
+                onCreateOrder={handleCreateOrder}
+                isCreating={isPending}
+              />
+            )}
+          </div>
 
-        {currentStep === 2 && (
-          <Step2Products
-            orderData={orderData}
-            updateOrderData={updateOrderData}
-          />
-        )}
-
-        {currentStep === 3 && (
-          <Step3DeliveryDetails
-            orderData={orderData}
-            updateOrderData={updateOrderData}
-          />
-        )}
-
-        {currentStep === 4 && (
-          <Step4Summary
-            orderData={orderData}
-            onCreateOrder={handleCreateOrder}
-            isCreating={isPending}
-          />
-        )}
-      </div>
-
-      <div className="absolute bottom-0 w-full">
-        {/* Navigation Buttons */}
-        {currentStep < 4 && (
-          <div className="flex justify-between  px-6 py-4">
+          {/* Footer de Navegación */}
+          <div className="p-6 border-t border-slate-100 flex justify-between bg-slate-50/50 rounded-b-2xl">
             <Button
               variant="outline"
               onClick={prevStep}
-              disabled={currentStep === 1}
+              disabled={currentStep === 1 || isPending}
               icon={ArrowLeftIcon}
-              iconPosition="left"
+              className="bg-white"
             >
               Anterior
             </Button>
 
-            <Button
-              onClick={nextStep}
-              disabled={!canGoNext}
-              icon={ArrowRightIcon}
-              iconPosition="right"
-            >
-              {currentStep === 3 ? "Ver Resumen" : "Siguiente"}
-            </Button>
+            {currentStep < 4 ? (
+              <Button
+                onClick={nextStep}
+                disabled={!isStepValid(currentStep)}
+                icon={ArrowRightIcon}
+                iconPosition="right"
+                className="bg-slate-900 text-white"
+              >
+                {currentStep === 3 ? "Revisar Resumen" : "Siguiente"}
+              </Button>
+            ) : (
+              <Button
+                onClick={handleCreateOrder}
+                isLoading={isPending}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-200"
+              >
+                Confirmar Pedido
+              </Button>
+            )}
           </div>
-        )}
+        </motion.div>
       </div>
 
       <ConfirmDialog
-        title="Cancelar creación de pedido"
-        description="¿Estás seguro? Se perderán los datos ingresados."
+        title="¿Cancelar creación?"
+        description="Se perderá el progreso actual del pedido."
         variant="danger"
-        isOpen={confirmCancelCreateOrderModal.isOpen}
+        isOpen={confirmCancel.isOpen}
         onConfirm={() => navigate("/orders")}
-        onCancel={() => confirmCancelCreateOrderModal.close()}
+        onCancel={confirmCancel.close}
       />
     </div>
   );

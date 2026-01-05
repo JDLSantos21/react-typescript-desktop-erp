@@ -24,7 +24,7 @@ export default function CustomerPage() {
   const navigate = useNavigate();
 
   const { setPage, setLimit, paginationParams } = usePagination({
-    defaultLimit: 12,
+    defaultLimit: 4,
     syncWithUrl: true,
   });
 

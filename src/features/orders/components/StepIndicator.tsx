@@ -1,4 +1,5 @@
 import { CheckIcon } from "lucide-react";
+import { motion } from "motion/react";
 
 interface Step {
   number: number;
@@ -22,8 +23,7 @@ export default function StepIndicator({
   const handleStepClick = (stepNumber: number) => {
     if (
       onStepClick &&
-      canNavigateToStep &&
-      canNavigateToStep(stepNumber) &&
+      canNavigateToStep?.(stepNumber) &&
       stepNumber <= currentStep
     ) {
       onStepClick(stepNumber);
@@ -31,78 +31,67 @@ export default function StepIndicator({
   };
 
   return (
-    <div className="w-full sticky top-0 z-10 px-6 pt-2 bg-white">
-      <div className="flex items-center">
+    <div className="w-full">
+      <div className="flex items-center justify-between relative">
+        {/* Línea de fondo */}
+        <div className="absolute top-5 left-0 w-full h-0.5 bg-slate-100 -z-10 rounded-full" />
+
         {steps.map((step, index) => {
           const isCompleted = step.number < currentStep;
           const isCurrent = step.number === currentStep;
           const isClickable =
             canNavigateToStep?.(step.number) && step.number <= currentStep;
 
-          const lastStep = index === steps.length - 1;
-
           return (
             <div
               key={step.number}
-              className={`flex items-center py-1 ${!lastStep ? "flex-1" : ""}`}
+              className="flex flex-col items-center relative group"
             >
-              {/* Step Circle */}
-              <div className="flex flex-col items-center">
-                <button
-                  type="button"
-                  onClick={() => handleStepClick(step.number)}
-                  disabled={!isClickable}
-                  className={`
-                    w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm
-                    transition-all duration-200
-                    ${
-                      isCompleted
-                        ? "bg-success text-white"
-                        : isCurrent
-                        ? "bg-primary text-white ring-4 ring-primary/20"
-                        : "bg-gray-200 text-gray-500"
-                    }
-                    ${
-                      isClickable
-                        ? "cursor-pointer hover:scale-105"
-                        : "cursor-not-allowed"
-                    }
-                  `}
-                >
-                  {isCompleted ? (
-                    <CheckIcon className="w-6 h-6" />
-                  ) : (
-                    step.number
-                  )}
-                </button>
-
-                {/* Step Title */}
-                <div className="mt-2 text-center">
-                  <p
-                    className={`text-sm font-semibold ${
-                      isCurrent
-                        ? "text-primary"
-                        : isCompleted
-                        ? "text-success"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    {step.title}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-0.5">
-                    {step.description}
-                  </p>
-                </div>
-              </div>
-
-              {/* Connector Line */}
-              {index < steps.length - 1 && (
-                <div
-                  className={`flex-1 h-1 mx-4 rounded transition-colors duration-300 ${
-                    isCompleted ? "bg-success" : "bg-gray-200"
-                  }`}
+              {/* Línea de progreso coloreada (Solo para los completados) */}
+              {index > 0 && (
+                <motion.div
+                  initial={{ width: "0%" }}
+                  animate={{
+                    width: step.number <= currentStep ? "100%" : "0%",
+                  }}
+                  className="absolute top-5 right-[50%] h-0.5 bg-slate-900 -z-10 origin-right w-[calc(100vw/4)]" // Ajuste visual aproximado
+                  style={{ right: "50%", width: "calc(100% + 2rem)" }} // Hack visual para conectar
                 />
               )}
+
+              <button
+                type="button"
+                onClick={() => handleStepClick(step.number)}
+                disabled={!isClickable}
+                className={`
+                  w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 border-2
+                  ${
+                    isCompleted
+                      ? "bg-emerald-500 border-emerald-500 text-white"
+                      : isCurrent
+                      ? "bg-slate-900 border-slate-900 text-white shadow-md shadow-slate-200 scale-110"
+                      : "bg-white border-slate-200 text-slate-400"
+                  }
+                  ${
+                    isClickable
+                      ? "cursor-pointer hover:border-slate-900"
+                      : "cursor-default"
+                  }
+                `}
+              >
+                {isCompleted ? <CheckIcon className="w-5 h-5" /> : step.number}
+              </button>
+
+              <div
+                className={`mt-3 text-center transition-opacity duration-300 ${
+                  isCurrent ? "opacity-100" : "opacity-60 grayscale"
+                }`}
+              >
+                <p className="text-sm font-bold text-slate-800">{step.title}</p>
+                <p className="text-[10px] uppercase tracking-wide font-medium text-slate-400 hidden sm:block">
+                  {step.description}
+                </p>
+              </div>
             </div>
           );
         })}

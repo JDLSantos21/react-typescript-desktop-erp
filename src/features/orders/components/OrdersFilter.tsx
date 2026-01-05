@@ -24,7 +24,6 @@ export const OrdersFilter = ({
 }: OrdersFilterProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearch = useDebounce(searchTerm, 500);
-
   const [status, setStatus] = useState<OrderStatus | "ALL">("ALL");
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -77,58 +76,64 @@ export const OrdersFilter = ({
 
   return (
     <div className="flex items-center gap-3 w-full">
-      <div className="flex-1 max-w-md">
+      <div className="flex-1 relative group">
         <Input
-          startIcon={<SearchIcon className="text-gray-400" />}
-          placeholder="Buscar pedido..."
+          startIcon={<SearchIcon className="w-4 h-4" />}
+          placeholder="Buscar por cliente, tracking, dirección..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="bg-white"
+          className="bg-white border-slate-200 focus:bg-white shadow-sm"
+          inputSize="md"
         />
       </div>
 
       <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <PopoverTrigger asChild>
           <Button
-            icon={FilterIcon}
             variant="outline"
-            className="gap-2 relative bg-white"
+            className={`gap-2 border-slate-200 shadow-sm ${
+              activeFiltersCount > 0
+                ? "bg-slate-900 text-white border-slate-900 hover:bg-slate-800"
+                : "bg-white text-slate-600"
+            }`}
           >
-            <span className="hidden sm:inline">Filtros</span>
+            <FilterIcon className="w-4 h-4" />
+            <span className="hidden sm:inline font-medium">Filtros</span>
             {activeFiltersCount > 0 && (
-              <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] text-white">
+              <span className="ml-1 flex h-5 w-5 items-center justify-center rounded-full bg-white text-slate-900 text-[10px] font-bold">
                 {activeFiltersCount}
               </span>
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-80 p-4" align="end">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h4 className="font-medium leading-none">Filtros avanzados</h4>
+        <PopoverContent
+          className="w-80 p-5 rounded-xl border-slate-100 shadow-xl"
+          align="end"
+        >
+          <div className="space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-50 pb-3">
+              <h4 className="font-semibold text-slate-800">Filtrar Pedidos</h4>
               {activeFiltersCount > 0 && (
                 <button
                   onClick={clearFilters}
-                  className="text-xs text-primary hover:underline cursor-pointer"
+                  className="text-xs text-rose-500 font-medium hover:underline"
                 >
-                  Limpiar
+                  Limpiar todo
                 </button>
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-4">
               <Select
                 options={statusOptions}
                 value={status}
-                label="Estado"
+                label="Estado del pedido"
                 onValueChange={handleStatusChange}
-                placeholder="Seleccionar estado"
+                placeholder="Cualquiera"
               />
-            </div>
 
-            <div className="space-y-2">
               <DatePicker
-                label="Fecha de entrega"
+                label="Fecha programada"
                 value={date}
                 onChange={handleDateSelect}
               />

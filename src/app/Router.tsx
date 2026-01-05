@@ -36,6 +36,22 @@ const EditOrderPage = lazy(
   () => import("@/features/orders/pages/EditOrderPage")
 );
 
+const EquipmentPage = lazy(
+  () => import("@/features/equipments/pages/EquipmentPage")
+);
+
+const EquipmentDetailPage = lazy(
+  () => import("@/features/equipments/pages/EquipmentDetailPage")
+);
+
+const NewEquipmentPage = lazy(
+  () => import("@/features/equipments/pages/NewEquipmentPage")
+);
+
+const EquipmentAlertsPage = lazy(
+  () => import("@/features/equipments/pages/EquipmentAlertsPage")
+);
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -130,6 +146,46 @@ export const router = createBrowserRouter([
           <Suspense fallback={<PageLoader />}>
             <PageErrorBoundary pageName="detalle del pedido">
               <OrderDetailPage />
+            </PageErrorBoundary>
+          </Suspense>
+        ),
+      },
+      {
+        path: "/equipments",
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PageErrorBoundary pageName="equipos">
+              <EquipmentPage />
+            </PageErrorBoundary>
+          </Suspense>
+        ),
+      },
+      {
+        path: "/equipments/details/:equipmentId",
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PageErrorBoundary pageName="detalle del equipo">
+              <EquipmentDetailPage />
+            </PageErrorBoundary>
+          </Suspense>
+        ),
+      },
+      {
+        path: "/equipments/new",
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PageErrorBoundary pageName="nuevo equipo">
+              <NewEquipmentPage />
+            </PageErrorBoundary>
+          </Suspense>
+        ),
+      },
+      {
+        path: "/equipments/alerts",
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PageErrorBoundary pageName="alertas de equipos">
+              <EquipmentAlertsPage />
             </PageErrorBoundary>
           </Suspense>
         ),

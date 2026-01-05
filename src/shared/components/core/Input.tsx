@@ -11,9 +11,9 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const sizeClasses = {
-  sm: "h-8 px-3 py-1.5 text-sm",
-  md: "h-10 px-3 py-2 text-sm",
-  lg: "h-12 px-4 py-3 text-base",
+  sm: "h-9 px-3 text-xs",
+  md: "h-11 px-4 text-sm", // Un poco más alto para modernidad (44px)
+  lg: "h-14 px-4 text-base",
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -32,45 +32,42 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
+    // Base limpia sin borde duro inicial, usamos ring para foco
     const baseStyles =
-      "w-full rounded-md transition-colors duration-200 focus:outline-none";
+      "w-full rounded-xl transition-all duration-200 outline-none font-medium placeholder:text-slate-400";
 
     const variantStyles = {
-      default: `border bg-background ${
+      default: `border bg-white ${
         error
-          ? "border-danger focus:ring-2 focus:ring-danger/20"
-          : "border-border focus:ring-2 focus:ring-primary/20 focus:border-primary"
+          ? "border-rose-300 text-rose-900 focus:border-rose-500 focus:ring-4 focus:ring-rose-50"
+          : "border-slate-200 text-slate-800 hover:border-slate-300 focus:border-slate-400 focus:ring-4 focus:ring-slate-50"
       }`,
-      filled: `border-0 ${
+      filled: `border-transparent ${
         error
-          ? "bg-danger/10 focus:bg-danger/20"
-          : "bg-background-secondary focus:bg-background-hover"
+          ? "bg-rose-50 text-rose-900 focus:bg-white focus:ring-2 focus:ring-rose-500"
+          : "bg-slate-50 text-slate-800 focus:bg-white focus:ring-2 focus:ring-slate-200 focus:shadow-sm"
       }`,
-      outlined: `border-2 bg-transparent ${
+      outlined: `bg-transparent border-2 ${
         error
-          ? "border-danger focus:border-danger"
-          : "border-border focus:border-primary"
+          ? "border-rose-500 text-rose-900"
+          : "border-slate-200 text-slate-800 focus:border-slate-900"
       }`,
     };
-
-    const disabledStyles = disabled
-      ? "opacity-50 cursor-not-allowed bg-background-secondary"
-      : "";
 
     return (
       <div className="w-full">
         {label && (
           <label
             htmlFor={props.id}
-            className="block text-xs font-medium mb-1.5 text-input-label"
+            className="block text-xs font-semibold mb-2 text-slate-700 ml-1"
           >
             {label}
           </label>
         )}
 
-        <div className="relative">
+        <div className="relative group">
           {startIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-slate-600 transition-colors">
               {startIcon}
             </div>
           )}
@@ -82,16 +79,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               ${baseStyles}
               ${variantStyles[variant]}
               ${sizeClasses[inputSize]}
-              ${disabledStyles}
-              ${startIcon ? "pl-10" : ""}
-              ${endIcon ? "pr-10" : ""}
+              ${disabled ? "opacity-60 cursor-not-allowed bg-slate-50" : ""}
+              ${startIcon ? "pl-11" : ""}
+              ${endIcon ? "pr-11" : ""}
               ${className}
             `}
             {...props}
           />
 
           {endIcon && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
               {endIcon}
             </div>
           )}
@@ -99,8 +96,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
         {(error || helperText) && (
           <p
-            className={`text-xs mt-1.5 ${
-              error ? "text-danger" : "text-text-muted"
+            className={`text-xs mt-2 ml-1 font-medium ${
+              error ? "text-rose-500" : "text-slate-400"
             }`}
           >
             {error || helperText}

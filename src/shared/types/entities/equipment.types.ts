@@ -57,6 +57,6 @@ export interface Equipment {
 }
 
 export interface EquipmentDetail extends Equipment {
-  assignments: EquipmentAssignment[];
-  locations: EquipmentLocation[];
+  assignments?: EquipmentAssignment[];
+  locations?: EquipmentLocation[];
 }

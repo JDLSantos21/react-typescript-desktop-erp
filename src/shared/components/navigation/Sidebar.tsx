@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { motion } from "motion/react";
 import {
   DashboardIcon,
   EquipmentIcon,
@@ -12,6 +13,7 @@ import {
 
 export function Sidebar() {
   const location = useLocation();
+  const currentPath = location.pathname;
 
   const navigationItems = [
     { name: "Dashboard", href: "/dashboard", icon: DashboardIcon },
@@ -23,39 +25,100 @@ export function Sidebar() {
     { name: "Pedidos", href: "/orders", icon: OrderIcon },
   ];
 
-  const currentPath = location.pathname;
-
   return (
-    <aside className="flex flex-col w-64 bg-white border-r border-gray-200">
-      {/* Sidebar header */}
-      <div className="h-20 flex justify-between items-center border-b border-gray-200">
-        <img src="./logo.png" alt="Logo" className="max-h-full" />
-        <div className="w-1/5 flex justify-center">
-          <MenuIcon className="h-5 w-5" />
+    <aside className="sticky top-0 h-screen w-[280px] flex flex-col bg-white border-r border-slate-100/60 font-sans shadow-[2px_0_24px_-12px_rgba(0,0,0,0.02)]">
+      {/* Header Limpio */}
+      <div className="h-24 flex items-center px-8 justify-between mb-2">
+        <div className="flex items-center gap-3">
+          {/* Isotipo Minimalista */}
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-slate-900 to-slate-700 flex items-center justify-center shadow-lg shadow-slate-200">
+            <svg
+              viewBox="0 0 24 24"
+              className="w-4 h-4 text-white fill-current"
+            >
+              <path d="M3 3h18v18H3z" /> {/* Icono placeholder */}
+            </svg>
+          </div>
+          <span className="text-lg font-bold text-slate-900 tracking-tight">
+            Logistics<span className="text-slate-400">Pro</span>
+          </span>
         </div>
       </div>
-      <nav className="flex-1 overflow-y-auto">
-        <ul className="px-4 py-6 space-y-2">
+
+      {/* Navegación */}
+      <nav className="flex-1 px-4 overflow-y-auto custom-scrollbar">
+        <ul className="space-y-1">
           {navigationItems.map((item) => {
             const isActive = currentPath.startsWith(item.href);
+
             return (
-              <li key={item.name}>
+              <li key={item.name} className="relative">
                 <Link
                   to={item.href}
-                  className={`flex items-center gap-3 p-3 rounded-sm transition-all duration-200 group relative backdrop-blur-sm h-12 ${
+                  className={`relative flex items-center gap-3.5 px-4 py-3.5 rounded-2xl transition-all duration-300 group outline-none ${
                     isActive
-                      ? "bg-gradient-to-r from-white to-gray-100 text-text-secondary shadow-sm border border-blue-100/50"
-                      : "text-slate-600 hover:bg-white/60 hover:text-slate-800 hover:shadow-sm border border-transparent hover:border-slate-200/60"
+                      ? "text-slate-900"
+                      : "text-slate-500 hover:text-slate-700"
                   }`}
                 >
-                  <item.icon className="w-5 h-5 from-blue-500 to-indigo-50" />
-                  {item.name}
+                  {/* Fondo Animado (Layout Animation) */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="sidebar-active-pill"
+                      className="absolute inset-0 bg-slate-100 rounded-2xl"
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                      }}
+                    />
+                  )}
+
+                  {/* Icono */}
+                  <div className="relative z-10 flex items-center justify-center">
+                    <item.icon
+                      className={`w-[20px] h-[20px] transition-colors duration-200 ${
+                        isActive
+                          ? "text-slate-900 stroke-[2px]"
+                          : "text-slate-400 group-hover:text-slate-600 stroke-[1.5px]"
+                      }`}
+                    />
+                  </div>
+
+                  {/* Texto */}
+                  <span className="relative z-10 text-sm font-medium tracking-wide">
+                    {item.name}
+                  </span>
+
+                  {/* Indicador de estado (Punto sutil) */}
+                  {isActive && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute right-4 w-1.5 h-1.5 rounded-full bg-slate-900 z-10"
+                    />
+                  )}
                 </Link>
               </li>
             );
           })}
         </ul>
       </nav>
+
+      {/* Footer / Ajustes */}
+      <div className="p-6 border-t border-slate-50">
+        <button className="flex items-center gap-3 w-full p-3 rounded-2xl hover:bg-slate-50 transition-colors group">
+          <div className="w-9 h-9 rounded-full bg-slate-100 border border-white shadow-sm flex items-center justify-center text-slate-600">
+            <MenuIcon className="w-4 h-4" />
+          </div>
+          <div className="text-left">
+            <p className="text-xs font-bold text-slate-800">Ajustes</p>
+            <p className="text-[10px] font-medium text-slate-400 group-hover:text-slate-500">
+              Configuración general
+            </p>
+          </div>
+        </button>
+      </div>
     </aside>
   );
 }
