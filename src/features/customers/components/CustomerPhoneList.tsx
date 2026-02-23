@@ -1,6 +1,7 @@
 import { CustomerPhone } from "@/shared/types/entities/customer.types";
-import { Badge, WhatsAppIcon } from "@/shared/components";
-import { formatPhoneNumber } from "@/shared/utils";
+import { Badge } from "@/shared/components/core/Badge";
+import { WhatsAppIcon } from "@/shared/components/icons";
+import { formatPhoneNumber } from "@/shared/utils/formatters";
 
 const phoneTypeLabels: Record<string, string> = {
   MOVIL: "Móvil",

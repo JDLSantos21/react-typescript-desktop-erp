@@ -1,8 +1,10 @@
-import { Button, OverlayLoader } from "@/shared/components";
-import { useHeaderConfig, useModal } from "@/shared/hooks";
+import { Button } from "@/shared/components/core/Button";
+import { OverlayLoader } from "@/shared/components/OverlayLoader";
+import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
+import { useModal } from "@/shared/hooks/useModal";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { extractApiError } from "@/shared/utils";
+import { extractApiError } from "@/shared/utils/error-handler";
 import { AxiosError } from "axios";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 
@@ -68,7 +70,7 @@ export default function CreateOrderPage() {
             position: "top-center",
           });
         },
-      }
+      },
     );
   };
 
@@ -156,13 +158,7 @@ export default function CreateOrderPage() {
           />
         )}
 
-        {currentStep === 4 && (
-          <Step4Summary
-            orderData={orderData}
-            onCreateOrder={handleCreateOrder}
-            isCreating={isPending}
-          />
-        )}
+        {currentStep === 4 && <Step4Summary orderData={orderData} />}
       </div>
 
       <div className="absolute bottom-0 w-full">

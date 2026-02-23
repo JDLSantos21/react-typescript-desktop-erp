@@ -20,7 +20,7 @@ export const ErrorState = ({
   icon,
   onRetry,
   retryLabel = "Reintentar",
-  showDetails = process.env.NODE_ENV === "development",
+  showDetails = import.meta.env.DEV,
   variant = "error",
   className = "",
 }: ErrorStateProps) => {
@@ -51,8 +51,8 @@ export const ErrorState = ({
     error instanceof Error
       ? error.message
       : typeof error === "string"
-      ? error
-      : null;
+        ? error
+        : null;
 
   // Icono por defecto según variante
   const defaultIcons = {
@@ -117,7 +117,7 @@ export const ErrorState = ({
         {finalMessage}
       </p>
 
-      {showDetails && errorMessage && (
+      {showDetails && errorMessage ? (
         <details className="mb-6 max-w-lg w-full">
           <summary className="text-xs text-text-muted cursor-pointer hover:text-text-secondary mb-2">
             Detalles técnicos
@@ -128,13 +128,13 @@ export const ErrorState = ({
             </code>
           </div>
         </details>
-      )}
+      ) : null}
 
-      {onRetry && (
+      {onRetry ? (
         <Button onClick={onRetry} variant="primary">
           {retryLabel}
         </Button>
-      )}
+      ) : null}
     </div>
   );
 };

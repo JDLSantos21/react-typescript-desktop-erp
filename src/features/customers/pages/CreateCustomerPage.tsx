@@ -4,11 +4,15 @@ import {
   CreateCustomerFormData,
 } from "../schemas/customer.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input, Select, Checkbox } from "@/shared/components";
-import { useHeaderConfig } from "@/shared/hooks";
-import { PlusIcon, TrashIcon } from "lucide-react";
+import { Button } from "@/shared/components/core/Button";
+import { Input } from "@/shared/components/core/Input";
+import { Select } from "@/shared/components/core/Select";
+import { Checkbox } from "@/shared/components/core/Checkbox";
+import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
+import { PlusIcon } from "@/shared/components/icons";
+import { DeleteIcon } from "@/shared/components/icons";
 import { useaddCustomer } from "../hooks/useCustomer";
-import { extractApiError } from "@/shared/utils";
+import { extractApiError } from "@/shared/utils/error-handler";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -196,7 +200,7 @@ export default function CreateCustomerPage() {
                         size="sm"
                         onClick={() => removePhone(index)}
                       >
-                        <TrashIcon className="w-4 h-4" />
+                        <DeleteIcon className="w-4 h-4" />
                       </Button>
                     )}
                   </div>
@@ -286,7 +290,7 @@ export default function CreateCustomerPage() {
                         size="sm"
                         onClick={() => removeAddress(index)}
                       >
-                        <TrashIcon className="w-4 h-4" />
+                        <DeleteIcon className="w-4 h-4" />
                       </Button>
                     )}
                   </div>

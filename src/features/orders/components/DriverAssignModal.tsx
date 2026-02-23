@@ -1,5 +1,8 @@
 import { useGetAllDrivers } from "@/features/employees/hooks/useEmployee";
-import { Button, Modal, Select, UserIcon } from "@/shared/components";
+import { Button } from "@/shared/components/core/Button";
+import { Modal } from "@/shared/components/core/Modal";
+import { Select } from "@/shared/components/core/Select";
+import { UserIcon } from "@/shared/components/icons";
 import SectionLoader from "@/shared/components/SectionLoader";
 import { Order } from "@/shared/types/entities/order.types";
 import { useState } from "react";

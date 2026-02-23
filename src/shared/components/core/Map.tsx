@@ -9,7 +9,7 @@ import {
 } from "react-leaflet";
 import { divIcon, LatLngExpression } from "leaflet";
 import { renderToString } from "react-dom/server";
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/utils/cn";
 import "leaflet/dist/leaflet.css";
 
 // ============================================================================

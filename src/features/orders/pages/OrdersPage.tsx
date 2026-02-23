@@ -1,23 +1,23 @@
-import {
-  Button,
-  EmptyState,
-  ErrorState,
-  Pagination,
-  PlusIcon,
-} from "@/shared/components";
-import { useHeaderConfig, usePagination } from "@/shared/hooks";
+import { Button } from "@/shared/components/core/Button";
+import { EmptyState } from "@/shared/components/EmptyState";
+import { ErrorState } from "@/shared/components/ErrorState";
+import { Pagination } from "@/shared/components/core/Pagination";
+import { PlusIcon } from "@/shared/components/icons";
+import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
+import { usePagination } from "@/shared/hooks/usePagination";
 import { useNavigate } from "react-router-dom";
 import { useGetOrders } from "../hooks/useOrder";
 
 import DateRangeSelector from "../components/DateRangeSelector";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import OrderCard from "../components/OrderCard";
-import { formatDate } from "@/shared/utils";
+import { formatDate } from "@/shared/utils/formatters";
 import { OrdersStats } from "../components/OrdersStats";
 import { OrdersFilter } from "../components/OrdersFilter";
 import { OrderStatus } from "@/shared/types/entities/order.types";
 import SectionLoader from "@/shared/components/SectionLoader";
+import { APP_CONFIG } from "@/shared/constants/config";
 
 export default function OrdersPage() {
   const [dateRange, setDateRange] = useState(() => {
@@ -38,7 +38,7 @@ export default function OrdersPage() {
   const navigate = useNavigate();
 
   const { setPage, setLimit, paginationParams } = usePagination({
-    defaultLimit: 12,
+    defaultLimit: APP_CONFIG.PAGINATION.DEFAULT_LIMIT,
     syncWithUrl: true,
   });
 
@@ -47,20 +47,23 @@ export default function OrdersPage() {
       setDateRange(newRange);
       setPage(1);
     },
-    []
+    [setPage],
   );
 
-  const handleSearch = useCallback((term: string) => {
-    setFilters((prev) => ({ ...prev, search: term }));
-    setPage(1);
-  }, []);
+  const handleSearch = useCallback(
+    (term: string) => {
+      setFilters((prev) => ({ ...prev, search: term }));
+      setPage(1);
+    },
+    [setPage],
+  );
 
   const handleFilterChange = useCallback(
     (newFilters: { status?: OrderStatus; scheduledDate?: string }) => {
       setFilters((prev) => ({ ...prev, ...newFilters }));
       setPage(1);
     },
-    []
+    [setPage],
   );
 
   const { data, isLoading, isError } = useGetOrders({
@@ -71,10 +74,8 @@ export default function OrdersPage() {
 
   const paginationMeta = data?.meta.pagination;
 
-  useHeaderConfig({
-    title: "Pedidos",
-    description: "Gestiona y revisa los pedidos realizados.",
-    actions: (
+  const headerActions = useMemo(() => {
+    return (
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
@@ -85,7 +86,13 @@ export default function OrdersPage() {
         </Button>
         <DateRangeSelector value={dateRange} onChange={handleDateRangeChange} />
       </div>
-    ),
+    );
+  }, [dateRange, navigate]);
+
+  useHeaderConfig({
+    title: "Pedidos",
+    description: "Gestiona y revisa los pedidos realizados.",
+    actions: headerActions,
   });
 
   return (
@@ -114,15 +121,19 @@ export default function OrdersPage() {
           />
         </div>
       ) : (
-        <ul className="flex-1 grid grid-cols-3 2xl:grid-cols-4 gap-2 p-4 pt-2 overflow-y-auto show-scrollbar scrollbar-black auto-rows-max content-start">
-          {data &&
-            data.data.map((order) => (
-              <OrderCard key={order.id} order={order} />
-            ))}
+        <ul
+          className="flex-1 grid grid-cols-3 2xl:grid-cols-4 gap-2 p-4 pt-2 overflow-y-auto show-scrollbar scrollbar-black auto-rows-max content-start"
+          style={{ contentVisibility: "auto" }}
+        >
+          {data
+            ? data.data.map((order) => (
+                <OrderCard key={order.id} order={order} />
+              ))
+            : null}
         </ul>
       )}
 
-      {paginationMeta && paginationMeta.totalPages > 1 && (
+      {paginationMeta && paginationMeta.totalPages > 1 ? (
         <div className="w-full px-3 bg-white py-1 border-t border-border">
           <Pagination
             currentPage={paginationMeta.page}
@@ -134,7 +145,7 @@ export default function OrdersPage() {
             showFirstLast
           />
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

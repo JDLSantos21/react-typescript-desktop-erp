@@ -7,9 +7,9 @@ import { OrderStatus } from "../types/entities/order.types";
  * @returns String con las clases de Tailwind
  */
 export const getStatusColor = (status: string): string => {
-  const normalizedStatus = status?.toUpperCase() || "";
+  const upperStatus = status?.toUpperCase() || "";
 
-  switch (normalizedStatus) {
+  switch (upperStatus) {
     case "PENDIENTE":
       return "bg-yellow-50 text-yellow-700 border-yellow-200";
     case "PREPARANDO":
@@ -18,6 +18,16 @@ export const getStatusColor = (status: string): string => {
       return "bg-purple-50 text-purple-700 border-purple-200";
     case "ENTREGADO":
       return "bg-green-50 text-green-700 border-green-200";
+    case "DISPONIBLE":
+      return "bg-green-50 text-green-700 border-green-200";
+    case "ASIGNADO":
+      return "bg-blue-50 text-blue-700 border-blue-200";
+    case "MANTENIMIENTO":
+      return "bg-yellow-50 text-yellow-700 border-yellow-200";
+    case "DAÑADO":
+      return "bg-red-50 text-red-700 border-red-200";
+    case "INHABILITADO":
+      return "bg-gray-50 text-gray-700 border-gray-200";
     case "CANCELADO":
       return "bg-red-50 text-red-700 border-red-200";
     case "DEVUELTO":
@@ -34,9 +44,9 @@ export const getStatusColor = (status: string): string => {
  * @returns String con la clase de Tailwind (ej: "bg-yellow-500")
  */
 export const getStatusDotColor = (status: OrderStatus): string => {
-  const normalizedStatus = status?.toUpperCase() || "";
+  const upperStatus = status?.toUpperCase() || "";
 
-  switch (normalizedStatus) {
+  switch (upperStatus) {
     case "PENDIENTE":
       return "bg-yellow-500";
     case "PREPARANDO":

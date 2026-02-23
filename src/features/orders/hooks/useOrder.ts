@@ -6,6 +6,7 @@ import {
   UpdateOrderStatusDto,
 } from "../types/order.dto";
 import { orderKeys } from "../api/order.keys";
+import { productKeys } from "../api/product.keys";
 
 export const useCreateOrder = () => {
   const queryClient = useQueryClient();
@@ -28,7 +29,7 @@ export const useCreateOrder = () => {
 
 export const useGetAllProducts = () => {
   return useQuery({
-    queryKey: ["products"],
+    queryKey: productKeys.list(),
     queryFn: () => OrderService.getAllProducts(),
   });
 };
@@ -58,10 +59,10 @@ export const useGetOrder = (orderId: string) => {
 
 export const useGetOrderStatusHistory = (
   orderId: string,
-  enabled: boolean = true
+  enabled: boolean = true,
 ) => {
   return useQuery({
-    queryKey: ["order-status-history", orderId],
+    queryKey: orderKeys.statusHistory(orderId),
     queryFn: () => OrderService.getStatusHistory(orderId),
     enabled: !!orderId && enabled,
   });
@@ -78,6 +79,9 @@ export const useUpdateOrderStatus = () => {
       });
       queryClient.invalidateQueries({
         queryKey: orderKeys.detail(variables.orderId.toString()),
+      });
+      queryClient.invalidateQueries({
+        queryKey: orderKeys.statusHistory(variables.orderId.toString()),
       });
     },
   });

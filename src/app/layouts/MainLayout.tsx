@@ -1,14 +1,16 @@
 import { Header } from "@/shared/components/navigation/Header";
 import { Sidebar } from "@/shared/components/navigation/Sidebar";
-import { NavigationLoader } from "@/shared/components";
+import { NavigationLoader } from "@/shared/components/NavigationLoader";
 import { HeaderProvider } from "@/shared/contexts/HeaderContext";
 import { Outlet } from "react-router-dom";
 import { GlobalSocketListeners } from "../GlobalSocketListeners";
+import { Toaster } from "sileo";
 
 export function MainLayout() {
   return (
     <HeaderProvider>
       <GlobalSocketListeners />
+      <Toaster position="top-right" />
       <div className="flex h-screen ">
         <NavigationLoader />
 

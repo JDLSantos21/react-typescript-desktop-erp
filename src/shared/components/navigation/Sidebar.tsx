@@ -1,4 +1,3 @@
-import { Link, useLocation } from "react-router-dom";
 import {
   DashboardIcon,
   EquipmentIcon,
@@ -9,21 +8,58 @@ import {
   TruckIcon,
   UsersIcon,
 } from "../icons";
+import { SidebarItem } from "./SidebarItem";
+import { NavigationItem } from "./sidebar.types";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
+const navigationItems: NavigationItem[] = [
+  { name: "Dashboard", href: "/dashboard", icon: DashboardIcon },
+  { name: "Combustible", href: "/fuel", icon: FuelIcon },
+  { name: "Inventario", href: "/inventory", icon: StackIcon },
+  { name: "Vehículos", href: "/vehicles", icon: TruckIcon },
+  {
+    name: "Equipos",
+    href: "/equipments",
+    icon: EquipmentIcon,
+    children: [{ name: "Nuevo equipo", href: "/equipments/new" }],
+  },
+  {
+    name: "Clientes",
+    href: "/customers",
+    icon: UsersIcon,
+    children: [{ name: "Nuevo cliente", href: "/customers/new" }],
+  },
+  {
+    name: "Pedidos",
+    href: "/orders",
+    icon: OrderIcon,
+    children: [{ name: "Nuevo pedido", href: "/orders/new" }],
+  },
+];
 
 export function Sidebar() {
   const location = useLocation();
 
-  const navigationItems = [
-    { name: "Dashboard", href: "/dashboard", icon: DashboardIcon },
-    { name: "Combustible", href: "/fuel", icon: FuelIcon },
-    { name: "Inventario", href: "/inventory", icon: StackIcon },
-    { name: "Vehículos", href: "/vehicles", icon: TruckIcon },
-    { name: "Equipos", href: "/equipments", icon: EquipmentIcon },
-    { name: "Clientes", href: "/customers", icon: UsersIcon },
-    { name: "Pedidos", href: "/orders", icon: OrderIcon },
-  ];
+  // Find which item should be initially open based on current route
+  const getActiveParent = () => {
+    const match = navigationItems.find(
+      (item) => item.children && location.pathname.startsWith(item.href),
+    );
+    return match?.name ?? null;
+  };
 
-  const currentPath = location.pathname;
+  const [openItem, setOpenItem] = useState<string | null>(getActiveParent);
+
+  // Auto-open the correct parent when route changes
+  useEffect(() => {
+    const active = getActiveParent();
+    if (active) setOpenItem(active);
+  }, [location.pathname]);
+
+  const handleToggle = (itemName: string) => {
+    setOpenItem((prev) => (prev === itemName ? null : itemName));
+  };
 
   return (
     <aside className="flex flex-col w-64 bg-white border-r border-gray-200">
@@ -35,25 +71,15 @@ export function Sidebar() {
         </div>
       </div>
       <nav className="flex-1 overflow-y-auto">
-        <ul className="px-4 py-6 space-y-2">
-          {navigationItems.map((item) => {
-            const isActive = currentPath.startsWith(item.href);
-            return (
-              <li key={item.name}>
-                <Link
-                  to={item.href}
-                  className={`flex items-center gap-3 p-3 rounded-sm transition-all duration-200 group relative backdrop-blur-sm h-12 ${
-                    isActive
-                      ? "bg-gradient-to-r from-white to-gray-100 text-text-secondary shadow-sm border border-blue-100/50"
-                      : "text-slate-600 hover:bg-white/60 hover:text-slate-800 hover:shadow-sm border border-transparent hover:border-slate-200/60"
-                  }`}
-                >
-                  <item.icon className="w-5 h-5 from-blue-500 to-indigo-50" />
-                  {item.name}
-                </Link>
-              </li>
-            );
-          })}
+        <ul className="px-4 py-6 space-y-1">
+          {navigationItems.map((item) => (
+            <SidebarItem
+              key={item.name}
+              item={item}
+              isOpen={openItem === item.name}
+              onToggle={() => handleToggle(item.name)}
+            />
+          ))}
         </ul>
       </nav>
     </aside>

@@ -37,9 +37,10 @@ interface UseOrderStepsReturn {
 const TOTAL_STEPS = 4;
 
 export const useOrderSteps = (
-  initialCustomerId?: string
+  initialCustomerId?: string,
+  initialStep: number = 1,
 ): UseOrderStepsReturn => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [orderData, setOrderData] = useState<OrderStepData>({
     customerId: initialCustomerId,
     orderItems: [],

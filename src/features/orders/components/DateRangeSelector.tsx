@@ -1,4 +1,5 @@
-import { Button, CalendarIcon } from "@/shared/components";
+import { Button } from "@/shared/components/core/Button";
+import { CalendarIcon } from "@/shared/components/icons";
 import { Calendar } from "@/shared/components/ui/calendar";
 import {
   Popover,
@@ -8,7 +9,7 @@ import {
 import dayjs from "dayjs";
 import { useMemo, useState } from "react";
 import { es } from "date-fns/locale";
-import { formatDate } from "@/shared/utils";
+import { formatDate } from "@/shared/utils/formatters";
 
 interface DateRangeSelectorProps {
   value: { start_date: string; end_date: string };

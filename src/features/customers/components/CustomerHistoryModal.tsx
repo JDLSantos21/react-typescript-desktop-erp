@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { Modal, Button, Badge } from "@/shared/components";
-import { formatDate } from "@/shared/utils";
+import { Modal } from "@/shared/components/core/Modal";
+import { Button } from "@/shared/components/core/Button";
+import { Badge } from "@/shared/components/core/Badge";
+import { formatDate } from "@/shared/utils/formatters";
 import {
   CustomerEquipment,
   CustomerOrder,

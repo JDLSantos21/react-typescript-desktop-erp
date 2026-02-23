@@ -1,4 +1,7 @@
-import { Input, Button, Select, DatePicker } from "@/shared/components";
+import { Input } from "@/shared/components/core/Input";
+import { Button } from "@/shared/components/core/Button";
+import { Select } from "@/shared/components/core/Select";
+import { DatePicker } from "@/shared/components/core/DatePicker";
 import { FilterIcon, SearchIcon } from "@/shared/components/icons";
 import {
   Popover,
@@ -8,7 +11,7 @@ import {
 import { useState, useEffect } from "react";
 import { OrderStatus } from "@/shared/types/entities/order.types";
 import { format } from "date-fns";
-import { useDebounce } from "@/shared/hooks";
+import { useDebounce } from "@/shared/hooks/useDebounce";
 
 interface OrdersFilterProps {
   onSearch: (term: string) => void;

@@ -1,4 +1,4 @@
-import { Button, Alert } from "@/shared/components";
+import { Alert } from "@/shared/components/core/Alert";
 import { OrderStepData } from "../../hooks/useOrderSteps";
 import { useCustomerById } from "@/features/customers/hooks/useCustomer";
 import {
@@ -10,25 +10,19 @@ import {
 
 interface Step4SummaryProps {
   orderData: OrderStepData;
-  onCreateOrder: () => void;
-  isCreating: boolean;
 }
 
-export default function Step4Summary({
-  orderData,
-  onCreateOrder,
-  isCreating,
-}: Step4SummaryProps) {
+export default function Step4Summary({ orderData }: Step4SummaryProps) {
   const { data: customerData } = useCustomerById(orderData.customerId || "");
 
   const customer = customerData?.data;
   const selectedAddress = customer?.addresses.find(
-    (a) => a.id === orderData.customerAddressId
+    (a) => a.id === orderData.customerAddressId,
   );
 
   const totalProducts = orderData.orderItems.reduce(
     (sum, p) => sum + p.requestedQuantity,
-    0
+    0,
   );
 
   return (

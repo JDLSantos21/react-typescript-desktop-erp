@@ -2,9 +2,11 @@ import { useLogin } from "../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginAuthSchema, LoginAuthSchema } from "../schemas/AuthSchema";
-import { Button, Input, InputPassword } from "@/shared/components";
+import { Button } from "@/shared/components/core/Button";
+import { Input } from "@/shared/components/core/Input";
+import { InputPassword } from "@/shared/components/core/InputPassword";
 import { CiUser } from "react-icons/ci";
-import { extractApiError } from "@/shared/utils";
+import { extractApiError } from "@/shared/utils/error-handler";
 
 export default function LoginPage() {
   const loginMutation = useLogin();

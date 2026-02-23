@@ -1,6 +1,7 @@
 import { ButtonHTMLAttributes, ComponentType } from "react";
 import { IconBaseProps } from "react-icons";
 import { Spinner } from "./Spinner";
+import { cn } from "@/shared/utils/cn";
 
 const variants = {
   primary: "bg-primary text-white hover:bg-primary-hover border-primary",
@@ -54,30 +55,33 @@ export const Button = ({
 
   return (
     <button
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${
-        hasIconOrLoading || isIconOnly
-          ? "flex items-center gap-2 justify-center"
-          : ""
-      } ${
+      className={cn(
+        baseStyles,
+        variants[variant],
+        sizes[size],
+        (hasIconOrLoading || isIconOnly) &&
+          "flex items-center gap-2 justify-center",
         disabled || isLoading
           ? "opacity-50 cursor-not-allowed"
-          : "cursor-pointer"
-      } ${className}`}
+          : "cursor-pointer",
+        className,
+      )}
       disabled={disabled || isLoading}
       {...props}
     >
-      {Icon && iconPosition === "left" && !isLoading && (
+      {Icon && iconPosition === "left" && !isLoading ? (
         <Icon
-          className={`${
-            isIconOnly ? "w-4 h-4" : iconSizes[size]
-          } ${iconClassName}`}
+          className={cn(
+            isIconOnly ? "w-4 h-4" : iconSizes[size],
+            iconClassName,
+          )}
         />
-      )}
-      {!isIconOnly && children}
-      {Icon && iconPosition === "right" && !isLoading && (
-        <Icon className={`${iconSizes[size]} ${iconClassName}`} />
-      )}
-      {isLoading && <Spinner size="sm" />}
+      ) : null}
+      {!isIconOnly ? children : null}
+      {Icon && iconPosition === "right" && !isLoading ? (
+        <Icon className={cn(iconSizes[size], iconClassName)} />
+      ) : null}
+      {isLoading ? <Spinner size="sm" /> : null}
     </button>
   );
 };

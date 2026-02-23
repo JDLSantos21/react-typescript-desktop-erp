@@ -1,4 +1,5 @@
-import { Input, Modal } from "@/shared/components";
+import { Input } from "@/shared/components/core/Input";
+import { Modal } from "@/shared/components/core/Modal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
@@ -87,7 +88,7 @@ export default function AddressModal({
               position: "bottom-center",
             });
           },
-        }
+        },
       );
     } else {
       createAddress(
@@ -105,7 +106,7 @@ export default function AddressModal({
               position: "bottom-center",
             });
           },
-        }
+        },
       );
     }
   };

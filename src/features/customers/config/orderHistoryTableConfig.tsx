@@ -1,7 +1,7 @@
-import { Badge } from "@/shared/components";
+import { Badge } from "@/shared/components/core/Badge";
 import { Column } from "@/shared/components/core/Table";
 import { Order } from "@/shared/types/entities/order.types";
-import { formatDate } from "@/shared/utils";
+import { formatDate } from "@/shared/utils/formatters";
 import { Link } from "react-router-dom";
 
 const renderOrderStatus = (order: Order) => {
@@ -9,12 +9,12 @@ const renderOrderStatus = (order: Order) => {
     order.status === "PENDIENTE"
       ? "warning"
       : order.status === "PREPARANDO"
-      ? "info"
-      : order.status === "DESPACHADO"
-      ? "primary"
-      : order.status === "CANCELADO"
-      ? "danger"
-      : "success";
+        ? "info"
+        : order.status === "DESPACHADO"
+          ? "primary"
+          : order.status === "CANCELADO"
+            ? "danger"
+            : "success";
 
   return (
     <Badge size="sm" variant={statusVariant}>
@@ -29,10 +29,7 @@ const renderCustomerAddress = (order: Order) => {
 
 const renderTrackingCode = (order: Order) => {
   return (
-    <Link
-      className="text-link-color underline"
-      to={`/orders/${order.trackingCode}`}
-    >
+    <Link className="text-link-color underline" to={`/orders/${order.id}`}>
       {order.trackingCode}
     </Link>
   );
@@ -42,7 +39,7 @@ const renderOrderDate = (order: Order) => {
   return formatDate(order.date, "DD/MM/YYYY");
 };
 
-export const orderTableColumns: Column<Order>[] = [
+export const orderHistoryTableColumns: Column<Order>[] = [
   {
     key: "date",
     label: "Fecha",

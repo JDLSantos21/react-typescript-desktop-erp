@@ -1,21 +1,23 @@
 import {
-  AsideButton,
-  AsideMenu,
   DeleteIcon,
   DistanceIcon,
   HistoryIcon,
   PhonePlusIcon,
   ShoppingCartPlusIcon,
   UserEditIcon,
-} from "@/shared/components";
+} from "@/shared/components/icons";
+import {
+  AsideButton,
+  AsideMenu,
+} from "@/shared/components/navigation/AsideMenu";
 import { MapPinPlusIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDeleteCustomer } from "../hooks/useCustomer";
 import { toast } from "sonner";
-import { extractApiError } from "@/shared/utils";
+import { extractApiError } from "@/shared/utils/error-handler";
 import { AxiosError } from "axios";
 import ConfirmDialog from "@/shared/components/core/ConfirmDialog";
-import { useModal } from "@/shared/hooks";
+import { useModal } from "@/shared/hooks/useModal";
 
 interface AsideMenuProps {
   onOpenCreateAddressModal: () => void;
@@ -30,12 +32,12 @@ export default function CustomerAsideMenu({
   onOpenEditModal,
   onOpenNearbyVehiclesMapModal,
 }: AsideMenuProps) {
-  const { customerId } = useParams();
+  const { id } = useParams();
   const {
     mutateAsync: deleteCustomer,
     isError,
     error,
-  } = useDeleteCustomer(customerId ?? "");
+  } = useDeleteCustomer(id ?? "");
   const navigate = useNavigate();
 
   const handleDeleteCustomer = async () => {
@@ -55,7 +57,7 @@ export default function CustomerAsideMenu({
       />
       <AsideButton
         label="Crear pedido"
-        onClick={() => navigate(`/orders/new/${customerId}`)}
+        onClick={() => navigate(`/orders/new/${id}`)}
         icon={<ShoppingCartPlusIcon className="w-4 h-4" />}
       />
       <AsideButton
@@ -70,7 +72,7 @@ export default function CustomerAsideMenu({
       />
       <AsideButton
         label="Historial de pedidos"
-        onClick={() => navigate(`/customers/edit/${customerId}`)}
+        onClick={() => navigate(`/customers/${id}/orders-history`)}
         icon={<HistoryIcon className="w-4 h-4" />}
       />
       <AsideButton

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useAuthStore } from "@/shared/stores/authStore";
+import { useShallow } from "zustand/shallow";
 
 interface SocketContextType {
   socket: Socket | null;
@@ -17,19 +18,26 @@ export const useSocket = () => useContext(SocketContext);
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const { accessToken, isAuthenticated } = useAuthStore();
+  const { accessToken, isAuthenticated } = useAuthStore(
+    useShallow((state) => ({
+      accessToken: state.accessToken,
+      isAuthenticated: state.isAuthenticated,
+    })),
+  );
 
   useEffect(() => {
-    if (isAuthenticated && accessToken) {
-      // Asumimos que la URL del socket es la misma que la base de la API,
-      // pero si la API tiene un prefijo como /api/v1, tal vez necesitemos ajustar esto.
-      // Por lo general, socket.io se monta en la raíz del servidor.
-      // Vamos a intentar extraer el origen de la URL de la API si es posible,
-      // o usar una variable de entorno específica si existiera.
-      // Por ahora usaremos VITE_API_BASE_URL pero ten en cuenta esto.
+    if (!isAuthenticated || !accessToken) {
+      setIsConnected(false);
+      setSocket(null);
+      return;
+    }
 
-      const url = new URL(import.meta.env.VITE_API_BASE_URL);
-      const socketUrl = url.origin; // Esto nos da http://localhost:3000 si la base es http://localhost:3000/api
+    const baseApiUrl =
+      import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
+    try {
+      const url = new URL(baseApiUrl);
+      const socketUrl = url.origin;
 
       const socketInstance = io(socketUrl, {
         auth: {
@@ -41,32 +49,21 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         reconnectionDelay: 1000,
       });
 
-      socketInstance.on("connect", () => {
-        console.log("Socket connected:", socketInstance.id);
-        setIsConnected(true);
-      });
+      socketInstance.on("connect", () => setIsConnected(true));
 
-      socketInstance.on("connect_error", (err) => {
-        console.error("Socket connection error:", err);
-        setIsConnected(false);
-      });
+      socketInstance.on("connect_error", () => setIsConnected(false));
 
-      socketInstance.on("disconnect", (reason) => {
-        console.log("Socket disconnected:", reason);
-        setIsConnected(false);
-      });
+      socketInstance.on("disconnect", () => setIsConnected(false));
 
       setSocket(socketInstance);
 
       return () => {
         socketInstance.disconnect();
       };
-    } else {
-      if (socket) {
-        socket.disconnect();
-        setSocket(null);
-        setIsConnected(false);
-      }
+    } catch (error) {
+      console.error("No se pude iniciar la conexión al socket", baseApiUrl);
+      setIsConnected(false);
+      return;
     }
   }, [isAuthenticated, accessToken]);
 

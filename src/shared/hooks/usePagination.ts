@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
+import { APP_CONFIG } from "../constants/config";
 
 export interface PaginationMeta {
   page: number;
@@ -30,7 +31,7 @@ export interface UsePaginationReturn {
  * Optimizado para rendimiento con memoización y callbacks estables
  */
 export const usePagination = ({
-  defaultLimit = 10,
+  defaultLimit = APP_CONFIG.PAGINATION.DEFAULT_LIMIT,
   syncWithUrl = true,
 }: UsePaginationProps = {}): UsePaginationReturn => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -57,10 +58,10 @@ export const usePagination = ({
           prev.set("page", String(validPage));
           return prev;
         },
-        { replace: true }
+        { replace: true },
       );
     },
-    [setSearchParams, syncWithUrl]
+    [setSearchParams, syncWithUrl],
   );
 
   // Actualizar límite (resetea página a 1)
@@ -74,10 +75,10 @@ export const usePagination = ({
           prev.set("page", "1"); // Reset página al cambiar límite
           return prev;
         },
-        { replace: true }
+        { replace: true },
       );
     },
-    [setSearchParams, syncWithUrl]
+    [setSearchParams, syncWithUrl],
   );
 
   // Resetear paginación a valores por defecto
@@ -90,7 +91,7 @@ export const usePagination = ({
         prev.delete("limit");
         return prev;
       },
-      { replace: true }
+      { replace: true },
     );
   }, [setSearchParams, syncWithUrl]);
 
@@ -100,7 +101,7 @@ export const usePagination = ({
       page,
       limit,
     }),
-    [page, limit]
+    [page, limit],
   );
 
   return {

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer, Circle } from "react-leaflet";
-import VehiclesData from "../mocks/vehiclesCoordinates.json";
-import { calcDistance } from "@/shared/utils";
+import { calcDistance } from "@/shared/utils/geo";
 import { divIcon } from "leaflet";
 import { MapPin, Truck } from "lucide-react";
 import { renderToString } from "react-dom/server";
+import { useGetNearbyVehicles } from "@/features/customers/hooks/useCustomer";
 
 interface NearbyMapProps {
   lat: number;
@@ -29,9 +29,10 @@ export default function NearbyMap({
   radialDistance,
 }: NearbyMapProps) {
   const [nearbyVehicles, setNearbyVehicles] = useState<VehicleGPS[]>([]);
+  const { data: vehicles } = useGetNearbyVehicles(lat, lng, radialDistance);
 
   const searchNearbyVehicles = async () => {
-    const filteredVehicles = VehiclesData.filter((vehicle) => {
+    const filteredVehicles = vehicles?.data.filter((vehicle: VehicleGPS) => {
       const distance = calcDistance(lat, lng, vehicle.lat, vehicle.lng);
       return distance <= radialDistance;
     });
@@ -45,7 +46,7 @@ export default function NearbyMap({
   const createCustomIcon = (
     IconComponent: any,
     color: string,
-    label?: string
+    label?: string,
   ) => {
     return divIcon({
       html: renderToString(
@@ -88,7 +89,7 @@ export default function NearbyMap({
               {label}
             </div>
           )}
-        </div>
+        </div>,
       ),
       className: "",
       iconSize: label ? [120, 60] : [32, 32],

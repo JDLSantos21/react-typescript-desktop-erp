@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/utils/cn";
 
 const tooltipVariants = cva("", {
   variants: {

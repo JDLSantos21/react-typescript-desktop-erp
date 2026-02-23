@@ -27,3 +27,6 @@ dist-ssr
 COMPONENTS_GUIDE.md
 docs/dev
 .env
+
+skills-lock.json
+.agents

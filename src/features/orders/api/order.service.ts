@@ -17,7 +17,7 @@ export interface OrderQueryParams {
   limit?: number;
   orderId?: number;
   trackingCode?: string;
-  customerId?: string;
+  customer_id?: string;
   status?: OrderStatus;
   startDate?: string;
   endDate?: string;
@@ -27,17 +27,17 @@ export interface OrderQueryParams {
 
 export class OrderService {
   static getOrdersByCustomerId = async (
-    customerId: string
+    customer_id: string,
   ): Promise<ApiResponse<Order[]>> => {
     const res = await apiClient.get<ApiResponse<Order[]>>(
-      `/customers/${customerId}/orders`
+      `/customers/${customer_id}/orders`,
     );
     return res.data;
   };
 
   static createOrder = async (
     orderData: CreateOrderDto,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ): Promise<ApiResponse<Order>> => {
     const res = await apiClient.post<ApiResponse<Order>>("/orders", orderData, {
       signal,
@@ -51,7 +51,7 @@ export class OrderService {
   };
 
   static getOrders = async (
-    params: OrderQueryParams
+    params: OrderQueryParams,
   ): Promise<PaginatedResponse<Order>> => {
     const { data } = await apiClient.get<PaginatedResponse<Order>>("/orders", {
       params,
@@ -60,47 +60,47 @@ export class OrderService {
   };
 
   static getOrderById = async (
-    orderId: string
+    orderId: string,
   ): Promise<ApiResponse<Order>> => {
     const res = await apiClient.get<ApiResponse<Order>>(`/orders/${orderId}`);
     return res.data;
   };
 
   static getOrderByTrackingCode = async (
-    trackingCode: string
+    trackingCode: string,
   ): Promise<ApiResponse<Order>> => {
     const res = await apiClient.get<ApiResponse<Order>>(
-      `/orders/tracking/${trackingCode}`
+      `/orders/tracking/${trackingCode}`,
     );
     return res.data;
   };
 
   static getStatusHistory = async (
-    orderId: string
+    orderId: string,
   ): Promise<ApiResponse<OrderStatusHistoryField[]>> => {
     const res = await apiClient.get<ApiResponse<OrderStatusHistoryField[]>>(
-      `/orders/${orderId}/status-history`
+      `/orders/${orderId}/status-history`,
     );
     return res.data;
   };
 
   static updateOrderStatus = async (
-    params: UpdateOrderStatusDto
+    params: UpdateOrderStatusDto,
   ): Promise<ApiResponse<Order>> => {
     const res = await apiClient.post<ApiResponse<Order>>(
       `/orders/${params.orderId}/status`,
-      { status: params.status }
+      { status: params.status },
     );
     return res.data;
   };
 
   static updateOrder = async (
     orderId: number,
-    data: Omit<UpdateOrderDto, "orderId">
+    data: Omit<UpdateOrderDto, "orderId">,
   ): Promise<ApiResponse<Order>> => {
     const res = await apiClient.patch<ApiResponse<Order>>(
       `/orders/${orderId}`,
-      data
+      data,
     );
     return res.data;
   };
@@ -116,20 +116,20 @@ export class OrderService {
 
   static assignDriver = async (
     orderId: number,
-    driverId: string
+    driverId: string,
   ): Promise<ApiResponse<Order>> => {
     const res = await apiClient.post<ApiResponse<Order>>(
       `/orders/${orderId}/assign`,
-      { employee_id: driverId }
+      { employee_id: driverId },
     );
     return res.data;
   };
 
   static unassignDriver = async (
-    orderId: number
+    orderId: number,
   ): Promise<ApiResponse<Order>> => {
     const res = await apiClient.post<ApiResponse<Order>>(
-      `/orders/${orderId}/unassign`
+      `/orders/${orderId}/unassign`,
     );
     return res.data;
   };

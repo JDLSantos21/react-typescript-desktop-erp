@@ -1,8 +1,12 @@
-import { Alert, Button, Modal, Select, Textarea } from "@/shared/components";
+import { Alert } from "@/shared/components/core/Alert";
+import { Button } from "@/shared/components/core/Button";
+import { Modal } from "@/shared/components/core/Modal";
+import { Select } from "@/shared/components/core/Select";
+import { Textarea } from "@/shared/components/core/Textarea";
 import { useUpdateOrderStatus } from "../hooks/useOrder";
 import { Order, OrderStatus } from "@/shared/types/entities/order.types";
 import { toast } from "sonner";
-import { extractApiError } from "@/shared/utils";
+import { extractApiError } from "@/shared/utils/error-handler";
 import { Controller, useForm } from "react-hook-form";
 import {
   UpdateOrderStatusFormData,
@@ -69,10 +73,10 @@ export default function StatusModal({
         onError: (err) => {
           toast.error(
             extractApiError(err).message ||
-              "No se pudo actualizar el estado del pedido."
+              "No se pudo actualizar el estado del pedido.",
           );
         },
-      }
+      },
     );
   };
 

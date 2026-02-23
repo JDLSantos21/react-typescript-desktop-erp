@@ -7,6 +7,7 @@ import {
   UpdateCustomerDto,
 } from "../types/customer.dto";
 import { customerKeys } from "../api/customer.keys";
+import { vehicleKeys } from "../api/vehicleKeys";
 
 export const useGetCustomers = (params?: CustomerQueryParams) => {
   return useQuery({
@@ -166,10 +167,10 @@ export const useEditCustomer = () => {
 export const useGetNearbyVehicles = (
   lat: number,
   lng: number,
-  radiusKm: number
+  radiusKm: number,
 ) => {
   return useQuery({
-    queryKey: ["nearbyVehicles", lat, lng, radiusKm],
+    queryKey: vehicleKeys.nearby(lat, lng, radiusKm),
     queryFn: () => CustomerService.getNearbyVehicles({ lat, lng, radiusKm }),
     enabled: !!lat && !!lng && !!radiusKm,
   });
@@ -182,7 +183,7 @@ export const useRefreshVehiclesLocations = () => {
     mutationFn: () => CustomerService.refreshVehiclesLocation(),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["nearbyVehicles"],
+        queryKey: vehicleKeys.all,
       });
     },
   });

@@ -1,15 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetOrder, useUpdateOrder } from "../hooks/useOrder";
-import { useHeaderConfig } from "@/shared/hooks";
-import { Button, OverlayLoader } from "@/shared/components";
-import { OrderStepData } from "../hooks/useOrderSteps";
+import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
+import { Button } from "@/shared/components/core/Button";
+import { EmptyState } from "@/shared/components/EmptyState";
+import { OverlayLoader } from "@/shared/components/OverlayLoader";
+import { useOrderSteps } from "../hooks/useOrderSteps";
 import Step2Products from "../components/steps/Step2Products";
 import Step3DeliveryDetails from "../components/steps/Step3DeliveryDetails";
+import { extractApiError } from "@/shared/utils/error-handler";
+
 import { toast } from "sonner";
-import { extractApiError } from "@/shared/utils";
-import { AxiosError } from "axios";
-import SectionHeader from "@/shared/components/SectionHeader";
+import StepIndicator from "../components/StepIndicator";
+import StepIndicatorNavigation from "../components/StepIndicatorNavigation";
+import Step4Summary from "../components/steps/Step4Summary";
 
 export default function EditOrderPage() {
   const { id } = useParams<{ id: string }>();
@@ -17,13 +21,22 @@ export default function EditOrderPage() {
   const { data: order, isLoading: isLoadingOrder } = useGetOrder(id!);
   const { mutate: updateOrder, isPending: isUpdating } = useUpdateOrder();
 
-  const [orderData, setOrderData] = useState<OrderStepData>({
-    orderItems: [],
-  });
+  const INITIAL_STEP = 2;
+
+  const {
+    currentStep,
+    orderData,
+    updateOrderData,
+    nextStep,
+    prevStep,
+    goToStep,
+    canAdvanceToStep,
+    isStepValid,
+  } = useOrderSteps(order?.data.customer.id, INITIAL_STEP);
 
   useEffect(() => {
     if (order?.data) {
-      setOrderData({
+      updateOrderData({
         customerId: order.data.customer.id,
         customerAddressId: order.data.address.id,
         orderItems: order.data.products.map((p) => ({
@@ -40,10 +53,6 @@ export default function EditOrderPage() {
       });
     }
   }, [order]);
-
-  const updateOrderData = (data: Partial<OrderStepData>) => {
-    setOrderData((prev) => ({ ...prev, ...data }));
-  };
 
   const handleSave = () => {
     if (!id) return;
@@ -67,9 +76,9 @@ export default function EditOrderPage() {
           navigate(`/orders/${id}`);
         },
         onError: (err) => {
-          toast.error(extractApiError(err as AxiosError).message);
+          toast.error(extractApiError(err).message);
         },
-      }
+      },
     );
   };
 
@@ -100,39 +109,58 @@ export default function EditOrderPage() {
   }
 
   if (!order?.data) {
-    return <div>No se encontró el pedido</div>;
+    return (
+      <EmptyState
+        title="No se encontró el pedido"
+        description="El pedido que intentas editar no existe o ha sido eliminado."
+      />
+    );
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-8 pb-24">
+    <div className="mx-auto h-full relative">
       {isUpdating && <OverlayLoader title="Guardando cambios..." />}
 
-      <section>
-        <SectionHeader
-          title="Productos"
-          description="Modifica los productos del pedido"
-        />
-        <div className="mt-2 p-4">
+      <StepIndicator
+        currentStep={currentStep}
+        steps={[
+          { number: 2, title: "Productos", description: "Modificar productos" },
+          {
+            number: 3,
+            title: "Detalles",
+            description: "Información de entrega",
+          },
+          { number: 4, title: "Resumen", description: "Confirmar cambios" },
+        ]}
+        onStepClick={(step) => goToStep(step)}
+        canNavigateToStep={(step) => canAdvanceToStep(step)}
+      />
+
+      <div className="bg-white pt-6 px-6">
+        {currentStep === 2 && (
           <Step2Products
             orderData={orderData}
             updateOrderData={updateOrderData}
             className="h-[600px]"
           />
-        </div>
-      </section>
+        )}
 
-      <section>
-        <SectionHeader
-          title="Detalles de Entrega y Notas"
-          description="Actualiza la fecha programada y notas"
-        />
-        <div className="mt-2 p-4">
+        {currentStep === 3 && (
           <Step3DeliveryDetails
             orderData={orderData}
             updateOrderData={updateOrderData}
           />
-        </div>
-      </section>
+        )}
+
+        {currentStep === 4 && <Step4Summary orderData={orderData} />}
+      </div>
+
+      <StepIndicatorNavigation
+        currentStep={currentStep}
+        prevStep={prevStep}
+        nextStep={nextStep}
+        canGoNext={isStepValid(currentStep)}
+      />
     </div>
   );
 }

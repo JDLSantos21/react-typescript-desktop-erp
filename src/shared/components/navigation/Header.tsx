@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/shared/stores/authStore";
 import { useLogout } from "@/features/auth/hooks/useAuth";
-import { Button, ReturnIcon } from "@/shared/components";
+import { Button } from "@/shared/components/core/Button";
+import { ReturnIcon } from "@/shared/components/icons";
 import { useHeader } from "@/shared/contexts/HeaderContext";
 import { useNavigate } from "react-router-dom";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";

@@ -1,5 +1,6 @@
-import { Badge, EmptyState } from "@/shared/components";
-import { formatDate } from "@/shared/utils";
+import { EmptyState } from "@/shared/components/EmptyState";
+import { Badge } from "@/shared/components/core/Badge";
+import { formatDate } from "@/shared/utils/formatters";
 import { useGetEquipmentsByCustomerId } from "@/features/equipments/hooks/useEquipments";
 import { useParams } from "react-router-dom";
 

@@ -1,5 +1,5 @@
 import { useLogout } from "@/features/auth/hooks/useAuth";
-import { Button } from "@/shared/components";
+import { Button } from "@/shared/components/core/Button";
 import { useNavigate } from "react-router-dom";
 
 export default function DashboardPage() {

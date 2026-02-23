@@ -1,4 +1,7 @@
-import { Checkbox, Input, Modal, Select } from "@/shared/components";
+import { Input } from "@/shared/components/core/Input";
+import { Modal } from "@/shared/components/core/Modal";
+import { Select } from "@/shared/components/core/Select";
+import { Checkbox } from "@/shared/components/core/Checkbox";
 import { Button } from "@/shared/components/core/Button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
@@ -85,7 +88,7 @@ export default function PhoneModal({
               position: "bottom-center",
             });
           },
-        }
+        },
       );
     } else {
       createPhone(
@@ -100,7 +103,7 @@ export default function PhoneModal({
               position: "bottom-center",
             });
           },
-        }
+        },
       );
     }
   };

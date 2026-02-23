@@ -1,4 +1,6 @@
-import { Button, Input, Modal } from "@/shared/components";
+import { Button } from "@/shared/components/core/Button";
+import { Input } from "@/shared/components/core/Input";
+import { Modal } from "@/shared/components/core/Modal";
 import { Customer } from "@/shared/types/entities/customer.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -9,7 +11,7 @@ import {
 import { memo } from "react";
 import { useEditCustomer } from "../hooks/useCustomer";
 import { toast } from "sonner";
-import { extractApiError } from "@/shared/utils";
+import { extractApiError } from "@/shared/utils/error-handler";
 
 interface ModalProps {
   customer?: Customer;
@@ -59,7 +61,7 @@ export default memo(function EditCustomerModal({
             position: "bottom-center",
           });
         },
-      }
+      },
     );
   };
 

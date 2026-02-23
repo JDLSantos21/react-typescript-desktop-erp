@@ -1,14 +1,16 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useCustomerById } from "../hooks/useCustomer";
-import { ErrorState, FeatureErrorBoundary } from "@/shared/components";
+import { ErrorState } from "@/shared/components/ErrorState";
 import SectionLoader from "@/shared/components/SectionLoader";
-import { formatDate, formatRNC } from "@/shared/utils";
+import { formatDate } from "@/shared/utils/formatters";
+import { formatRNC } from "@/shared/utils/formatters";
 import AddressModal from "../components/AddressModal";
 import CustomerAddressList from "../components/CustomerAddressList";
 import CustomerPhoneList from "../components/CustomerPhoneList";
 import CustomerActivitySection from "../components/CustomerActivitySection";
 import CustomerHistoryModal from "../components/CustomerHistoryModal";
-import { useModal, useHeaderConfig } from "@/shared/hooks";
+import { useModal } from "@/shared/hooks/useModal";
+import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
 import EditCustomerModal from "../components/EditCustomerModal";
 import PhoneModal from "../components/PhoneModal";
 import { useState, useMemo } from "react";
@@ -17,21 +19,19 @@ import {
   CustomerPhone,
 } from "@/shared/types/entities/customer.types";
 import { useRefetchToast } from "@/shared/hooks/useRefetchToast";
-import OrdersHistoryModal from "../components/OrdersHistoryModal";
 import CustomerAsideMenu from "../components/CustomerAsideMenu";
 import NearbyVehiclesMapModal from "../components/NearbyVehiclesMapModal";
+import { FeatureErrorBoundary } from "@/shared/components/error-boundary/FeatureErrorBoundary";
 
 export default function CustomerDetailPage() {
-  const { customerId } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [selectedPhone, setSelectedPhone] = useState<CustomerPhone>();
   const [selectedAddress, setSelectedAddress] = useState<CustomerAddress>();
 
   const { data, isLoading, error, refetch, isError, isRefetching } =
-    useCustomerById(customerId ?? "");
+    useCustomerById(id ?? "");
   useRefetchToast(isRefetching, "Actualizando información del cliente...");
-
-  console.log("Customer Detail Data:", data);
 
   const addressModal = useModal();
   const phoneModal = useModal();
@@ -69,12 +69,12 @@ export default function CustomerDetailPage() {
         </div>
       ) : undefined,
     }),
-    [data?.data, navigate]
+    [data?.data, navigate],
   );
 
   useHeaderConfig(headerConfig);
 
-  if (!customerId) {
+  if (!id) {
     return (
       <ErrorState
         variant="error"
@@ -86,18 +86,6 @@ export default function CustomerDetailPage() {
     );
   }
 
-  const ErrorStateComp = () => {
-    return (
-      <ErrorState
-        title="Ocurrió un problema"
-        message="No se pudo cargar la información del cliente"
-        error={error}
-        onRetry={() => refetch()}
-        retryLabel="Reintentar"
-      />
-    );
-  };
-
   return (
     <div className="h-full">
       <section className="h-full">
@@ -107,7 +95,13 @@ export default function CustomerDetailPage() {
             placeholder="Cargando información"
           />
         ) : isError ? (
-          <ErrorStateComp />
+          <ErrorState
+            title="Ocurrió un problema"
+            message="No se pudo cargar la información del cliente"
+            error={error}
+            onRetry={() => refetch()}
+            retryLabel="Reintentar"
+          />
         ) : (
           <div className="flex h-full">
             <div className="flex-1 px-8 py-8 space-y-8 max-w-4xl overflow-y-auto">
@@ -215,39 +209,34 @@ export default function CustomerDetailPage() {
           setSelectedAddress(undefined);
           addressModal.close();
         }}
-        customerId={customerId}
+        customerId={id}
         address={selectedAddress}
       />
       <PhoneModal
         isOpen={phoneModal.isOpen}
         onClose={phoneModal.close}
-        customerId={customerId}
+        customerId={id}
         phone={selectedPhone}
       />
       <CustomerHistoryModal
         isOpen={equipmentModal.isOpen}
         onClose={equipmentModal.close}
-        customerId={customerId}
+        customerId={id}
       />
-      {data?.data && (
+      {data?.data ? (
         <EditCustomerModal
           customer={data.data}
           isOpen={editModal.isOpen}
           onClose={editModal.close}
         />
-      )}
-      <OrdersHistoryModal
-        isOpen={ordersHistoryModal.isOpen}
-        onClose={ordersHistoryModal.close}
-        customerId={customerId}
-      />
-      {data?.data.addresses && (
+      ) : null}
+      {data?.data.addresses ? (
         <NearbyVehiclesMapModal
           isOpen={mapModal.isOpen}
           onClose={mapModal.close}
           addreses={data?.data.addresses}
         />
-      )}
+      ) : null}
     </div>
   );
 }

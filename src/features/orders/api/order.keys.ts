@@ -5,4 +5,6 @@ export const orderKeys = {
   details: () => [...orderKeys.all, "detail"] as const,
   detail: (id: string) => [...orderKeys.details(), id] as const,
   counts: () => [...orderKeys.all, "counts"] as const,
+  statusHistory: (orderId: string) =>
+    [...orderKeys.all, "status-history", orderId] as const,
 } as const;

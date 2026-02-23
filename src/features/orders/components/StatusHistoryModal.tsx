@@ -1,11 +1,13 @@
-import { Badge, Modal } from "@/shared/components";
+import { Badge } from "@/shared/components/core/Badge";
+import { Modal } from "@/shared/components/core/Modal";
 import { useGetOrderStatusHistory } from "../hooks/useOrder";
 import SectionLoader from "@/shared/components/SectionLoader";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import { cn } from "@/lib/utils";
 import { UserIcon } from "@/shared/components/icons";
-import { getStatusColor, getStatusDotColor } from "@/shared/utils";
+import { getStatusColor } from "@/shared/utils/status.utils";
+import { getStatusDotColor } from "@/shared/utils/status.utils";
 
 interface StatusHistoryModalProps {
   orderId: string;

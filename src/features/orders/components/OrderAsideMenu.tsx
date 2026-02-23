@@ -1,13 +1,10 @@
-import {
-  AsideButton,
-  AsideMenu,
-  DeleteIcon,
-  DriverIcon,
-  EditIcon,
-  HistoryIcon,
-} from "@/shared/components";
+import { AsideButton, AsideMenu } from "@/shared/components/navigation/AsideMenu";
+import { DeleteIcon } from "@/shared/components/icons";
+import { DriverIcon } from "@/shared/components/icons";
+import { EditIcon } from "@/shared/components/icons";
+import { HistoryIcon } from "@/shared/components/icons";
 import ConfirmDialog from "@/shared/components/core/ConfirmDialog";
-import { useModal } from "@/shared/hooks";
+import { useModal } from "@/shared/hooks/useModal";
 import { OrderStatus } from "@/shared/types/entities/order.types";
 
 interface AsideMenuProps {

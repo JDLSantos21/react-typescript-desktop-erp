@@ -12,6 +12,10 @@ const host = process.env.TAURI_DEV_HOST;
 export default defineConfig(async () => ({
   plugins: [react(), tailwindcss()],
 
+  optimizeDeps: {
+    include: ["lucide-react"],
+  },
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

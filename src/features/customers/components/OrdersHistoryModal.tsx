@@ -1,166 +1,109 @@
-import { Modal, Table } from "@/shared/components";
-import { orderTableColumns } from "../config/orderHistoryTableConfig";
+import { Modal } from "@/shared/components/core/Modal";
+// import { Table } from "@/shared/components/core/Table";
+// import { orderHistoryTableColumns } from "../config/orderHistoryTableConfig";
 
 interface OrdersHistoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  customerId?: string;
 }
 
-const customerOrdersMockData = [
-  {
-    trackingCode: "PD-2024-001121",
-    status: "ENTREGADO" as const,
-    date: "2024-11-01T10:30:00Z",
-    scheduledDate: "2024-11-02T14:00:00Z",
-    deliveredDate: "2024-11-02T15:45:00Z",
-    deliveryNotes: "Entregado sin novedades",
-    notes: "Cliente solicita factura",
-    products: [
-      {
-        id: 1,
-        name: "Harina de trigo",
-        quantity: 50,
-        size: "25kg",
-        unit: "sacos",
-      },
-      {
-        id: 2,
-        name: "Azúcar refinada",
-        quantity: 30,
-        size: "50kg",
-        unit: "sacos",
-      },
-    ],
-    address: {
-      id: 1,
-      branchName: "Sucursal Principal",
-      direction: "Av. Winston Churchill #123, Piantini",
-      city: "Santo Domingo",
-      isPrimary: true,
-    },
-    phone: {
-      id: 1,
-      phoneNumber: "809-555-1234",
-      type: "MOVIL" as const,
-      description: "Teléfono principal",
-      hasWhatsapp: true,
-      isPrimary: true,
-    },
-    customer: {
-      id: "CUST-001",
-      businessName: "Panadería El Trigal",
-      representativeName: "Juan Pérez",
-    },
-    assignedTo: {
-      id: "EMP-001",
-      name: "Carlos Rodríguez",
-    },
-  },
-  {
-    trackingCode: "PD-2024-002232",
-    status: "PREPARANDO" as const,
-    date: "2024-11-03T08:15:00Z",
-    scheduledDate: "2024-11-04T10:00:00Z",
-    deliveredDate: null,
-    deliveryNotes: null,
-    notes: "Urgente - Cliente VIP",
-    products: [
-      {
-        id: 3,
-        name: "Aceite vegetal",
-        quantity: 20,
-        size: "5L",
-        unit: "botellas",
-      },
-      {
-        id: 4,
-        name: "Sal marina",
-        quantity: 10,
-        size: "1kg",
-        unit: "paquetes",
-      },
-      {
-        id: 5,
-        name: "Levadura fresca",
-        quantity: 15,
-        size: "500g",
-        unit: "bloques",
-      },
-    ],
-    address: {
-      id: 2,
-      branchName: "Almacén Central",
-      direction: "Calle Duarte #456, Los Mina",
-      city: "Santo Domingo Este",
-      isPrimary: false,
-    },
-    phone: {
-      id: 2,
-      phoneNumber: "809-555-5678",
-      type: "FIJO" as const,
-      description: "Oficina administrativa",
-      hasWhatsapp: false,
-      isPrimary: false,
-    },
-    customer: {
-      id: "CUST-001",
-      businessName: "Panadería El Trigal",
-      representativeName: "Juan Pérez",
-    },
-    assignedTo: {
-      id: "EMP-002",
-      name: "María García",
-    },
-  },
-  {
-    trackingCode: "PD-2024-003333",
-    status: "CANCELADO" as const,
-    date: "2024-10-28T16:45:00Z",
-    scheduledDate: "2024-10-30T09:00:00Z",
-    deliveredDate: null,
-    deliveryNotes: null,
-    notes: "Cliente canceló por cambio de proveedor",
-    products: [
-      {
-        id: 6,
-        name: "Chocolate en polvo",
-        quantity: 25,
-        size: "2kg",
-        unit: "latas",
-      },
-    ],
-    address: {
-      id: 1,
-      branchName: "Sucursal Principal",
-      direction: "Av. Winston Churchill #123, Piantini",
-      city: "Santo Domingo",
-      isPrimary: true,
-    },
-    phone: {
-      id: 1,
-      phoneNumber: "809-555-1234",
-      type: "MOVIL" as const,
-      description: "Teléfono principal",
-      hasWhatsapp: true,
-      isPrimary: true,
-    },
-    customer: {
-      id: "CUST-001",
-      businessName: "Panadería El Trigal",
-      representativeName: "Juan Pérez",
-    },
-    assignedTo: {
-      id: "EMP-001",
-      name: "Carlos Rodríguez",
-    },
-  },
-];
+// const customerOrdersMockData = [
+//   {
+//     id: 1,
+//     trackingCode: "ORD-2023-001",
+//     status: "ENTREGADO" as const,
+//     date: "2023-11-20T10:30:00",
+//     scheduledDate: "2023-11-21T08:00:00",
+//     deliveredDate: "2023-11-21T09:15:00",
+//     deliveryNotes: "Entregado en recepción",
+//     notes: "Cliente prefiere entrega por la mañana",
+//     products: [
+//       { id: 101, name: "Producto A", quantity: 2, size: "Garrafón", unit: "L" },
+//       { id: 102, name: "Producto B", quantity: 1, size: "Botella", unit: "ml" },
+//     ],
+//     address: {
+//       street: "Calle 1",
+//       neighborhood: "Centro",
+//       city: "Ciudad",
+//       state: "Estado",
+//     },
+//     phone: { number: "1234567890", type: "Móvil" as const },
+//     customer: {
+//       name: "Juan Pérez",
+//       businessName: "Empresa S.A.",
+//       type: "RESIDENCIAL" as const,
+//     },
+//     assignedTo: { id: 1, name: "Chofer 1" },
+//   },
+//   {
+//     id: 2,
+//     trackingCode: "ORD-2023-002",
+//     status: "CANCELADO" as const,
+//     date: "2023-11-18T14:20:00",
+//     scheduledDate: "2023-11-19T10:00:00",
+//     deliveredDate: null,
+//     deliveryNotes: null,
+//     notes: "Cancelado por el cliente",
+//     products: [
+//       {
+//         id: 103,
+//         name: "Producto C",
+//         quantity: 5,
+//         size: "Paquete",
+//         unit: "pzas",
+//       },
+//     ],
+//     address: {
+//       street: "Avenida 2",
+//       neighborhood: "Norte",
+//       city: "Ciudad",
+//       state: "Estado",
+//     },
+//     phone: { number: "0987654321", type: "Trabajo" as const },
+//     customer: {
+//       name: "María Gómez",
+//       businessName: "Negocio Local",
+//       type: "NEGOCIO" as const,
+//     },
+//     assignedTo: { id: 2, name: "Chofer 2" },
+//   },
+//   {
+//     id: 3,
+//     trackingCode: "ORD-2023-003",
+//     status: "EN_CAMINO" as const,
+//     date: "2023-11-22T09:00:00",
+//     scheduledDate: "2023-11-22T13:00:00",
+//     deliveredDate: null,
+//     deliveryNotes: null,
+//     notes: "Entrega urgente",
+//     products: [
+//       {
+//         id: 104,
+//         name: "Producto D",
+//         quantity: 10,
+//         size: "Caja",
+//         unit: "unidades",
+//       },
+//     ],
+//     address: {
+//       street: "Ruta 3",
+//       neighborhood: "Este",
+//       city: "Pueblo",
+//       state: "Estado",
+//     },
+//     phone: { number: "1122334455", type: "Móvil" as const },
+//     customer: {
+//       name: "Pedro López",
+//       businessName: "Tienda Pequeña",
+//       type: "NEGOCIO" as const,
+//     },
+//     assignedTo: { id: 1, name: "Chofer 1" },
+//   },
+// ];
 
 export default function OrdersHistoryModal({
   isOpen,
   onClose,
-  customerId,
 }: OrdersHistoryModalProps) {
   return (
     <Modal
@@ -170,13 +113,13 @@ export default function OrdersHistoryModal({
       size="xl"
     >
       <Modal.Body>
-        <Table
+        {/* <Table
           isLoading={false}
           minRows={customerOrdersMockData.length}
-          columns={orderTableColumns}
-          data={customerOrdersMockData}
+          columns={orderHistoryTableColumns}
           keyExtractor={(order) => order.trackingCode}
-        />
+        /> */}
+        <p>hola</p>
       </Modal.Body>
     </Modal>
   );

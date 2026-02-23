@@ -7,18 +7,18 @@ import {
   Popup,
   useMap,
 } from "react-leaflet";
-import { formatDate } from "@/shared/utils";
+import { formatDate } from "@/shared/utils/formatters";
 import { CustomerAddress } from "@/shared/types/entities/customer.types";
+import { Button } from "@/shared/components/core/Button";
 import {
-  Button,
   MapPinUserIcon,
-  Modal,
   NavigateIcon,
   RefreshIcon,
-  Spinner,
-  Tooltip,
   TruckIcon,
-} from "@/shared/components";
+} from "@/shared/components/icons";
+import { Modal } from "@/shared/components/core/Modal";
+import { Tooltip } from "@/shared/components/core/Tooltip";
+import { Spinner } from "@/shared/components/core/Spinner";
 import {
   useGetNearbyVehicles,
   useRefreshVehiclesLocations,
@@ -64,7 +64,7 @@ export default function NearbyVehiclesMapModal({
   const RADIAL_DISTANCE_METERS = 1000;
 
   const firstWithCoords = addreses.find(
-    (a) => a.coordinates?.latitude && a.coordinates?.longitude
+    (a) => a.coordinates?.latitude && a.coordinates?.longitude,
   );
 
   if (!firstWithCoords?.coordinates) return null;
@@ -82,7 +82,7 @@ export default function NearbyVehiclesMapModal({
   } = useGetNearbyVehicles(
     cPostion.Clat,
     cPostion.Clng,
-    RADIAL_DISTANCE_METERS / 1000
+    RADIAL_DISTANCE_METERS / 1000,
   );
 
   const { mutate: refreshLocations, isPending: isRefreshing } =

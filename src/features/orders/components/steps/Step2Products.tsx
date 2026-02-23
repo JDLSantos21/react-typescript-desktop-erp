@@ -1,19 +1,17 @@
 import { useRef, useState } from "react";
-import {
-  Input,
-  Button,
-  Textarea,
-  ShoppingCartPlusIcon,
-  SearchOffIcon,
-  WarningIcon,
-} from "@/shared/components";
+import { Input } from "@/shared/components/core/Input";
+import { Button } from "@/shared/components/core/Button";
+import { Textarea } from "@/shared/components/core/Textarea";
+import { ShoppingCartPlusIcon } from "@/shared/components/icons";
+import { SearchOffIcon } from "@/shared/components/icons";
+import { WarningIcon } from "@/shared/components/icons";
 import { SearchIcon, TrashIcon } from "lucide-react";
 import { OrderStepData } from "../../hooks/useOrderSteps";
 import { useGetAllProducts } from "../../hooks/useOrder";
-import { useDebounce } from "@/shared/hooks";
+import { useDebounce } from "@/shared/hooks/useDebounce";
 import SectionLoader from "@/shared/components/SectionLoader";
 
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/utils/cn";
 
 interface Step2ProductsProps {
   orderData: OrderStepData;

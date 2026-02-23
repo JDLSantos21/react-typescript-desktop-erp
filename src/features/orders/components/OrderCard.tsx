@@ -1,27 +1,36 @@
 import { handleOpenWhatsapp } from "@/lib/opener";
-import {
-  Badge,
-  Button,
-  CopyIcon,
-  LocationIcon,
-  MessagesIcon,
-  PhoneIcon,
-  WhatsAppIcon,
-} from "@/shared/components";
+import { Badge } from "@/shared/components/core/Badge";
+import { Button } from "@/shared/components/core/Button";
+import { CopyIcon } from "@/shared/components/icons";
+import { LocationIcon } from "@/shared/components/icons";
+import { MessagesIcon } from "@/shared/components/icons";
+import { PhoneIcon } from "@/shared/components/icons";
+import { WhatsAppIcon } from "@/shared/components/icons";
 import { Order } from "@/shared/types/entities/order.types";
-import {
-  copyToClipboard,
-  formatDate,
-  formatPhoneNumber,
-  getStatusColor,
-} from "@/shared/utils";
+import { copyToClipboard } from "@/shared/utils/clipboard";
+import { formatDate } from "@/shared/utils/formatters";
+import { formatPhoneNumber } from "@/shared/utils/formatters";
+import { getStatusColor } from "@/shared/utils/status.utils";
+import { memo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface OrderCardProps {
   order: Order;
 }
-export default function OrderCard({ order }: OrderCardProps) {
+export default memo(function OrderCard({ order }: OrderCardProps) {
   const navigate = useNavigate();
+
+  const handleCopy = useCallback(() => {
+    copyToClipboard(order.trackingCode);
+  }, [order.trackingCode]);
+
+  const onOpenWhatsapp = useCallback(() => {
+    handleOpenWhatsapp(order);
+  }, [order]);
+
+  const onNavigate = useCallback(() => {
+    navigate(`/orders/${order.id}`);
+  }, [navigate, order.id]);
 
   return (
     <div className="bg-white p-4 rounded-lg shadow border border-border">
@@ -36,7 +45,7 @@ export default function OrderCard({ order }: OrderCardProps) {
           <span>{order.trackingCode}</span>
           <button
             className="ml-2 cursor-pointer hover:text-blue-600"
-            onClick={() => copyToClipboard(order.trackingCode)}
+            onClick={handleCopy}
           >
             <CopyIcon className="w-3.5 h-3.5" />
           </button>
@@ -79,7 +88,7 @@ export default function OrderCard({ order }: OrderCardProps) {
                 iconClassName="text-green-500"
                 size="sm"
                 variant="ghost"
-                onClick={() => handleOpenWhatsapp(order)}
+                onClick={onOpenWhatsapp}
               />
             )}
           </div>
@@ -95,14 +104,10 @@ export default function OrderCard({ order }: OrderCardProps) {
       </section>
       <div className="border-b border-gray-200 my-3" />
       <section className="flex justify-between items-center">
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => navigate(`/orders/${order.id}`)}
-        >
+        <Button size="sm" variant="outline" onClick={onNavigate}>
           Detalles
         </Button>
       </section>
     </div>
   );
-}
+});

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Select } from "@/shared/components";
+import { Select } from "@/shared/components/core/Select";
 import CustomerSearch from "@/shared/components/CustomerSearch";
 import { Customer } from "@/shared/types/entities/customer.types";
 import { useCustomerById } from "@/features/customers/hooks/useCustomer";

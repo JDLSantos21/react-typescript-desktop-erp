@@ -1,5 +1,6 @@
 import { CustomerAddress } from "@/shared/types/entities/customer.types";
-import { Badge, MapPinPlusIcon } from "@/shared/components";
+import { Badge } from "@/shared/components/core/Badge";
+import { MapPinPlusIcon } from "@/shared/components/icons";
 
 interface CustomerAddressListProps {
   addresses: CustomerAddress[];

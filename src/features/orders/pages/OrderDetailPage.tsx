@@ -1,27 +1,24 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetOrder } from "../hooks/useOrder";
-import {
-  copyToClipboard,
-  formatDate,
-  formatPhoneNumber,
-  getStatusColor,
-} from "@/shared/utils";
-import {
-  Badge,
-  Button,
-  CopyIcon,
-  ErrorState,
-  HistoryIcon,
-  LocationIcon,
-  MapModal,
-  MapPinUserIcon,
-  UserIcon,
-  WhatsAppIcon,
-} from "@/shared/components";
+import { copyToClipboard } from "@/shared/utils/clipboard";
+import { formatDate } from "@/shared/utils/formatters";
+import { formatPhoneNumber } from "@/shared/utils/formatters";
+import { getStatusColor } from "@/shared/utils/status.utils";
+import { Badge } from "@/shared/components/core/Badge";
+import { Button } from "@/shared/components/core/Button";
+import { CopyIcon } from "@/shared/components/icons";
+import { ErrorState } from "@/shared/components/ErrorState";
+import { HistoryIcon } from "@/shared/components/icons";
+import { LocationIcon } from "@/shared/components/icons";
+import { MapModal } from "@/shared/components/core/MapModal";
+import { MapPinUserIcon } from "@/shared/components/icons";
+import { UserIcon } from "@/shared/components/icons";
+import { WhatsAppIcon } from "@/shared/components/icons";
 import { toast } from "sonner";
 import SectionLoader from "@/shared/components/SectionLoader";
 import OrderAsideMenu from "../components/OrderAsideMenu";
-import { useHeaderConfig, useModal } from "@/shared/hooks";
+import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
+import { useModal } from "@/shared/hooks/useModal";
 import { useEffect } from "react";
 import StatusHistoryModal from "../components/StatusHistoryModal";
 import StatusModal from "../components/StatusModal";
@@ -66,7 +63,7 @@ export default function OrderDetailPage() {
                       toast.info("Código de seguimiento copiado.");
                     } catch (error) {
                       toast.error(
-                        "No se pudo copiar el código de seguimiento."
+                        "No se pudo copiar el código de seguimiento.",
                       );
                     }
                   }}
@@ -137,9 +134,7 @@ export default function OrderDetailPage() {
                 </Button>
 
                 <Button
-                  onClick={() =>
-                    navigate(`/customers/details/${order.customer.id}`)
-                  }
+                  onClick={() => navigate(`/customers/${order.customer.id}`)}
                   icon={UserIcon}
                   variant="outline"
                   size="sm"

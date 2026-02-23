@@ -3,7 +3,7 @@ import { Modal } from "./Modal";
 import { Map, MapProps } from "./Map";
 import { Button } from "./Button";
 import { ExternalLinkIcon } from "../icons";
-import { cn } from "@/shared/utils";
+import { cn } from "@/shared/utils/cn";
 import { handleOpenGoogleMaps } from "@/lib/opener";
 
 interface MapModalProps extends Omit<MapProps, "height" | "className"> {

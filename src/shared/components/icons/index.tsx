@@ -4,6 +4,7 @@ import {
   TfiAngleDoubleLeft,
   TfiAngleRight,
   TfiAngleDoubleRight,
+  TfiAngleDown,
 } from "react-icons/tfi";
 import { FaWhatsapp, FaUserEdit } from "react-icons/fa";
 import {
@@ -61,6 +62,9 @@ export const ChevronDoubleLeftIcon = (props: IconProps) => (
 );
 export const ChevronDoubleRightIcon = (props: IconProps) => (
   <TfiAngleDoubleRight {...props} />
+);
+export const ChevronDownIcon = (props: IconProps) => (
+  <TfiAngleDown {...props} />
 );
 
 export const DashboardIcon = (props: IconProps) => (

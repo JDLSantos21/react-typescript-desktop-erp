@@ -1,4 +1,5 @@
-import { Textarea, DatePicker } from "@/shared/components";
+import { Textarea } from "@/shared/components/core/Textarea";
+import { DatePicker } from "@/shared/components/core/DatePicker";
 import { OrderStepData } from "../../hooks/useOrderSteps";
 import { format } from "date-fns";
 

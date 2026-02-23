@@ -1,9 +1,9 @@
 import { HistoryIcon, OrderIcon, TruckIcon } from "@/shared/components/icons";
-import { getStatusDotColor } from "@/shared/utils";
+import { getStatusDotColor } from "@/shared/utils/status.utils";
 import { OrderStatus } from "@/shared/types/entities/order.types";
 import { useGetInProgressOrdersCount } from "../hooks/useOrder";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import { Spinner } from "@/shared/components";
+import { Spinner } from "@/shared/components/core/Spinner";
 
 export const OrdersStats = () => {
   const { data, isLoading, isRefetching } = useGetInProgressOrdersCount();

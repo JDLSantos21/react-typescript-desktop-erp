@@ -1,30 +1,29 @@
-import {
-  Button,
-  FeatureErrorBoundary,
-  Input,
-  Pagination,
-  Table,
-  TableFilters,
-  Select,
-  ErrorState,
-  EmptyState,
-  SearchIcon,
-} from "@/shared/components";
+import { Button } from "@/shared/components/core/Button";
+import { Input } from "@/shared/components/core/Input";
+import { Select } from "@/shared/components/core/Select";
+import { Table } from "@/shared/components/core/Table";
+import { TableFilters } from "@/shared/components/core/TableFilters";
+import { Pagination } from "@/shared/components/core/Pagination";
+
 import { useNavigate } from "react-router-dom";
-import {
-  useTableFilters,
-  useDebounce,
-  useHeaderConfig,
-  usePagination,
-} from "@/shared/hooks";
+import { useTableFilters } from "@/shared/hooks/useTableFilters";
+import { useDebounce } from "@/shared/hooks/useDebounce";
+import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
+import { usePagination } from "@/shared/hooks/usePagination";
 import { useGetCustomers } from "../hooks/useCustomer";
 import { customerTableColumns } from "../config/customerTableConfig";
+import { useCallback, useMemo } from "react";
+import { SearchIcon } from "@/shared/components/icons";
+import { EmptyState } from "@/shared/components/EmptyState";
+import { ErrorState } from "@/shared/components/ErrorState";
+import { FeatureErrorBoundary } from "@/shared/components/error-boundary/FeatureErrorBoundary";
+import { APP_CONFIG } from "@/shared/constants/config";
 
 export default function CustomerPage() {
   const navigate = useNavigate();
 
   const { setPage, setLimit, paginationParams } = usePagination({
-    defaultLimit: 12,
+    defaultLimit: APP_CONFIG.PAGINATION.DEFAULT_LIMIT,
     syncWithUrl: true,
   });
 
@@ -46,28 +45,40 @@ export default function CustomerPage() {
     search: debouncedSearch,
   });
 
-  useHeaderConfig({
-    title: "Clientes",
-    description: "Busca, añade y gestiona tus clientes.",
-    actions: (
+  const headerActions = useMemo(() => {
+    return (
       <div className="flex gap-2">
         <Button variant="outline">Exportar</Button>
         <Button onClick={() => navigate("/customers/new")}>
           Crear cliente
         </Button>
       </div>
-    ),
+    );
+  }, [navigate]);
+
+  useHeaderConfig({
+    title: "Clientes",
+    description: "Busca, añade y gestiona tus clientes.",
+    actions: headerActions,
   });
 
   const pagination = customers?.meta.pagination;
 
   const hasActiveFilters = Object.values(filters).some(
-    (value) => value !== "" && value !== undefined && value !== null
+    (value) => value !== "" && value !== undefined && value !== null,
   );
 
-  const handleRowClick = (customer: { id: string }) => {
-    navigate(`/customers/details/${customer.id}`);
-  };
+  const handleRowClick = useCallback(
+    (customer: { id: string }) => {
+      navigate(`/customers/${customer.id}`);
+    },
+    [navigate],
+  );
+
+  const emptyData = useMemo(() => [], []);
+  const tableData = customers?.data || emptyData;
+
+  const keyExtractor = useCallback((customer: any) => customer.id, []);
 
   const emptyMessage = hasActiveFilters
     ? {
@@ -136,15 +147,15 @@ export default function CustomerPage() {
           <ErrorState
             variant="error"
             error={error}
-            showDetails={process.env.NODE_ENV === "development"}
+            showDetails={import.meta.env.DEV}
             onRetry={() => refetch()}
           />
         ) : (
           <FeatureErrorBoundary featureName="tabla de clientes">
             <Table
               columns={customerTableColumns}
-              data={customers?.data || []}
-              keyExtractor={(customer) => customer.id}
+              data={tableData}
+              keyExtractor={keyExtractor}
               isLoading={isLoading}
               emptyMessage="No se encontraron clientes"
               onRowClick={handleRowClick}
@@ -154,7 +165,7 @@ export default function CustomerPage() {
         )}
       </div>
 
-      {pagination && pagination.totalPages > 1 && (
+      {pagination && pagination.totalPages > 1 ? (
         <div className="w-full left-0 px-3 bg-white py-1 border-t border-border">
           <Pagination
             currentPage={pagination.page}
@@ -166,7 +177,7 @@ export default function CustomerPage() {
             showFirstLast
           />
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

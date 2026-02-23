@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { memo, ReactNode } from "react";
 
 export interface Column<T> {
   key: string;
@@ -22,7 +22,7 @@ interface TableProps<T> {
   tableLayout?: "fixed" | "auto"; // Controla el layout de la tabla
 }
 
-export const Table = <T extends Record<string, any>>({
+const TableComponent = <T extends Record<string, any>>({
   columns,
   data,
   keyExtractor,
@@ -139,3 +139,5 @@ export const Table = <T extends Record<string, any>>({
     </div>
   );
 };
+
+export const Table = memo(TableComponent) as typeof TableComponent;

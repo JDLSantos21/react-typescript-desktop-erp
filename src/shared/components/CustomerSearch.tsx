@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Input } from "@/shared/components";
+import { Input } from "@/shared/components/core/Input";
 import { SearchIcon } from "lucide-react";
 import { useGetCustomers } from "@/features/customers/hooks/useCustomer";
-import { useDebounce } from "@/shared/hooks";
+import { useDebounce } from "@/shared/hooks/useDebounce";
 import { Customer } from "@/shared/types/entities/customer.types";
 import { Spinner } from "@/shared/components/core/Spinner";
 
