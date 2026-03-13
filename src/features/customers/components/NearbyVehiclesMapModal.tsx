@@ -67,11 +67,9 @@ export default function NearbyVehiclesMapModal({
     (a) => a.coordinates?.latitude && a.coordinates?.longitude,
   );
 
-  if (!firstWithCoords?.coordinates) return null;
-
   const [cPostion, setCPosition] = useState<CurrentPosition>({
-    Clat: firstWithCoords.coordinates.latitude,
-    Clng: firstWithCoords.coordinates.longitude,
+    Clat: firstWithCoords?.coordinates?.latitude ?? 0,
+    Clng: firstWithCoords?.coordinates?.longitude ?? 0,
   });
 
   const {
@@ -98,7 +96,7 @@ export default function NearbyVehiclesMapModal({
     });
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !firstWithCoords?.coordinates) return null;
 
   return (
     <Modal

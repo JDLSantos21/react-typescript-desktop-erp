@@ -175,7 +175,7 @@ export default function Step2Products({
         {/* Add Product Form */}
 
         {selectedProductId !== null ? (
-          <div className="bg-background-secondary border border-border rounded-lg p-4 space-y-4 h-[300px]">
+          <div className="bg-background-secondary border border-border rounded-lg p-4 space-y-4 h-75">
             <h4 className="font-semibold text-gray-900">
               {newProduct.productName}
             </h4>
@@ -248,7 +248,7 @@ export default function Step2Products({
 
           {orderData.orderItems.map((product, index) => (
             <div
-              key={index}
+              key={product.productId}
               className="bg-white border border-border rounded-lg p-2"
             >
               <div className="flex items-center justify-between">

@@ -37,8 +37,16 @@ export default function CustomerPhoneList({
       {phones.map((phone) => (
         <div
           key={phone.id}
-          className="bg-background-secondary border border-border-light rounded-lg p-4 hover:border-primary/30 transition-colors select-none cursor-pointer"
+          role="button"
+          tabIndex={0}
+          className="bg-background-secondary border border-border-light rounded-lg p-4 hover:border-primary/30 focus-visible:ring-2 focus-visible:outline-none focus:outline-none transition-colors select-none cursor-pointer"
           onClick={() => onSelect?.(phone)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onSelect?.(phone);
+            }
+          }}
         >
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 flex-col">

@@ -151,8 +151,16 @@ export default function EquipmentDetailPage() {
               <LocationIcon className="float-end" />
               <h2 className="font-medium uppercase">Ubicación actual</h2>
               <div
-                className="map flex-1 h-[75%] rounded-xl bg-blue-100 cursor-pointer"
+                role="button"
+                tabIndex={0}
+                className="map flex-1 h-[75%] rounded-xl bg-blue-100 cursor-pointer focus-visible:ring-2 focus-visible:outline-none focus:outline-none"
                 onClick={() => setIsMapOpen(true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setIsMapOpen(true);
+                  }
+                }}
               >
                 <MapContainer
                   center={[equipmentLocation.lat, equipmentLocation.lng]}

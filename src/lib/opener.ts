@@ -4,7 +4,7 @@ import { openUrl } from "@tauri-apps/plugin-opener";
 export const handleOpenWhatsapp = async (order: Order) => {
   const phoneNumber = order.phone.phoneNumber;
   const text = encodeURIComponent(
-    `Hola, sobre su pedido #${order.trackingCode} `
+    `Hola, sobre su pedido #${order.trackingCode} `,
   );
 
   try {

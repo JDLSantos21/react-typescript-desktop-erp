@@ -64,7 +64,6 @@ export function DatePicker({
             mode="single"
             selected={value}
             onSelect={onChange}
-            autoFocus
             locale={es}
           />
         </PopoverContent>

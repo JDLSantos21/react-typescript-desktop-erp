@@ -107,9 +107,9 @@ export const Pagination = ({
           <ChevronLeftIcon />
         </NavButton>
 
-        {pages.map((page, index) =>
+        {pages.map((page, idx) =>
           page === "..." ? (
-            <span key={`ellipsis-${index}`} className="px-3 py-2 text-gray-700">
+            <span key={`ellipsis-${idx}`} className="px-3 py-2 text-gray-700">
               ...
             </span>
           ) : (

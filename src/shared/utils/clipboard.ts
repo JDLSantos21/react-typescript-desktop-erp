@@ -1,4 +1,4 @@
-import { writeText, readText } from "@tauri-apps/plugin-clipboard-manager";
+import { readText, writeText } from "@tauri-apps/plugin-clipboard-manager";
 
 export const copyToClipboard = async (text: string): Promise<void> => {
   try {

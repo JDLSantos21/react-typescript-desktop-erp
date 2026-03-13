@@ -61,7 +61,7 @@ export default function Step4Summary({ orderData }: Step4SummaryProps) {
         <div className="space-y-1">
           {orderData.orderItems.map((product, index) => (
             <div
-              key={index}
+              key={`product-${product.productId}-${product.requestedQuantity}`}
               className={`flex items-start justify-between py-2 ${
                 orderData.orderItems.length > index + 1 ? "border-b" : ""
               } border-gray-100 last:border-0`}
@@ -137,7 +137,7 @@ export default function Step4Summary({ orderData }: Step4SummaryProps) {
       {/* Success Alert */}
       <Alert variant="success">
         <div className="flex items-start gap-2">
-          <CheckCircleIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <CheckCircleIcon className="w-5 h-5 shrink-0 mt-0.5" />
           <div>
             <p className="font-semibold">¡Todo listo!</p>
             <p className="text-sm mt-1">

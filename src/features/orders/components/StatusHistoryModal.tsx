@@ -27,7 +27,7 @@ export default function StatusHistoryModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Historial de estados">
-      <div className="p-6 max-h-[600px] overflow-y-auto">
+      <div className="p-6 max-h-150 overflow-y-auto">
         {isLoading && <SectionLoader placeholder="Cargando Historial" />}
         {isError && (
           <div className="flex flex-col items-center justify-center py-8 text-red-500">
@@ -42,8 +42,8 @@ export default function StatusHistoryModal({
               </div>
             ) : (
               <div className="relative pl-4 border-l-2 border-gray-100 space-y-8 ml-2 my-2">
-                {data.data.map((statusField, index) => (
-                  <div key={index} className="relative">
+                {data.data.map((statusField) => (
+                  <div key={`${statusField.status}-${statusField.changedAt}`} className="relative">
                     {/* Dot on the timeline */}
                     <div
                       className={cn(

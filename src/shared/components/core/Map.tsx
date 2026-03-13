@@ -148,11 +148,14 @@ const TILE_LAYERS = {
 // Main Map Component
 // ============================================================================
 
+const DEFAULT_MARKERS: MapMarkerProps[] = [];
+const DEFAULT_CIRCLES: MapCircleProps[] = [];
+
 export function Map({
   center,
   zoom = 14,
-  markers = [],
-  circles = [],
+  markers = DEFAULT_MARKERS,
+  circles = DEFAULT_CIRCLES,
   className,
   height = "100%",
   tileLayer = "default",
@@ -185,9 +188,9 @@ export function Map({
       />
 
       {/* Render Circles */}
-      {circles.map((circle, index) => (
+      {circles.map((circle) => (
         <Circle
-          key={`circle-${index}`}
+          key={`circle-${circle.center.lat}-${circle.center.lng}-${circle.radius}`}
           center={[circle.center.lat, circle.center.lng]}
           radius={circle.radius}
           pathOptions={{

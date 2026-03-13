@@ -43,13 +43,3 @@ export function extractApiError(error: unknown): {
   };
 }
 
-export function getErrorMessage(error: unknown): string {
-  return extractApiError(error).message;
-}
-
-export function isHttpError(error: unknown, statusCode: number): boolean {
-  if (error instanceof AxiosError && error.response) {
-    return error.response.status === statusCode;
-  }
-  return false;
-}
