@@ -19,6 +19,7 @@ export function SidebarItem({
 
   const hasChildren = item.children && item.children.length > 0;
   const isParentActive = currentPath.startsWith(item.href);
+  const isParentHome = currentPath === item.href;
 
   const baseClasses =
     "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 h-11 text-sm font-medium";
@@ -36,7 +37,7 @@ export function SidebarItem({
           to={item.href}
           className={`${baseClasses} ${isParentActive ? activeClasses : inactiveClasses}`}
         >
-          <item.icon className="w-[18px] h-[18px]" />
+          <item.icon className="w-4.5 h-4.5" />
           {item.name}
         </Link>
       </li>
@@ -46,6 +47,7 @@ export function SidebarItem({
   // Item with collapsible children
   const handleParentClick = () => {
     if (!isParentActive) navigate(item.href);
+    if (!isParentHome) return navigate(item.href);
     onToggle?.();
   };
 
@@ -53,9 +55,9 @@ export function SidebarItem({
     <li>
       <button
         onClick={handleParentClick}
-        className={`w-full cursor-pointer ${baseClasses} ${isParentActive ? activeClasses : inactiveClasses}`}
+        className={`w-full cursor-pointer ${baseClasses} ${isParentActive && isParentHome ? activeClasses : inactiveClasses}`}
       >
-        <item.icon className="w-[18px] h-[18px]" />
+        <item.icon className="w-4.5 h-4.5" />
         <span className="flex-1 text-left">{item.name}</span>
         <ChevronDownIcon
           className={`w-3 h-3 opacity-50 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -68,7 +70,7 @@ export function SidebarItem({
         style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
       >
         <div className="overflow-hidden">
-          <ul className="mt-1 ml-[18px] pl-3 border-l border-slate-200 space-y-0.5">
+          <ul className="mt-1 ml-4.5 pl-3 border-l border-slate-200 space-y-0.5">
             {item.children!.map((child) => {
               const isChildActive = currentPath.startsWith(child.href);
 

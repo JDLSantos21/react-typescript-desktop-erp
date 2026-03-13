@@ -107,7 +107,7 @@ export default function CustomerPage() {
             onClearFilters={clearFilters}
             hasActiveFilters={hasActiveFilters}
           >
-            <div className="w-[300px]">
+            <div className="w-75">
               <Input
                 placeholder="Nombre, teléfono, correo..."
                 value={filters.search || ""}

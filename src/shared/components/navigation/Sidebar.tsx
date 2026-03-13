@@ -22,7 +22,7 @@ const navigationItems: NavigationItem[] = [
     name: "Equipos",
     href: "/equipments",
     icon: EquipmentIcon,
-    children: [{ name: "Nuevo equipo", href: "/equipments/new" }],
+    children: [{ name: "Nuevo equipo", href: "/equipments/create" }],
   },
   {
     name: "Clientes",

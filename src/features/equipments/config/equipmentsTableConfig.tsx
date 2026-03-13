@@ -1,5 +1,5 @@
 import { Column } from "@/shared/components/core/Table";
-import { Equipment } from "../types/equipment";
+import { Equipment } from "@/shared/types/entities/equipment.types";
 import { Badge } from "@/shared/components/core/Badge";
 import { formatDate } from "@/shared/utils/formatters";
 import { getStatusColor } from "@/shared/utils/status.utils";

@@ -104,7 +104,7 @@ export default function CustomerDetailPage() {
           />
         ) : (
           <div className="flex h-full">
-            <div className="flex-1 px-8 py-8 space-y-8 max-w-4xl overflow-y-auto">
+            <div className="flex-1 p-8 space-y-8 max-w-4xl overflow-y-auto">
               {/* Información General */}
               <section>
                 <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-4">

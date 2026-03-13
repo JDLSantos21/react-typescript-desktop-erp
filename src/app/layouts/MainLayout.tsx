@@ -10,7 +10,18 @@ export function MainLayout() {
   return (
     <HeaderProvider>
       <GlobalSocketListeners />
-      <Toaster position="top-right" />
+      <Toaster
+        position="bottom-center"
+        options={{
+          fill: "#FFFFFF", // Modo Claro (Blanco)
+          roundness: 12, // Bordes un poco más definidos
+          styles: {
+            title: "text-gray-900! font-semibold! text-sm!",
+            description: "text-gray-500! text-sm!",
+            badge: "bg-gray-100! text-gray-900!",
+          },
+        }}
+      />
       <div className="flex h-screen ">
         <NavigationLoader />
 

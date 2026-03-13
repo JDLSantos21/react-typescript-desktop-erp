@@ -6,18 +6,19 @@ import {
   TfiAngleDoubleRight,
   TfiAngleDown,
 } from "react-icons/tfi";
-import { FaWhatsapp, FaUserEdit } from "react-icons/fa";
+import { FaWhatsapp, FaUserEdit, FaBarcode } from "react-icons/fa";
 import {
   PiUserPlusLight,
   PiUser,
   PiPhonePlus,
   PiPhoneThin,
   PiClipboardTextLight,
+  PiEyeThin,
 } from "react-icons/pi";
 import { TbShoppingCartPlus } from "react-icons/tb";
 import { LuMapPinPlus, LuMessageSquareMore } from "react-icons/lu";
 import { GoAlert, GoHistory, GoMail, GoStack } from "react-icons/go";
-import { MdDeleteOutline } from "react-icons/md";
+import { MdDeleteOutline, MdQrCode2 } from "react-icons/md";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { BsExclamationCircle, BsFuelPump } from "react-icons/bs";
 import { PiUsersThreeBold } from "react-icons/pi";
@@ -106,6 +107,8 @@ export const MessagesIcon = (props: IconProps) => (
   <LuMessageSquareMore {...props} />
 );
 
+export const BarcodeIcon = (props: IconProps) => <FaBarcode {...props} />;
+
 // ============================================
 // COMUNICACIÓN
 // ============================================
@@ -171,6 +174,10 @@ export const AlertIcon = (props: IconProps) => <GoAlert {...props} />;
 export const ExternalLinkIcon = (props: IconProps) => (
   <FiExternalLink {...props} />
 );
+
+export const QRCodeIcon = (props: IconProps) => <MdQrCode2 {...props} />;
+
+export const EyeIcon = (props: IconProps) => <PiEyeThin {...props} />;
 
 // ============================================
 // UTILIDADES

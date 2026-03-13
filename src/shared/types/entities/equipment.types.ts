@@ -1,3 +1,5 @@
+import { Customer } from "./customer.types";
+
 export type EquipmentStatus =
   | "DISPONIBLE"
   | "ASIGNADO"
@@ -18,8 +20,8 @@ export interface EquipmentModel {
   brand?: string | null;
   type: string;
   capacity?: number | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface EquipmentAssignment {
@@ -29,8 +31,9 @@ export interface EquipmentAssignment {
   deliveredAt?: string | null;
   status: EquipmentAssignmentStatus;
   notes?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
+  customer?: Pick<Customer, "id" | "businessName" | "representativeName">;
 }
 
 interface Coordinates {
@@ -43,8 +46,8 @@ export interface EquipmentLocation {
   coordinates: Coordinates;
   address?: string;
   description?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Equipment {

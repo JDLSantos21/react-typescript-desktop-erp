@@ -17,7 +17,6 @@ export default function EquipmentsPage() {
   useHeaderConfig({
     title: "Equipos",
     description: "Lista de equipos",
-    showBackButton: true,
   });
 
   const { setPage, setLimit, paginationParams } = usePagination({

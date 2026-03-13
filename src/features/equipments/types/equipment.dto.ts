@@ -1,4 +1,4 @@
-import { EquipmentStatus } from "./equipment";
+import { EquipmentStatus } from "@/shared/types/entities/equipment.types";
 
 export interface EquipmentFilters {
   page: number;

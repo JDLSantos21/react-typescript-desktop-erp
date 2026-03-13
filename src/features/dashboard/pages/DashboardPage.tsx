@@ -1,10 +1,17 @@
 import { useLogout } from "@/features/auth/hooks/useAuth";
 import { Button } from "@/shared/components/core/Button";
-import { useNavigate } from "react-router-dom";
+import { sileo } from "sileo";
 
 export default function DashboardPage() {
   const logoutMutation = useLogout();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+
+  const handleToast = () => {
+    sileo.info({
+      title: "Hello world!",
+      description: "This is a toast message.",
+    });
+  };
 
   return (
     <div className="min-h-screen p-8 bg-gray-100">
@@ -27,8 +34,8 @@ export default function DashboardPage() {
         <Button onClick={() => logoutMutation.mutate()} className="mt-6">
           Cerrar sesión
         </Button>
-        <Button onClick={() => navigate("/customers")} className="mt-6">
-          Ir a Clientes
+        <Button onClick={() => handleToast()} className="mt-6">
+          Notificacion
         </Button>
       </div>
     </div>

@@ -49,6 +49,10 @@ const EquipmentDetailPage = lazy(
   () => import("@/features/equipments/pages/EquipmentDetailPage"),
 );
 
+const CreateEquipmentPage = lazy(
+  () => import("@/features/equipments/pages/CreateEquipmentPage"),
+);
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -187,6 +191,16 @@ export const router = createBrowserRouter([
               <Suspense fallback={<PageLoader />}>
                 <PageErrorBoundary pageName="detalle del equipo">
                   <EquipmentDetailPage />
+                </PageErrorBoundary>
+              </Suspense>
+            ),
+          },
+          {
+            path: "create",
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <PageErrorBoundary pageName="crear equipo">
+                  <CreateEquipmentPage />
                 </PageErrorBoundary>
               </Suspense>
             ),
