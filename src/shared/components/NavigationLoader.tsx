@@ -1,27 +1,41 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { useNavigation } from "react-router-dom";
+
+type ProgressAction = 
+  | { type: "START" }
+  | { type: "STEP"; payload: number }
+  | { type: "FINISH" }
+  | { type: "RESET" };
+
+const progressReducer = (state: number, action: ProgressAction) => {
+  switch (action.type) {
+    case "START": return 30;
+    case "STEP": return action.payload;
+    case "FINISH": return 100;
+    case "RESET": return 0;
+    default: return state;
+  }
+};
 
 export const NavigationLoader = () => {
   const navigation = useNavigation();
-  const [progress, setProgress] = useState(0);
+  const [progress, dispatch] = useReducer(progressReducer, 0);
 
   const isLoading = navigation.state === "loading";
 
   useEffect(() => {
     if (isLoading) {
-      // Simular progreso
-      setProgress(30);
-      const timer1 = setTimeout(() => setProgress(60), 200);
-      const timer2 = setTimeout(() => setProgress(90), 500);
+      dispatch({ type: "START" });
+      const timer1 = setTimeout(() => dispatch({ type: "STEP", payload: 60 }), 200);
+      const timer2 = setTimeout(() => dispatch({ type: "STEP", payload: 90 }), 500);
 
       return () => {
         clearTimeout(timer1);
         clearTimeout(timer2);
       };
     } else {
-      // Completar al 100% y luego resetear
-      setProgress(100);
-      const timer = setTimeout(() => setProgress(0), 300);
+      dispatch({ type: "FINISH" });
+      const timer = setTimeout(() => dispatch({ type: "RESET" }), 300);
       return () => clearTimeout(timer);
     }
   }, [isLoading]);

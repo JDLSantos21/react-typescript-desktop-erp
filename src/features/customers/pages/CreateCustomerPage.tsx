@@ -1,4 +1,4 @@
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   createCustomerSchema,
   CreateCustomerFormData,
@@ -6,16 +6,16 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/shared/components/core/Button";
 import { Input } from "@/shared/components/core/Input";
-import { Select } from "@/shared/components/core/Select";
-import { Checkbox } from "@/shared/components/core/Checkbox";
 import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
-import { PlusIcon } from "@/shared/components/icons";
-import { DeleteIcon } from "@/shared/components/icons";
 import { useaddCustomer } from "../hooks/useCustomer";
 import { extractApiError } from "@/shared/utils/error-handler";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+
+// Nuevas sub-secciones refactorizadas
+import { CustomerPhonesSection } from "../components/CustomerPhonesSection";
+import { CustomerAddressesSection } from "../components/CustomerAddressesSection";
 
 export default function CreateCustomerPage() {
   const navigate = useNavigate();
@@ -53,25 +53,6 @@ export default function CreateCustomerPage() {
         },
       ],
     },
-  });
-
-  // Field Arrays para teléfonos y direcciones
-  const {
-    fields: phoneFields,
-    append: appendPhone,
-    remove: removePhone,
-  } = useFieldArray({
-    control,
-    name: "phones",
-  });
-
-  const {
-    fields: addressFields,
-    append: appendAddress,
-    remove: removeAddress,
-  } = useFieldArray({
-    control,
-    name: "addresses",
   });
 
   const onSubmit = (data: CreateCustomerFormData) => {
@@ -153,180 +134,8 @@ export default function CreateCustomerPage() {
         </section>
 
         <div className="xl:flex">
-          {/* Teléfonos */}
-          <section className="p-3 xl:w-1/2">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-bold text-text-primary uppercase">
-                  Teléfonos
-                </h3>
-                <p className="text-sm text-text-muted">
-                  Agrega uno o más números de teléfono
-                </p>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                icon={PlusIcon}
-                onClick={() =>
-                  appendPhone({
-                    description: "",
-                    phone_number: "",
-                    type: "MOVIL",
-                    has_whatsapp: false,
-                    is_primary: false,
-                  })
-                }
-              >
-                Agregar teléfono
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              {phoneFields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="bg-background-secondary border border-border-light rounded-sm p-4"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <h4 className="text-sm font-medium text-text-primary">
-                      Teléfono {index + 1}
-                    </h4>
-                    {phoneFields.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="danger"
-                        size="sm"
-                        onClick={() => removePhone(index)}
-                      >
-                        <DeleteIcon className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <Input
-                      label="Descripción"
-                      placeholder="Ej: Oficina principal"
-                      error={errors.phones?.[index]?.description?.message}
-                      {...register(`phones.${index}.description`)}
-                    />
-                    <Input
-                      label="Número"
-                      placeholder="(809) 555-5555"
-                      error={errors.phones?.[index]?.phone_number?.message}
-                      {...register(`phones.${index}.phone_number`)}
-                    />
-                    <Select
-                      label="Tipo"
-                      options={[
-                        { value: "MOVIL", label: "Móvil" },
-                        { value: "FIJO", label: "Fijo" },
-                        { value: "TRABAJO", label: "Trabajo" },
-                        { value: "OTROS", label: "Otros" },
-                      ]}
-                      {...register(`phones.${index}.type`)}
-                    />
-                    <div className="flex items-center gap-4 pt-6">
-                      <Checkbox
-                        label="¿Tiene WhatsApp?"
-                        {...register(`phones.${index}.has_whatsapp`)}
-                      />
-                      <Checkbox
-                        label="Principal"
-                        {...register(`phones.${index}.is_primary`)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Direcciones */}
-          <section className="p-3 xl:w-1/2">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-bold uppercase text-text-primary">
-                  Direcciones
-                </h3>
-                <p className="text-sm text-text-muted">
-                  Agrega una o más direcciones
-                </p>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                icon={PlusIcon}
-                onClick={() =>
-                  appendAddress({
-                    branch_name: "",
-                    direction: "",
-                    city: "",
-                    is_primary: false,
-                  })
-                }
-              >
-                Agregar dirección
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              {addressFields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="bg-background-secondary border border-border-light rounded-sm p-4"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <h4 className="text-sm font-medium text-text-primary">
-                      Dirección {index + 1}
-                    </h4>
-                    {addressFields.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="danger"
-                        size="sm"
-                        onClick={() => removeAddress(index)}
-                      >
-                        <DeleteIcon className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <Input
-                      label="Nombre de Sucursal (Opcional)"
-                      placeholder="Ej: Sucursal Centro"
-                      error={errors.addresses?.[index]?.branch_name?.message}
-                      {...register(`addresses.${index}.branch_name`)}
-                    />
-                    <Input
-                      label="Ciudad"
-                      placeholder="Ej: Santo Domingo"
-                      error={errors.addresses?.[index]?.city?.message}
-                      {...register(`addresses.${index}.city`)}
-                    />
-                    <div>
-                      <Input
-                        label="Dirección"
-                        placeholder="Ej: Calle Principal #123, Sector Los Jardines"
-                        error={errors.addresses?.[index]?.direction?.message}
-                        {...register(`addresses.${index}.direction`)}
-                      />
-                    </div>
-                    <div className="flex items-center pt-6">
-                      <Checkbox
-                        label="Dirección principal"
-                        {...register(`addresses.${index}.is_primary`)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+          <CustomerPhonesSection control={control} register={register} errors={errors} />
+          <CustomerAddressesSection control={control} register={register} errors={errors} />
         </div>
       </form>
     </div>

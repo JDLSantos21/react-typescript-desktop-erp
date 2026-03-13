@@ -212,7 +212,7 @@ export default function NearbyVehiclesMapModal({
             style={{ height: "100%", width: "100%" }}
           >
             {(isLoading || isRefetching) && (
-              <div className="absolute inset-0 z-[1000] bg-white/50 flex items-center justify-center backdrop-blur-sm">
+              <div className="absolute inset-0 bg-white/50 flex items-center justify-center backdrop-blur-sm">
                 <Spinner size="lg" className="text-blue-600" />
               </div>
             )}
@@ -253,7 +253,7 @@ export default function NearbyVehiclesMapModal({
                   icon={createIcon(TruckIcon, "#10b981", vehicle.name)}
                 >
                   <Popup>
-                    <div className="min-w-[150px] p-1">
+                    <div className="min-w-37.5 p-1">
                       <div className="flex items-center gap-2">
                         <TruckIcon size={16} className="text-emerald-600" />
                         <p className="font-semibold text-sm">{vehicle.name}</p>
