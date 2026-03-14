@@ -18,7 +18,11 @@ import {
 import { TbShoppingCartPlus } from "react-icons/tb";
 import { LuMapPinPlus, LuMessageSquareMore } from "react-icons/lu";
 import { GoAlert, GoHistory, GoMail, GoStack } from "react-icons/go";
-import { MdDeleteOutline, MdQrCode2 } from "react-icons/md";
+import {
+  MdDeleteOutline,
+  MdOutlineAssignmentInd,
+  MdQrCode2,
+} from "react-icons/md";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { BsExclamationCircle, BsFuelPump } from "react-icons/bs";
 import { PiUsersThreeBold } from "react-icons/pi";
@@ -178,6 +182,10 @@ export const ExternalLinkIcon = (props: IconProps) => (
 export const QRCodeIcon = (props: IconProps) => <MdQrCode2 {...props} />;
 
 export const EyeIcon = (props: IconProps) => <PiEyeThin {...props} />;
+
+export const AssignmentIcon = (props: IconProps) => (
+  <MdOutlineAssignmentInd {...props} />
+);
 
 // ============================================
 // UTILIDADES

@@ -15,6 +15,9 @@ import { EquipmentAsideMenu } from "../components/EquipmentAsideMenu";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { MapModal } from "@/shared/components/core/MapModal";
 import LastAsignment from "../components/LastAsignment";
+import AssignEquipmentModal from "../components/AssignEquipmentModal";
+import { useModal } from "@/shared/hooks/useModal";
+import AssignmentHistoryModal from "../components/AssignmentHistoryModal";
 
 export default function EquipmentDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -27,6 +30,9 @@ export default function EquipmentDetailPage() {
     error,
     refetch,
   } = useGetEquipmentById(id);
+
+  const assignModal = useModal();
+  const assignmentHistoryModal = useModal();
 
   useHeaderConfig({
     showBackButton: true,
@@ -146,7 +152,10 @@ export default function EquipmentDetailPage() {
             {lastAssignment ? <LastAsignment data={lastAssignment} /> : null}
           </div>
           <div>
-            <EquipmentAsideMenu />
+            <EquipmentAsideMenu
+              onAssign={() => assignModal.open()}
+              onViewAssignmentHistory={() => assignmentHistoryModal.open()}
+            />
             <div className="border space-y-2 bg-white p-3 text-sm rounded-2xl h-64 m-4 text-gray-400">
               <LocationIcon className="float-end" />
               <h2 className="font-medium uppercase">Ubicación actual</h2>
@@ -191,6 +200,18 @@ export default function EquipmentDetailPage() {
               </p>
             </div>
           </div>
+
+          <AssignEquipmentModal
+            equipmentId={equipment?.data.id!}
+            isOpen={assignModal.isOpen}
+            onClose={assignModal.close}
+          />
+
+          <AssignmentHistoryModal
+            equipment={equipment?.data!}
+            isOpen={assignmentHistoryModal.isOpen}
+            onClose={assignmentHistoryModal.close}
+          />
 
           {/* Modal del mapa expandido */}
           <MapModal

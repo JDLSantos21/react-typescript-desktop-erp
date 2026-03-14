@@ -12,9 +12,12 @@ export default function LastAsignment({ data }: LastAsignmentProps) {
   const navigate = useNavigate();
   return (
     <section>
-      <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-4">
-        Última asignación
-      </h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium">
+          Última asignación
+        </h2>
+        <Button variant="link">Ver historial</Button>
+      </div>
       {data.customer ? (
         <div className="mb-4 border border-gray-200 rounded-lg p-4 flex items-center gap-3">
           <div className="bg-blue-100 p-2 rounded-lg text-blue-600">
@@ -58,6 +61,23 @@ export default function LastAsignment({ data }: LastAsignmentProps) {
             <p className="text-xs text-gray-400 mb-1.5">Fecha de Asignación</p>
             <p className="text-gray-900">{formatDate(data.assignedAt)}</p>
           </div>
+
+          {data.unassignedAt && (
+            <div>
+              <p className="text-xs text-gray-400 mb-1.5">
+                Fecha de Desasignación
+              </p>
+              <p className="text-gray-900">{formatDate(data.unassignedAt)}</p>
+            </div>
+          )}
+
+          {data.deliveredAt && (
+            <div>
+              <p className="text-xs text-gray-400 mb-1.5">Fecha de Entrega</p>
+              <p className="text-gray-900">{formatDate(data.deliveredAt)}</p>
+            </div>
+          )}
+
           {data.notes && (
             <div className="col-span-2">
               <p className="text-xs text-gray-400 mb-1.5">Notas</p>

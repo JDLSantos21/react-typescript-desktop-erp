@@ -23,7 +23,7 @@ type SocketAction =
 
 const socketReducer = (
   state: { socket: Socket | null; isConnected: boolean },
-  action: SocketAction
+  action: SocketAction,
 ) => {
   switch (action.type) {
     case "INIT":
@@ -79,7 +79,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       dispatch({ type: "INIT", payload: socketInstance });
 
       socketInstance.on("connect", () => dispatch({ type: "CONNECTED" }));
-      socketInstance.on("connect_error", () => dispatch({ type: "DISCONNECTED" }));
+      socketInstance.on("connect_error", () =>
+        dispatch({ type: "DISCONNECTED" }),
+      );
       socketInstance.on("disconnect", () => dispatch({ type: "DISCONNECTED" }));
 
       return () => {

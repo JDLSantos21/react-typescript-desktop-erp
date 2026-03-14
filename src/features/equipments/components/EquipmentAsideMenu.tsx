@@ -1,12 +1,34 @@
-import { DeleteIcon } from "@/shared/components/icons";
+import {
+  AssignmentIcon,
+  DeleteIcon,
+  HistoryIcon,
+} from "@/shared/components/icons";
 import {
   AsideButton,
   AsideMenu,
 } from "@/shared/components/navigation/AsideMenu";
 
-export const EquipmentAsideMenu = () => {
+interface EquipmentAsideMenuProps {
+  onAssign: () => void;
+  onViewAssignmentHistory: () => void;
+}
+
+export const EquipmentAsideMenu = ({
+  onAssign,
+  onViewAssignmentHistory,
+}: EquipmentAsideMenuProps) => {
   return (
     <AsideMenu>
+      <AsideButton
+        label="Asignar"
+        onClick={onAssign}
+        icon={<AssignmentIcon className="w-4 h-4" />}
+      />
+      <AsideButton
+        label="Historial de asignaciones"
+        onClick={onViewAssignmentHistory}
+        icon={<HistoryIcon className="w-4 h-4" />}
+      />
       <AsideButton
         label="Eliminar"
         onClick={() => {}}

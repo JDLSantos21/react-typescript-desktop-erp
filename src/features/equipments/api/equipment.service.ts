@@ -2,10 +2,11 @@ import { apiClient } from "@/shared/api/client";
 import { ApiResponse, PaginatedResponse } from "@/shared/types/api.types";
 import { EquipmentDetail } from "@/shared/types/entities/equipment.types";
 import { EquipmentFilters } from "../types/equipment.dto";
+import { CreateEquipmentOutput } from "../types/equipment";
 import {
-  CreateEquipmentOutput,
-} from "../types/equipment";
-import { Equipment, EquipmentModel } from "@/shared/types/entities/equipment.types";
+  Equipment,
+  EquipmentModel,
+} from "@/shared/types/entities/equipment.types";
 
 export const EquipmentService = {
   getAll: async (
@@ -57,6 +58,24 @@ export const EquipmentService = {
     const response = await apiClient.post<ApiResponse<CreateEquipmentOutput>>(
       `equipment`,
       equipment,
+    );
+    return response.data;
+  },
+
+  assignEquipment: async (data: {
+    equipmentId: string;
+    customerId: string;
+    customerAddressId: number;
+    notes?: string;
+  }) => {
+    const response = await apiClient.post<ApiResponse<{ message: string }>>(
+      `equipment/assign`,
+      {
+        equipment_id: data.equipmentId,
+        customer_id: data.customerId,
+        customer_address_id: data.customerAddressId,
+        notes: data.notes,
+      },
     );
     return response.data;
   },

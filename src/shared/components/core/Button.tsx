@@ -9,6 +9,7 @@ const variants = {
   outline: "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50",
   danger: "bg-red-600 text-white hover:bg-red-700 border-red-600",
   ghost: "bg-transparent text-gray-700 hover:bg-gray-50 border-transparent",
+  link: "bg-transparent text-primary hover:text-primary-hover border-transparent",
 };
 
 const sizes = {
@@ -58,7 +59,7 @@ export const Button = ({
       className={cn(
         baseStyles,
         variants[variant],
-        sizes[size],
+        variant !== "link" && sizes[size],
         (hasIconOrLoading || isIconOnly) &&
           "flex items-center gap-2 justify-center",
         disabled || isLoading

@@ -54,7 +54,7 @@ export const Modal = ({
     <LazyMotion features={domAnimation}>
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 z-9999 flex items-center justify-center">
             <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -97,7 +97,7 @@ export const Modal = ({
         )}
       </AnimatePresence>
     </LazyMotion>,
-    document.body
+    document.body,
   );
 };
 
@@ -116,7 +116,7 @@ Modal.Body = ({
 }) => <div className={`mb-4 p-${padding || 6} ${className}`}>{children}</div>;
 
 Modal.Footer = ({ children }: { children: ReactNode }) => (
-  <div className="flex justify-end gap-3 bg-gray-100 p-3 flex-shrink-0 w-full">
+  <div className="flex justify-end gap-3 bg-gray-100 p-3 shrink-0 w-full">
     {children}
   </div>
 );

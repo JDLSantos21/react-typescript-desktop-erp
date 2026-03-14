@@ -4,6 +4,8 @@ import { EquipmentService } from "../api/equipment.service";
 import { EquipmentFilters } from "../types/equipment.dto";
 import { EquipmentModelFormInput } from "../types/equipment";
 import { queryClient } from "@/shared/lib/query-client";
+import { extractApiError } from "@/shared/utils/error-handler";
+import { sileo } from "sileo";
 
 export const useGetEquipments = (params?: EquipmentFilters) => {
   return useQuery({
@@ -58,6 +60,33 @@ export const useCreateEquipment = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: EquipmentKeys.list(),
+      });
+    },
+  });
+};
+
+export const useAssignEquipment = () => {
+  return useMutation({
+    mutationFn: (data: {
+      equipmentId: string;
+      customerId: string;
+      customerAddressId: number;
+      notes?: string;
+    }) => EquipmentService.assignEquipment(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: EquipmentKeys.all,
+      });
+
+      sileo.success({
+        title: "Asignación Exitosa",
+        description: "El equipo ha sido asignado correctamente",
+      });
+    },
+    onError: (data) => {
+      sileo.error({
+        title: "Ocurrió un error",
+        description: extractApiError(data).message ?? "Error al asignar equipo",
       });
     },
   });

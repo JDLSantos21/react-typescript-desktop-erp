@@ -41,7 +41,10 @@ const TableComponent = <T extends Record<string, any>>({
         <div className="animate-pulse">
           <div className="h-[48.39px] bg-gray-200 rounded mb-1"></div>
           {[...Array(minRows || 5)].map((_, i) => (
-            <div key={`skeleton-row-${i}`} className="h-[48.8px] bg-gray-100 mb-1 rounded"></div>
+            <div
+              key={`skeleton-row-${i}`}
+              className="h-[48.8px] bg-gray-100 mb-1 rounded"
+            ></div>
           ))}
         </div>
       </div>
@@ -57,7 +60,7 @@ const TableComponent = <T extends Record<string, any>>({
   }
 
   return (
-    <div className="w-full rounded-lg overflow-hidden">
+    <div className="w-full rounded-lg overflow-hidden h-full">
       {/* Header fijo */}
       <div className="overflow-x-auto">
         <table

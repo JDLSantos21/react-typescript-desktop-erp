@@ -37,7 +37,7 @@ export default function EquipmentsPage() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-1 p-6">
+      <div className="flex-1 px-6 pt-6">
         <FeatureErrorBoundary featureName="equipos">
           <TableFilters className="grid grid-cols-3" showClearButton={true}>
             <Input
@@ -56,6 +56,7 @@ export default function EquipmentsPage() {
             />
           </TableFilters>
           <Table
+            maxHeight="calc(100vh - 244px)"
             onRowClick={(equipment) => navigate(`/equipments/${equipment.id}`)}
             columns={equipmentColumns}
             data={data?.data || []}
