@@ -1,3 +1,4 @@
+import { Badge } from "@/shared/components/core/Badge";
 import { Modal } from "@/shared/components/core/Modal";
 import { Table } from "@/shared/components/core/Table";
 import { CloseIcon } from "@/shared/components/icons";
@@ -6,6 +7,7 @@ import {
   EquipmentDetail,
 } from "@/shared/types/entities/equipment.types";
 import { formatDate } from "@/shared/utils/formatters";
+import { getStatusColor } from "@/shared/utils/status.utils";
 import { useState } from "react";
 
 interface AssignmentHistoryModalProps {
@@ -58,6 +60,11 @@ export default function AssignmentHistoryModal({
             {
               label: "Estado",
               key: "status",
+              render: (a) => (
+                <Badge size="sm" className={`${getStatusColor(a.status)}`}>
+                  {a.status}
+                </Badge>
+              ),
             },
           ]}
           onRowClick={(a) => setSelectedAssignment(a)}

@@ -26,6 +26,10 @@ export default function ConfirmDialog({
   isLoading = false,
   children,
 }: ConfirmModalProps) {
+  const handleConfirm = () => {
+    onConfirm();
+    onCancel();
+  };
   return (
     <Modal
       isOpen={isOpen}
@@ -41,7 +45,7 @@ export default function ConfirmDialog({
         <Button variant="outline" onClick={onCancel} disabled={isLoading}>
           {cancelText}
         </Button>
-        <Button onClick={onConfirm} isLoading={isLoading} variant={variant}>
+        <Button onClick={handleConfirm} isLoading={isLoading} variant={variant}>
           {confirmText}
         </Button>
       </Modal.Footer>

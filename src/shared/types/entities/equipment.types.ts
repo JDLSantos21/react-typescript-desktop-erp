@@ -14,6 +14,12 @@ export type EquipmentAssignmentStatus =
   | "MANTENIMIENTO"
   | "DAÑADO";
 
+export type UnassignReason =
+  | "REMOVIDO"
+  | "DEVUELTO"
+  | "DAÑADO"
+  | "MANTENIMIENTO";
+
 export interface EquipmentModel {
   id: number;
   name: string;

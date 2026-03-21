@@ -3,6 +3,8 @@ import { EyeIcon, UserIcon } from "@/shared/components/icons";
 import { EquipmentAssignment } from "@/shared/types/entities/equipment.types";
 import { Button } from "@/shared/components/core/Button";
 import { useNavigate } from "react-router-dom";
+import { Badge } from "@/shared/components/core/Badge";
+import { getStatusColor } from "@/shared/utils/status.utils";
 
 interface LastAsignmentProps {
   data: EquipmentAssignment;
@@ -16,7 +18,6 @@ export default function LastAsignment({ data }: LastAsignmentProps) {
         <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium">
           Última asignación
         </h2>
-        <Button variant="link">Ver historial</Button>
       </div>
       {data.customer ? (
         <div className="mb-4 border border-gray-200 rounded-lg p-4 flex items-center gap-3">
@@ -55,7 +56,9 @@ export default function LastAsignment({ data }: LastAsignmentProps) {
         <div className="grid grid-cols-2 gap-x-8 gap-y-6">
           <div>
             <p className="text-xs text-gray-400 mb-1.5">Estado</p>
-            <p className="text-gray-900">{data.status}</p>
+            <Badge size="lg" className={`${getStatusColor(data.status)}`}>
+              {data.status}
+            </Badge>
           </div>
           <div>
             <p className="text-xs text-gray-400 mb-1.5">Fecha de Asignación</p>

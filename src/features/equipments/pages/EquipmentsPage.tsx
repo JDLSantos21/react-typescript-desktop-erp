@@ -9,7 +9,7 @@ import { Select } from "@/shared/components/core/Select";
 import { Table } from "@/shared/components/core/Table";
 import { TableFilters } from "@/shared/components/core/TableFilters";
 import { equipmentColumns } from "../config/equipmentsTableConfig";
-import { EquipmentStatus } from "../equipment.constants";
+import { EquipmentStatus } from "../equipment.constant";
 import { useNavigate } from "react-router-dom";
 import { APP_CONFIG } from "@/shared/constants/config";
 

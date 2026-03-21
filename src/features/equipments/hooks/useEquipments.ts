@@ -2,7 +2,10 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { EquipmentKeys } from "../api/equipment.keys";
 import { EquipmentService } from "../api/equipment.service";
 import { EquipmentFilters } from "../types/equipment.dto";
-import { EquipmentModelFormInput } from "../types/equipment";
+import {
+  EquipmentModelFormInput,
+  UnassignEquipmentInput,
+} from "../types/equipment";
 import { queryClient } from "@/shared/lib/query-client";
 import { extractApiError } from "@/shared/utils/error-handler";
 import { sileo } from "sileo";
@@ -87,6 +90,31 @@ export const useAssignEquipment = () => {
       sileo.error({
         title: "Ocurrió un error",
         description: extractApiError(data).message ?? "Error al asignar equipo",
+      });
+    },
+  });
+};
+
+export const useUnassignEquipment = () => {
+  return useMutation({
+    mutationFn: (data: UnassignEquipmentInput) =>
+      EquipmentService.unassignEquipment(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: EquipmentKeys.all,
+      });
+
+      sileo.success({
+        title: "Desasignación Exitosa",
+        description:
+          "La asignación de este equipo ha sido eliminada correctamente",
+      });
+    },
+    onError: (data) => {
+      sileo.error({
+        title: "Ocurrió un error",
+        description:
+          extractApiError(data).message ?? "Error al eliminar asignación",
       });
     },
   });

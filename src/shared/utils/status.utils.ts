@@ -18,6 +18,8 @@ export const getStatusColor = (status: string): string => {
       return "bg-purple-50 text-purple-700 border-purple-200";
     case "ENTREGADO":
       return "bg-green-50 text-green-700 border-green-200";
+    case "ACTIVO":
+      return "bg-green-50 text-green-700 border-green-200";
     case "DISPONIBLE":
       return "bg-green-50 text-green-700 border-green-200";
     case "ASIGNADO":

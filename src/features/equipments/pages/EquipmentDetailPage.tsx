@@ -18,6 +18,7 @@ import LastAsignment from "../components/LastAsignment";
 import AssignEquipmentModal from "../components/AssignEquipmentModal";
 import { useModal } from "@/shared/hooks/useModal";
 import AssignmentHistoryModal from "../components/AssignmentHistoryModal";
+import RemoveAssignModal from "../components/RemoveAssignModal";
 
 export default function EquipmentDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -33,6 +34,7 @@ export default function EquipmentDetailPage() {
 
   const assignModal = useModal();
   const assignmentHistoryModal = useModal();
+  const removeAssignModal = useModal();
 
   useHeaderConfig({
     showBackButton: true,
@@ -153,6 +155,7 @@ export default function EquipmentDetailPage() {
           </div>
           <div>
             <EquipmentAsideMenu
+              onRemoveAssignment={() => removeAssignModal.open()}
               onAssign={() => assignModal.open()}
               onViewAssignmentHistory={() => assignmentHistoryModal.open()}
             />
@@ -211,6 +214,12 @@ export default function EquipmentDetailPage() {
             equipment={equipment?.data!}
             isOpen={assignmentHistoryModal.isOpen}
             onClose={assignmentHistoryModal.close}
+          />
+
+          <RemoveAssignModal
+            assignment={lastAssignment!}
+            isOpen={removeAssignModal.isOpen}
+            onClose={removeAssignModal.close}
           />
 
           {/* Modal del mapa expandido */}
