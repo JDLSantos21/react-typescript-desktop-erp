@@ -53,6 +53,8 @@ const CreateEquipmentPage = lazy(
   () => import("@/features/equipments/pages/CreateEquipmentPage"),
 );
 
+const FuelPage = lazy(() => import("@/features/fuel/pages/FuelPage"));
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -80,6 +82,21 @@ export const router = createBrowserRouter([
             </PageErrorBoundary>
           </Suspense>
         ),
+      },
+      {
+        path: "/fuel",
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <PageErrorBoundary pageName="combustible">
+                  <FuelPage />
+                </PageErrorBoundary>
+              </Suspense>
+            ),
+          },
+        ],
       },
       {
         path: "/customers",
