@@ -119,6 +119,7 @@ export default function PhoneModal({
       <Modal.Body>
         <form
           key={phone?.id || "new"}
+          id="phone-form"
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-4"
         >
@@ -171,26 +172,26 @@ export default function PhoneModal({
             id="is_primary"
             {...register("is_primary")}
           />
-
-          <div className="flex gap-3 justify-end pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={isPending}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              isLoading={isPending}
-              disabled={!isDirty || isPending}
-            >
-              {isEditing ? "Guardar cambios" : "Crear Teléfono"}
-            </Button>
-          </div>
         </form>
       </Modal.Body>
+      <Modal.Footer>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onClose}
+          disabled={isPending}
+        >
+          Cancelar
+        </Button>
+        <Button
+          type="submit"
+          form="phone-form"
+          isLoading={isPending}
+          disabled={!isDirty || isPending}
+        >
+          {isEditing ? "Guardar cambios" : "Crear Teléfono"}
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 }

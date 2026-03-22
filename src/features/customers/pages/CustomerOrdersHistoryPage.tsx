@@ -7,6 +7,10 @@ import { Table } from "@/shared/components/core/Table";
 import { Pagination } from "@/shared/components/core/Pagination";
 import { FeatureErrorBoundary } from "@/shared/components/error-boundary/FeatureErrorBoundary";
 import { APP_CONFIG } from "@/shared/constants/config";
+import { EmptyState } from "@/shared/components/EmptyState";
+import { OrderIcon } from "@/shared/components/icons";
+import SectionLoader from "@/shared/components/SectionLoader";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export default function CustomerOrdersHistoryPage() {
   const { id } = useParams();
@@ -16,7 +20,12 @@ export default function CustomerOrdersHistoryPage() {
     syncWithUrl: true,
   });
 
-  const { data: orders, isLoading } = useGetOrders({
+  const {
+    data: orders,
+    isLoading,
+    error,
+    refetch,
+  } = useGetOrders({
     customer_id: id,
     ...paginationParams,
   });
@@ -34,15 +43,33 @@ export default function CustomerOrdersHistoryPage() {
   return (
     <div className="h-full flex flex-col">
       <div className="flex-1 p-6">
-        <FeatureErrorBoundary featureName="historial de pedidos">
-          <Table
-            columns={orderHistoryTableColumns}
-            data={orders?.data || []}
-            keyExtractor={(order) => order.id}
-            isLoading={isLoading}
-            emptyMessage="No se encontraron pedidos"
+        {isLoading ? (
+          <SectionLoader
+            className="h-full"
+            placeholder="Cargando historial de pedidos"
           />
-        </FeatureErrorBoundary>
+        ) : error ? (
+          <ErrorState
+            error={error}
+            title="No se pudo cargar el historial de pedidos"
+            onRetry={() => refetch()}
+          />
+        ) : orders?.data.length === 0 ? (
+          <EmptyState
+            title="No se encontraron pedidos"
+            description="Este cliente aún no ha realizado pedidos."
+            icon={<OrderIcon className="w-12 h-12" />}
+          />
+        ) : (
+          <FeatureErrorBoundary featureName="historial de pedidos">
+            <Table
+              columns={orderHistoryTableColumns}
+              data={orders?.data ?? []}
+              keyExtractor={(order) => order.id}
+              emptyMessage="Este cliente aún no ha realizado pedidos."
+            />
+          </FeatureErrorBoundary>
+        )}
       </div>
 
       {pagination && pagination.totalPages > 1 && (

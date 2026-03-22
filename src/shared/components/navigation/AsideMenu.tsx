@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Tooltip } from "../core/Tooltip";
 
 interface AsideMenuProps {
   title?: string;
@@ -12,7 +13,7 @@ export function AsideMenu({
   className = "",
 }: AsideMenuProps) {
   return (
-    <aside className={`p-6 h-fit xl:w-[280px] sticky top-2 mr-2 ${className}`}>
+    <aside className={`p-6 h-fit xl:w-70 sticky top-2 mr-2 ${className}`}>
       <div className="mb-6">
         <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium">
           {title}
@@ -30,6 +31,8 @@ interface AsideButtonProps {
   variant?: "default" | "danger";
   className?: string;
   disabled?: boolean;
+  tooltip?: string | ReactNode;
+  tooltipVariant?: "default" | "info" | "warning" | "error" | "success";
 }
 
 export function AsideButton({
@@ -39,8 +42,10 @@ export function AsideButton({
   variant = "default",
   className = "",
   disabled = false,
+  tooltip,
+  tooltipVariant = "default",
 }: AsideButtonProps) {
-  return (
+  const button = (
     <button
       disabled={disabled}
       className={`
@@ -54,8 +59,8 @@ export function AsideButton({
         transition-colors duration-150
         flex items-center gap-3
         focus:outline-none ${className} ${
-        disabled ? "opacity-50 cursor-not-allowed" : ""
-      }`}
+          disabled ? "opacity-50 cursor-not-allowed" : ""
+        }`}
       onClick={onClick}
     >
       {icon && (
@@ -70,4 +75,20 @@ export function AsideButton({
       <span>{label}</span>
     </button>
   );
+
+  if (tooltip) {
+    return (
+      <Tooltip
+        content={tooltip}
+        variant={tooltipVariant}
+        side="right"
+        align="center"
+        asChild
+      >
+        <div className="w-full">{button}</div>
+      </Tooltip>
+    );
+  }
+
+  return button;
 }

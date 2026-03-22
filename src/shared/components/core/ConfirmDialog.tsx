@@ -28,7 +28,6 @@ export default function ConfirmDialog({
 }: ConfirmModalProps) {
   const handleConfirm = () => {
     onConfirm();
-    onCancel();
   };
   return (
     <Modal

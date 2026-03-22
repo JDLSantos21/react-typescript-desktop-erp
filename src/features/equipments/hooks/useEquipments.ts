@@ -18,6 +18,29 @@ export const useGetEquipments = (params?: EquipmentFilters) => {
   });
 };
 
+export const useDeleteEquipment = () => {
+  return useMutation({
+    mutationFn: (id: string) => EquipmentService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: EquipmentKeys.all,
+      });
+
+      sileo.success({
+        title: "Eliminación Exitosa",
+        description: "El equipo ha sido eliminado correctamente",
+      });
+    },
+    onError: (data) => {
+      sileo.error({
+        title: "Ocurrió un error",
+        description:
+          extractApiError(data).message ?? "Error al eliminar equipo",
+      });
+    },
+  });
+};
+
 export const useGetEquipmentById = (id?: string) => {
   return useQuery({
     queryKey: EquipmentKeys.detail(id ?? ""),

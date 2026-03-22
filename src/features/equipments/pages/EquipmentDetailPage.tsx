@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { useGetEquipmentById } from "../hooks/useEquipments";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  useDeleteEquipment,
+  useGetEquipmentById,
+} from "../hooks/useEquipments";
 import { Badge } from "@/shared/components/core/Badge";
 import { Button } from "@/shared/components/core/Button";
 import { CopyIcon, LocationIcon } from "@/shared/components/icons";
@@ -19,6 +22,8 @@ import AssignEquipmentModal from "../components/AssignEquipmentModal";
 import { useModal } from "@/shared/hooks/useModal";
 import AssignmentHistoryModal from "../components/AssignmentHistoryModal";
 import RemoveAssignModal from "../components/RemoveAssignModal";
+import ConfirmDialog from "@/shared/components/core/ConfirmDialog";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 
 export default function EquipmentDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -32,41 +37,60 @@ export default function EquipmentDetailPage() {
     refetch,
   } = useGetEquipmentById(id);
 
+  const { mutateAsync: deleteEquipment, isPending: isDeleting } =
+    useDeleteEquipment();
+
+  const navigate = useNavigate();
+
   const assignModal = useModal();
   const assignmentHistoryModal = useModal();
   const removeAssignModal = useModal();
+  const deleteModal = useModal();
+
+  const handleDeleteEquipment = async () => {
+    try {
+      await deleteEquipment(equipment?.data.id!);
+      navigate("/equipments");
+    } catch (error) {
+      deleteModal.close();
+    }
+  };
 
   useHeaderConfig({
     showBackButton: true,
     customContent: (
-      <div className="flex items-center px-3 py-1 w-full gap-2">
+      <div className="flex items-center px-3 py-1 w-full">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-text-primary">
             Detalles del equipo
           </h2>
-          <div className="flex gap-2 items-center text-sm text-text-secondary">
-            <p>Numero de serie {equipment?.data.serialNumber}</p>
-            <div className="border-l border-gray-200 h-3 mx-2" />
-            <Button
-              variant="ghost"
-              size="icon"
-              icon={CopyIcon}
-              onClick={async () => {
-                try {
-                  await copyToClipboard(equipment?.data.serialNumber!);
-                  toast.info("Número de serie copiado.");
-                } catch (error) {
-                  toast.error("No se pudo copiar el número de serie.");
-                }
-              }}
-            />
-            <Badge
-              className={`${getStatusColor(equipment?.data.status!)}`}
-              size="sm"
-            >
-              {equipment?.data.status}
-            </Badge>
-          </div>
+          {isLoading || !equipment ? (
+            <Skeleton className="w-44 h-3.5 mt-2.5" />
+          ) : (
+            <div className="flex gap-2 items-center text-sm text-text-secondary">
+              <p>N° Serie: {equipment?.data.serialNumber}</p>
+              <Button
+                variant="ghost"
+                size="icon"
+                icon={CopyIcon}
+                onClick={async () => {
+                  try {
+                    await copyToClipboard(equipment?.data.serialNumber!);
+                    toast.info("Número de serie copiado.");
+                  } catch (error) {
+                    toast.error("No se pudo copiar el número de serie.");
+                  }
+                }}
+              />
+              <div className="border-l border-gray-200 h-3 mx-1" />
+              <Badge
+                className={`${getStatusColor(equipment?.data.status!)}`}
+                size="sm"
+              >
+                {equipment?.data.status}
+              </Badge>
+            </div>
+          )}
         </div>
       </div>
     ),
@@ -155,9 +179,11 @@ export default function EquipmentDetailPage() {
           </div>
           <div>
             <EquipmentAsideMenu
+              equipment={equipment?.data!}
               onRemoveAssignment={() => removeAssignModal.open()}
               onAssign={() => assignModal.open()}
               onViewAssignmentHistory={() => assignmentHistoryModal.open()}
+              onDelete={() => deleteModal.open()}
             />
             <div className="border space-y-2 bg-white p-3 text-sm rounded-2xl h-64 m-4 text-gray-400">
               <LocationIcon className="float-end" />
@@ -216,13 +242,24 @@ export default function EquipmentDetailPage() {
             onClose={assignmentHistoryModal.close}
           />
 
-          <RemoveAssignModal
-            assignment={lastAssignment!}
-            isOpen={removeAssignModal.isOpen}
-            onClose={removeAssignModal.close}
+          {lastAssignment ? (
+            <RemoveAssignModal
+              assignment={lastAssignment}
+              isOpen={removeAssignModal.isOpen}
+              onClose={removeAssignModal.close}
+            />
+          ) : null}
+
+          <ConfirmDialog
+            isLoading={isDeleting}
+            variant="danger"
+            isOpen={deleteModal.isOpen}
+            onCancel={deleteModal.close}
+            onConfirm={handleDeleteEquipment}
+            title="Eliminar equipo"
+            description={`¿Estas seguro de que quieres eliminar el equipo con el serial: ${equipment?.data.serialNumber}?`}
           />
 
-          {/* Modal del mapa expandido */}
           <MapModal
             isOpen={isMapOpen}
             onClose={() => setIsMapOpen(false)}

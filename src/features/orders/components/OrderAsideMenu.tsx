@@ -54,7 +54,8 @@ export default function OrderAsideMenu({
         variant="danger"
         isOpen={confirmModal.isOpen}
         onConfirm={() => {
-          /* handleDeleteCustomer() */
+          /* TODO: handleDeleteOrder() */
+          confirmModal.close();
         }}
         onCancel={() => confirmModal.close()}
       />

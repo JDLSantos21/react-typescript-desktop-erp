@@ -55,6 +55,7 @@ export default function RemoveAssignModal({
       await unassignEquipment(formData);
       onClose();
     } finally {
+      setIsConfirmOpen(false);
       reset();
       setFormData(null);
     }
@@ -137,6 +138,7 @@ export default function RemoveAssignModal({
         title="Quitar asignación"
         description="¿Estás seguro de que deseas quitar esta asignación?"
         onConfirm={handleConfirm}
+        isLoading={isPending}
       />
     </>
   );

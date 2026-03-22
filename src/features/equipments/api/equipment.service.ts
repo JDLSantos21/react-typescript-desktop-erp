@@ -29,6 +29,13 @@ export const EquipmentService = {
     return response.data;
   },
 
+  delete: async (id: string): Promise<ApiResponse<void>> => {
+    const response = await apiClient.delete<ApiResponse<void>>(
+      `equipment/${id}`,
+    );
+    return response.data;
+  },
+
   getAllByCustomerId: async (
     customerId: string,
   ): Promise<ApiResponse<EquipmentDetail[]>> => {

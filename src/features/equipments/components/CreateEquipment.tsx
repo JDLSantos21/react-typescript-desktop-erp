@@ -12,6 +12,7 @@ import { Modal } from "@/shared/components/core/Modal";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/shared/components/core/Badge";
 import { getStatusColor } from "@/shared/utils/status.utils";
+import { usePrintEquipmentLabel } from "../hooks/usePrintEquipmentLabel";
 
 export default function CreateEquipment() {
   const {
@@ -29,6 +30,8 @@ export default function CreateEquipment() {
     isSuccess,
     reset,
   } = useCreateEquipment();
+
+  const { printLabel } = usePrintEquipmentLabel(data?.data);
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -109,7 +112,7 @@ export default function CreateEquipment() {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button icon={PrinterIcon} variant="outline">
+          <Button icon={PrinterIcon} variant="outline" onClick={printLabel}>
             Imprimir etiqueta
           </Button>
           <Button onClick={() => navigate(`/equipments/${data?.data.id}`)}>
