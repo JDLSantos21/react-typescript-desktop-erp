@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { PieChart, Pie, Sector } from "recharts";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 
 interface FuelGaugeProps {
   currentLevel: number;
@@ -29,18 +30,41 @@ function getStatusLabel(percent: number, minPercent: number) {
   return "Nivel Normal";
 }
 
+export function useGaugeScale() {
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width >= 1600) setScale(1.4);
+      else if (width >= 1400) setScale(1.25);
+      else setScale(1.15);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  return scale;
+}
+
 export default function FuelGauge({
   currentLevel,
   capacity,
   minLevel,
   unit = "gal",
 }: FuelGaugeProps) {
+  const displayLevelRef = useRef(0);
   const [displayLevel, setDisplayLevel] = useState(0);
 
   useEffect(() => {
     let startTime: number;
     const duration = 1000; // 1s animation
     let animationFrameId: number;
+    const startLevel = displayLevelRef.current;
+
+    // Si ya estamos en el valor, no animar
+    if (startLevel === currentLevel && displayLevel === currentLevel) {
+      return;
+    }
 
     const animate = (time: number) => {
       if (!startTime) startTime = time;
@@ -48,13 +72,16 @@ export default function FuelGauge({
 
       // easeOutCubic: menos drástico al final que expo
       const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const currentVal = startLevel + (currentLevel - startLevel) * easeProgress;
 
-      setDisplayLevel(currentLevel * easeProgress);
+      setDisplayLevel(currentVal);
+      displayLevelRef.current = currentVal;
 
       if (progress < 1) {
         animationFrameId = requestAnimationFrame(animate);
       } else {
         setDisplayLevel(currentLevel);
+        displayLevelRef.current = currentLevel;
       }
     };
 
@@ -62,6 +89,9 @@ export default function FuelGauge({
 
     return () => cancelAnimationFrame(animationFrameId);
   }, [currentLevel]);
+
+  // Manejo de responsive scalation para pantallas mas grandes
+  const scale = useGaugeScale();
 
   const percent = Math.min(Math.round((displayLevel / capacity) * 100), 100);
 
@@ -74,17 +104,17 @@ export default function FuelGauge({
   const color = getStatusColor(finalPercent, minPercent);
   const statusLabel = getStatusLabel(finalPercent, minPercent);
 
-  const data = [{ value: percent }, { value: 100 - percent }];
+  const data = [{ value: percent }, { value: Math.max(0, 100 - percent) }];
 
-  const W = 240;
-  const H = 140;
+  const W = 240 * scale;
+  const H = 140 * scale;
   const cx = W / 2;
-  const cy = H - 10;
-  const outerR = 95;
-  const innerR = 65;
+  const cy = H - 10 * scale;
+  const outerR = 95 * scale;
+  const innerR = 65 * scale;
 
   return (
-    <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm w-70">
+    <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm w-fit min-w-75">
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
@@ -123,12 +153,18 @@ export default function FuelGauge({
 
         <div
           className="absolute left-1/2 -translate-x-1/2"
-          style={{ top: cy - 45 }}
+          style={{ top: cy - 45 * scale }}
         >
-          <p className="text-center text-2xl font-bold text-gray-800">
+          <p
+            className="text-center font-bold text-gray-800 leading-none"
+            style={{ fontSize: `${1.5 * scale}rem` }}
+          >
             {percent}%
           </p>
-          <p className="text-center text-xs text-gray-500 mt-0.5">
+          <p
+            className="text-center text-gray-500 mt-1 whitespace-nowrap"
+            style={{ fontSize: `${0.75 * Math.max(scale * 0.9, 1)}rem` }}
+          >
             {Math.round(displayLevel).toLocaleString()} /{" "}
             {capacity.toLocaleString()} {unit}
           </p>
@@ -153,6 +189,64 @@ export default function FuelGauge({
           <span className="text-[10px] text-gray-400">
             {capacity.toLocaleString()} {unit}
           </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function FuelGaugeSkeleton() {
+  const scale = useGaugeScale();
+  const H = 140 * scale;
+  const outerR = 95 * scale;
+  const innerR = 65 * scale;
+  const cy = H - 10 * scale;
+
+  return (
+    <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm w-fit min-w-75">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-2">
+        <Skeleton className="h-3 w-28" />
+        <Skeleton className="h-4 w-20 rounded-full" />
+      </div>
+
+      <div className="relative flex justify-center items-end" style={{ height: H }}>
+        <div 
+          className="relative overflow-hidden" 
+          style={{ 
+            width: outerR * 2, 
+            height: outerR, 
+            borderTopLeftRadius: outerR, 
+            borderTopRightRadius: outerR,
+            marginBottom: H - cy,
+          }}
+        >
+          <Skeleton className="w-full h-full rounded-none" />
+          <div 
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-white"
+            style={{ 
+              width: innerR * 2, 
+              height: innerR, 
+              borderTopLeftRadius: innerR, 
+              borderTopRightRadius: innerR 
+            }}
+          />
+        </div>
+
+        <div
+          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center"
+          style={{ top: cy - 45 * scale }}
+        >
+          <Skeleton className="h-7 w-16 mb-2" />
+          <Skeleton className="h-3 w-24" />
+        </div>
+      </div>
+
+      <div className="mt-2 px-1">
+        <Skeleton className="h-1.5 w-full rounded-full" />
+        <div className="flex justify-between mt-1.5">
+          <Skeleton className="h-2.5 w-16" />
+          <Skeleton className="h-2.5 w-16" />
         </div>
       </div>
     </div>

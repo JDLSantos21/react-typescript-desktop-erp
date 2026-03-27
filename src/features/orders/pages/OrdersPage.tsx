@@ -7,8 +7,6 @@ import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
 import { usePagination } from "@/shared/hooks/usePagination";
 import { useNavigate } from "react-router-dom";
 import { useGetOrders } from "../hooks/useOrder";
-
-import DateRangeSelector from "../components/DateRangeSelector";
 import { useCallback, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import OrderCard from "../components/OrderCard";
@@ -18,6 +16,7 @@ import { OrdersFilter } from "../components/OrdersFilter";
 import { OrderStatus } from "@/shared/types/entities/order.types";
 import SectionLoader from "@/shared/components/SectionLoader";
 import { APP_CONFIG } from "@/shared/constants/config";
+import DateRangeSelector from "@/shared/components/core/DateRangeSelector";
 
 export default function OrdersPage() {
   const [dateRange, setDateRange] = useState(() => {
@@ -43,8 +42,15 @@ export default function OrdersPage() {
   });
 
   const handleDateRangeChange = useCallback(
-    (newRange: { start_date: string; end_date: string }) => {
-      setDateRange(newRange);
+    (newRange: { start_date?: string; end_date?: string }) => {
+      if (!newRange.start_date || !newRange.end_date) {
+        return;
+      }
+
+      setDateRange({
+        start_date: newRange.start_date,
+        end_date: newRange.end_date,
+      });
       setPage(1);
     },
     [setPage],
@@ -133,7 +139,7 @@ export default function OrdersPage() {
         </ul>
       )}
 
-      {paginationMeta && paginationMeta.totalPages > 1 ? (
+      {paginationMeta && paginationMeta.totalPages ? (
         <div className="w-full px-3 bg-white py-1 border-t border-border">
           <Pagination
             currentPage={paginationMeta.page}

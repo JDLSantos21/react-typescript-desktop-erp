@@ -1,40 +1,15 @@
 import { HTMLAttributes, ReactNode } from "react";
-import { Button } from "./Button";
 import { cn } from "@/shared/utils/cn";
 
 interface TableFiltersProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
-  onClearFilters?: () => void;
-  showClearButton?: boolean;
-  hasActiveFilters?: boolean;
 }
 
 export const TableFilters = ({
   children,
-  onClearFilters,
-  showClearButton = true,
-  hasActiveFilters = false,
   className,
   ...props
 }: TableFiltersProps) => {
-  // Legacy Mode: if onClearFilters is provided, use the old layout
-  if (onClearFilters) {
-    return (
-      <div className={cn("flex items-center gap-4", className)} {...props}>
-        <div className="flex-1 flex flex-wrap gap-4">{children}</div>
-
-        {showClearButton && hasActiveFilters && (
-          <div className="flex-shrink-0">
-            <Button variant="outline" onClick={onClearFilters}>
-              Limpiar filtros
-            </Button>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  // Flexible Mode: simple wrapper
   return (
     <div className={cn("flex flex-wrap gap-4", className)} {...props}>
       {children}

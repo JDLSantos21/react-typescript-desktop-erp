@@ -60,9 +60,9 @@ const TableComponent = <T extends Record<string, any>>({
   }
 
   return (
-    <div className="w-full rounded-lg overflow-hidden h-full">
+    <div className="w-full rounded-lg overflow-hidden h-full flex flex-col">
       {/* Header fijo */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto shrink-0">
         <table
           className={`w-full border-collapse ${
             tableLayout === "fixed" ? "table-fixed" : "table-auto"
@@ -87,7 +87,7 @@ const TableComponent = <T extends Record<string, any>>({
 
       {/* Body scrolleable */}
       <div
-        className="overflow-y-auto overflow-x-auto tbody-scrolleable"
+        className="overflow-y-auto overflow-x-auto tbody-scrolleable flex-1 min-h-0"
         style={{ maxHeight }}
       >
         <table

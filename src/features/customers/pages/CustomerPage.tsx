@@ -4,12 +4,8 @@ import { Select } from "@/shared/components/core/Select";
 import { Table } from "@/shared/components/core/Table";
 import { TableFilters } from "@/shared/components/core/TableFilters";
 import { Pagination } from "@/shared/components/core/Pagination";
-
 import { useNavigate } from "react-router-dom";
-import { useTableFilters } from "@/shared/hooks/useTableFilters";
-import { useDebounce } from "@/shared/hooks/useDebounce";
 import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
-import { usePagination } from "@/shared/hooks/usePagination";
 import { useGetCustomers } from "../hooks/useCustomer";
 import { customerTableColumns } from "../config/customerTableConfig";
 import { useCallback, useMemo } from "react";
@@ -18,20 +14,51 @@ import { EmptyState } from "@/shared/components/EmptyState";
 import { ErrorState } from "@/shared/components/ErrorState";
 import { FeatureErrorBoundary } from "@/shared/components/error-boundary/FeatureErrorBoundary";
 import { APP_CONFIG } from "@/shared/constants/config";
+import { useListParams } from "@/shared/hooks/useListParams";
+import { CustomerQueryParams } from "../api/customer.service";
+import { useDebouncedSearchFilter } from "@/shared/hooks/useDebouncedSearchFilter";
 
 export default function CustomerPage() {
   const navigate = useNavigate();
 
-  const { setPage, setLimit, paginationParams } = usePagination({
+  const {
+    filters,
+    setFilter,
+    resetFilters,
+    hasActiveFilters,
+    queryParams,
+    setPage,
+    setLimit,
+  } = useListParams({
+    initialFilters: {
+      search: "",
+      active: undefined as CustomerQueryParams["active"],
+    },
+    filterConfig: {
+      active: {
+        parse: (value) => {
+          if (value === "true") {
+            return true;
+          }
+
+          if (value === "false") {
+            return false;
+          }
+
+          return undefined;
+        },
+        isEmpty: (value) => value === undefined,
+      },
+    },
     defaultLimit: APP_CONFIG.PAGINATION.DEFAULT_LIMIT,
     syncWithUrl: true,
   });
 
-  const { filters, updateFilter, clearFilters } = useTableFilters({
-    initialFilters: {},
+  const searchFilter = useDebouncedSearchFilter({
+    value: filters.search,
+    onChange: (value) => setFilter("search", value),
+    delay: 500,
   });
-
-  const debouncedSearch = useDebounce(filters.search || "", 500);
 
   const {
     data: customers,
@@ -40,9 +67,7 @@ export default function CustomerPage() {
     isError,
     refetch,
   } = useGetCustomers({
-    ...filters,
-    ...paginationParams,
-    search: debouncedSearch,
+    ...queryParams,
   });
 
   const headerActions = useMemo(() => {
@@ -64,9 +89,7 @@ export default function CustomerPage() {
 
   const pagination = customers?.meta.pagination;
 
-  const hasActiveFilters = Object.values(filters).some(
-    (value) => value !== "" && value !== undefined && value !== null,
-  );
+  const showResetFilters = hasActiveFilters || searchFilter.inputValue.trim() !== "";
 
   const handleRowClick = useCallback(
     (customer: { id: string }) => {
@@ -78,7 +101,7 @@ export default function CustomerPage() {
   const emptyData = useMemo(() => [], []);
   const tableData = customers?.data || emptyData;
 
-  const keyExtractor = useCallback((customer: any) => customer.id, []);
+  const keyExtractor = useCallback((customer: { id: string }) => customer.id, []);
 
   const emptyMessage = hasActiveFilters
     ? {
@@ -96,22 +119,20 @@ export default function CustomerPage() {
   return (
     <div className="flex flex-col justify-between h-full">
       <div className="space-y-4 h-[calc(100%-70px)] overflow-hidden p-6">
-        <div className="flex justify-between">
+        <div className="flex justify-between gap-4">
           <div>
             <h2 className="font-semibold">Todos los clientes</h2>
             <p className="text-xs text-text-secondary">
               {pagination?.total ?? 0} clientes registrados
             </p>
           </div>
-          <TableFilters
-            onClearFilters={clearFilters}
-            hasActiveFilters={hasActiveFilters}
-          >
+
+          <TableFilters className="items-start justify-end">
             <div className="w-75">
               <Input
                 placeholder="Nombre, teléfono, correo..."
-                value={filters.search || ""}
-                onChange={(e) => updateFilter("search", e.target.value)}
+                value={searchFilter.inputValue}
+                onChange={(e) => searchFilter.setInputValue(e.target.value)}
                 endIcon={<SearchIcon className="text-text-muted" />}
               />
             </div>
@@ -123,10 +144,33 @@ export default function CustomerPage() {
                   { value: "active", label: "Activo" },
                   { value: "inactive", label: "Inactivo" },
                 ]}
-                value={filters.active || ""}
-                onValueChange={(value) => updateFilter("active", value)}
+                value={
+                  filters.active === undefined
+                    ? ""
+                    : filters.active
+                      ? "active"
+                      : "inactive"
+                }
+                onValueChange={(value) =>
+                  setFilter(
+                    "active",
+                    value === "active" ? true : value === "inactive" ? false : undefined,
+                  )
+                }
               />
             </div>
+
+            {showResetFilters ? (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  searchFilter.clearInput();
+                  resetFilters();
+                }}
+              >
+                Limpiar filtros
+              </Button>
+            ) : null}
           </TableFilters>
         </div>
 

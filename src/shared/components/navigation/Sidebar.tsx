@@ -2,6 +2,7 @@ import {
   DashboardIcon,
   EquipmentIcon,
   FuelIcon,
+  HistoryIcon,
   MenuIcon,
   OrderIcon,
   StackIcon,
@@ -15,7 +16,12 @@ import { useLocation } from "react-router-dom";
 
 const navigationItems: NavigationItem[] = [
   { name: "Dashboard", href: "/dashboard", icon: DashboardIcon },
-  { name: "Combustible", href: "/fuel", icon: FuelIcon },
+  {
+    name: "Combustible",
+    href: "/fuel",
+    icon: FuelIcon,
+    children: [{ name: "Historial", icon: HistoryIcon, href: "/fuel/history" }],
+  },
   { name: "Inventario", href: "/inventory", icon: StackIcon },
   { name: "Vehículos", href: "/vehicles", icon: TruckIcon },
   {

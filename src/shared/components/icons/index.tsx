@@ -47,6 +47,7 @@ import { SlPrinter, SlRefresh } from "react-icons/sl";
 import { GrUserWorker } from "react-icons/gr";
 import { TbEdit } from "react-icons/tb";
 import { FiExternalLink } from "react-icons/fi";
+import { LuFilterX } from "react-icons/lu";
 
 // Type para props comunes de iconos
 export type IconProps = ComponentProps<"svg"> & {
@@ -146,6 +147,8 @@ export const HelpIcon = (props: IconProps) => <CiCircleQuestion {...props} />;
 export const WarningIcon = (props: IconProps) => (
   <BsExclamationCircle {...props} />
 );
+
+export const FilterXIcon = (props: IconProps) => <LuFilterX {...props} />;
 
 export const NavigateIcon = (props: IconProps) => (
   <IoNavigateOutline {...props} />
