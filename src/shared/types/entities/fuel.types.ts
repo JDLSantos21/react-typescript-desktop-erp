@@ -37,3 +37,23 @@ export interface FuelSummary {
   totalCostThisMonth: number;
   totalCostLastMonth: number;
 }
+
+export interface FuelRefill {
+  id: number;
+  gallons: number;
+  pricePerGallon: number;
+  previousLevel: number;
+  newLevel: number;
+  user: Pick<User, "id" | "name" | "lastName">;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TankReset {
+  id: number;
+  previousLevel: number;
+  userId: Pick<User, "id">;
+  tankRefillId: Pick<FuelRefill, "id">;
+  createdAt: string;
+  updatedAt: string;
+}

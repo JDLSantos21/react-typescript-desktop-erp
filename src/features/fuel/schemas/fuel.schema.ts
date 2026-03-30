@@ -35,3 +35,15 @@ export type RegisterConsumptionFormData = z.infer<
 export type RegisterConsumptionInput = z.input<
   typeof registerConsumptionSchema
 >;
+
+export const registerRefillSchema = z.object({
+  gallons: z.coerce
+    .number()
+    .min(1, "Debe ingresar una cantidad de combustible"),
+  price_per_gallon: z.coerce
+    .number()
+    .min(1, "Debe ingresar el precio por galón"),
+});
+
+export type RegisterRefillInput = z.input<typeof registerRefillSchema>;
+export type RegisterRefillFormData = z.infer<typeof registerRefillSchema>;

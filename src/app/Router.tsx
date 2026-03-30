@@ -3,6 +3,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { PageErrorBoundary } from "@/shared/components/error-boundary/PageErrorBoundary";
 import { PageLoader } from "@/shared/components/PageLoader";
 import { lazy, Suspense } from "react";
+import RefillsPage from "@/features/fuel/pages/RefillsPage";
 
 // Lazy loaded pages
 const LoginPage = lazy(() => import("@/features/auth/pages/LoginPage"));
@@ -59,6 +60,10 @@ const FuelHistoryPage = lazy(
   () => import("@/features/fuel/pages/FuelHistoryPage"),
 );
 
+const RefillsDetailPage = lazy(
+  () => import("@/features/fuel/pages/RefillsDetailPage"),
+);
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -106,6 +111,26 @@ export const router = createBrowserRouter([
               <Suspense fallback={<PageLoader />}>
                 <PageErrorBoundary pageName="historial de combustible">
                   <FuelHistoryPage />
+                </PageErrorBoundary>
+              </Suspense>
+            ),
+          },
+          {
+            path: "refills",
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <PageErrorBoundary pageName="recargas de combustible">
+                  <RefillsPage />
+                </PageErrorBoundary>
+              </Suspense>
+            ),
+          },
+          {
+            path: "refills/:id",
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <PageErrorBoundary pageName="detalle de recarga">
+                  <RefillsDetailPage />
                 </PageErrorBoundary>
               </Suspense>
             ),

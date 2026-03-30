@@ -48,11 +48,25 @@ import { GrUserWorker } from "react-icons/gr";
 import { TbEdit } from "react-icons/tb";
 import { FiExternalLink } from "react-icons/fi";
 import { LuFilterX } from "react-icons/lu";
+import { MdOutlineGasMeter } from "react-icons/md";
+
+import { LiaDollarSignSolid } from "react-icons/lia";
+import { GiFuelTank } from "react-icons/gi";
 
 // Type para props comunes de iconos
 export type IconProps = ComponentProps<"svg"> & {
   size?: number | string;
 };
+
+export const FuelTankIcon = (props: IconProps) => <GiFuelTank {...props} />;
+
+export const DollarIcon = (props: IconProps) => (
+  <LiaDollarSignSolid {...props} />
+);
+
+export const GasMeterIcon = (props: IconProps) => (
+  <MdOutlineGasMeter {...props} />
+);
 
 // ============================================
 // NAVEGACIÓN

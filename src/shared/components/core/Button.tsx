@@ -20,6 +20,15 @@ const sizes = {
   icon: "h-8 w-8 p-0",
 };
 
+// Tamaños para la variante "link" (solo font-size, sin padding/height)
+const linkSizes = {
+  xs: "text-xs",
+  sm: "text-xs",
+  md: "text-sm",
+  lg: "text-base",
+  icon: "",
+};
+
 const iconSizes = {
   xs: "w-3 h-3",
   sm: "w-3.5 h-3.5",
@@ -59,7 +68,7 @@ export const Button = ({
       className={cn(
         baseStyles,
         variants[variant],
-        variant !== "link" && sizes[size],
+        variant === "link" ? linkSizes[size] : sizes[size],
         (hasIconOrLoading || isIconOnly) &&
           "flex items-center gap-2 justify-center",
         disabled || isLoading

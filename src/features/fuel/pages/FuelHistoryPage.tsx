@@ -93,7 +93,7 @@ export default function FuelHistoryPage() {
 
   return (
     <div className="flex flex-col flex-1 h-full overflow-hidden">
-      <div className="flex flex-col flex-1 p-6 pb-0 min-h-0">
+      <div className="flex flex-col flex-1 px-6 pt-6 min-h-0">
         <TableFilters className="flex flex-col shrink-0">
           <div className="flex gap-4">
             <Input

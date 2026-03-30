@@ -77,8 +77,10 @@ export const truncateText = (text: string, maxLength: number): string => {
 
 export const formatDate = (
   dateString: string | Date,
-  format: string = "DD MMMM [de] YYYY"
+  format: string = "DD MMMM [de] YYYY",
 ): string => {
   if (format === "relative") return dayjs(dateString).fromNow();
+  if (format === "full")
+    return dayjs(dateString).format("DD MMMM [de] YYYY [a las] HH:mm");
   return dayjs(dateString).format(format);
 };

@@ -83,7 +83,7 @@ export const Header = () => {
       {/* User menu */}
       <Popover>
         <PopoverTrigger asChild>
-          <div className="flex items-center gap-3 border border-gray-100 h-full w-[250px] px-4 select-none cursor-pointer hover:bg-gray-50 transition-colors duration-150">
+          <div className="flex items-center gap-3 border border-gray-100 h-full w-62.5 px-4 select-none cursor-pointer hover:bg-gray-50 transition-colors duration-150">
             <div className="w-10 h-10 rounded-full bg-gray-100 text-sm flex items-center justify-center text-gray-700 font-medium">
               <span>{nameInitial}</span>
             </div>
@@ -97,7 +97,7 @@ export const Header = () => {
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="w-[248px] bg-white z-50 p-0 border border-border shadow-lg"
+          className="w-62 bg-white z-50 p-0 border border-border shadow-lg"
         >
           <button
             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"

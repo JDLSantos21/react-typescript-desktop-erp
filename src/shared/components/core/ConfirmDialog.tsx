@@ -37,7 +37,8 @@ export default function ConfirmDialog({
       closeOnOverlayClick={false}
     >
       <Modal.Body>
-        <p>{description}</p>
+        {description && <p>{description}</p>}
+        {description && children && <div className="mt-3" />}
         {children}
       </Modal.Body>
       <Modal.Footer>

@@ -2,11 +2,16 @@ import { apiClient } from "@/shared/api/client";
 import { ApiResponse, PaginatedResponse } from "@/shared/types/api.types";
 import {
   FuelConsumption,
+  FuelRefill,
   FuelSummary,
   FuelTank,
+  TankReset,
 } from "@/shared/types/entities/fuel.types";
-import { GetFuelConsumptionsParams } from "../types/fuel";
-import { RegisterConsumptionFormData } from "../schemas/fuel.schema";
+import { GetFuelConsumptionsParams, GetTankRefillsParams } from "../types/fuel";
+import {
+  RegisterConsumptionFormData,
+  RegisterRefillFormData,
+} from "../schemas/fuel.schema";
 
 export const FuelService = {
   getTank: async (): Promise<ApiResponse<FuelTank>> => {
@@ -15,7 +20,7 @@ export const FuelService = {
   },
 
   getConsumptions: async (
-    params: GetFuelConsumptionsParams,
+    params?: GetFuelConsumptionsParams,
   ): Promise<PaginatedResponse<FuelConsumption>> => {
     const response = await apiClient.get<PaginatedResponse<FuelConsumption>>(
       "fuel/consumption",
@@ -38,6 +43,47 @@ export const FuelService = {
     const response = await apiClient.post<ApiResponse<FuelConsumption>>(
       "fuel/consumption",
       data,
+    );
+    return response.data;
+  },
+
+  getRefills: async (
+    params?: GetTankRefillsParams,
+  ): Promise<PaginatedResponse<FuelRefill>> => {
+    const response = await apiClient.get<PaginatedResponse<FuelRefill>>(
+      "fuel/tank-refill",
+      { params },
+    );
+
+    return response.data;
+  },
+
+  getRefillById: async (id: string): Promise<ApiResponse<FuelRefill>> => {
+    const response = await apiClient.get<ApiResponse<FuelRefill>>(
+      `fuel/tank-refill/${id}`,
+    );
+    return response.data;
+  },
+
+  registerRefill: async (
+    data: RegisterRefillFormData,
+  ): Promise<ApiResponse<FuelRefill>> => {
+    const response = await apiClient.post<ApiResponse<FuelRefill>>(
+      "fuel/tank-refill",
+      data,
+    );
+
+    return response.data;
+  },
+
+  resetTank: async ({
+    password,
+  }: {
+    password: string;
+  }): Promise<ApiResponse<TankReset>> => {
+    const response = await apiClient.post<ApiResponse<TankReset>>(
+      "fuel/tank/reset",
+      { password },
     );
     return response.data;
   },
