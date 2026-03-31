@@ -8,9 +8,11 @@ import { Button } from "@/shared/components/core/Button";
 import { useMemo } from "react";
 import { useModal } from "@/shared/hooks/useModal";
 import RegisterConsumptionModal from "../components/RegisterConsumptionModal";
+import { useNavigate } from "react-router-dom";
 
 export default function FuelPage() {
   const registerModal = useModal();
+  const navigate = useNavigate();
 
   const {
     data: summary,
@@ -83,7 +85,11 @@ export default function FuelPage() {
               <h3 className="text-lg inline-flex items-center h-16 font-bold tracking-wider text-gray-500">
                 Métricas rápidas
               </h3>
-              <Button variant="link" size="sm">
+              <Button
+                onClick={() => navigate("/fuel/metrics")}
+                variant="link"
+                size="sm"
+              >
                 Ver estadísticas detalladas
               </Button>
             </div>

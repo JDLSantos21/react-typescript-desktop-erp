@@ -12,7 +12,7 @@ export default function FuelMetricsPage() {
     description: "Analisis del consumo de combustible",
   });
 
-  const { data, isLoading } = useGetFuelMetrics();
+  const { data } = useGetFuelMetrics();
 
   const kpis = data?.data.summary;
 
