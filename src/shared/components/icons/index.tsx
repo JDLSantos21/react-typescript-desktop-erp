@@ -52,6 +52,7 @@ import { MdOutlineGasMeter } from "react-icons/md";
 
 import { LiaDollarSignSolid } from "react-icons/lia";
 import { GiFuelTank } from "react-icons/gi";
+import { BiStats } from "react-icons/bi";
 
 // Type para props comunes de iconos
 export type IconProps = ComponentProps<"svg"> & {
@@ -67,6 +68,8 @@ export const DollarIcon = (props: IconProps) => (
 export const GasMeterIcon = (props: IconProps) => (
   <MdOutlineGasMeter {...props} />
 );
+
+export const StatsIcon = (props: IconProps) => <BiStats {...props} />;
 
 // ============================================
 // NAVEGACIÓN

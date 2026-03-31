@@ -57,3 +57,68 @@ export interface TankReset {
   createdAt: string;
   updatedAt: string;
 }
+
+// === KPIs superiores del dashboard ===
+
+export interface DashboardKPIs {
+  totalConsumption: number;
+  consumptionChange: number; // % vs período anterior
+  totalCost: number;
+  costChange: number;
+  avgFleetEfficiency: number; // km/gal
+  efficiencyChange: number;
+  avgPricePerGallon: number;
+  priceChange: number;
+}
+
+// === Puntos de la gráfica de tendencia ===
+
+export interface ConsumptionTrendPoint {
+  date: string; // ISO date (YYYY-MM-DD)
+  label: string; // Formato legible (DD/MM/YYYY)
+  fuelUsage: number; // Galones consumidos
+  cost: number; // Costo estimado
+}
+
+// === Top vehículos con mayor consumo ===
+
+export interface TopVehicleConsumption {
+  vehicleId: string;
+  name: string; // currentTag del vehículo
+  licensePlate: string;
+  totalGallons: number;
+}
+
+// === Distribución por tipo (Vehículo vs Planta) ===
+
+export interface TypeDistribution {
+  type: string;
+  totalGallons: number;
+  percentage: number;
+}
+
+// === Alertas de eficiencia ===
+
+export type AlertSeverity = "WARNING" | "CRITICAL";
+export type EfficiencyAlertType = "HIGH_CONSUMPTION" | "CONSUMPTION_SPIKE";
+
+export interface EfficiencyAlert {
+  vehicleId: string;
+  vehicleName: string;
+  licensePlate: string;
+  alertType: EfficiencyAlertType;
+  message: string;
+  severity: AlertSeverity;
+  currentValue: number;
+  referenceValue: number; // Promedio de flota o valor previo
+}
+
+// === Entidad principal del dashboard ===
+
+export interface FuelDashboard {
+  summary: DashboardKPIs;
+  consumptionTrend: ConsumptionTrendPoint[];
+  topVehicles: TopVehicleConsumption[];
+  typeDistribution: TypeDistribution[];
+  efficiencyAlerts: EfficiencyAlert[];
+}

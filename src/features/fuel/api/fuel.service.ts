@@ -2,6 +2,7 @@ import { apiClient } from "@/shared/api/client";
 import { ApiResponse, PaginatedResponse } from "@/shared/types/api.types";
 import {
   FuelConsumption,
+  FuelDashboard,
   FuelRefill,
   FuelSummary,
   FuelTank,
@@ -84,6 +85,13 @@ export const FuelService = {
     const response = await apiClient.post<ApiResponse<TankReset>>(
       "fuel/tank/reset",
       { password },
+    );
+    return response.data;
+  },
+
+  getFuelMetrics: async (): Promise<ApiResponse<FuelDashboard>> => {
+    const response = await apiClient.get<ApiResponse<FuelDashboard>>(
+      "fuel/dashboard?alert_threshold=1",
     );
     return response.data;
   },

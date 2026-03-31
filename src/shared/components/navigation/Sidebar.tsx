@@ -7,6 +7,7 @@ import {
   MenuIcon,
   OrderIcon,
   StackIcon,
+  StatsIcon,
   TruckIcon,
   UsersIcon,
 } from "../icons";
@@ -24,6 +25,7 @@ const navigationItems: NavigationItem[] = [
     children: [
       { name: "Historial", icon: HistoryIcon, href: "/fuel/history" },
       { name: "Reabastecimientos", icon: GasMeterIcon, href: "/fuel/refills" },
+      { name: "Metricas", icon: StatsIcon, href: "/fuel/metrics" },
     ],
   },
   { name: "Inventario", href: "/inventory", icon: StackIcon },

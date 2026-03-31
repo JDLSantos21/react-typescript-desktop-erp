@@ -64,6 +64,10 @@ const RefillsDetailPage = lazy(
   () => import("@/features/fuel/pages/RefillsDetailPage"),
 );
 
+const FuelMetricsPage = lazy(
+  () => import("@/features/fuel/pages/FuelMetricsPages"),
+);
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -131,6 +135,16 @@ export const router = createBrowserRouter([
               <Suspense fallback={<PageLoader />}>
                 <PageErrorBoundary pageName="detalle de recarga">
                   <RefillsDetailPage />
+                </PageErrorBoundary>
+              </Suspense>
+            ),
+          },
+          {
+            path: "metrics",
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <PageErrorBoundary pageName="metricas de combustible">
+                  <FuelMetricsPage />
                 </PageErrorBoundary>
               </Suspense>
             ),

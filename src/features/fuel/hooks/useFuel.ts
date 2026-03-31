@@ -118,3 +118,11 @@ export const useResetFuelTank = () => {
     },
   });
 };
+
+export const useGetFuelMetrics = () => {
+  return useQuery({
+    queryKey: FuelKeys.metrics(),
+    queryFn: () => FuelService.getFuelMetrics(),
+    staleTime: 1000 * 60 * 5,
+  });
+};
