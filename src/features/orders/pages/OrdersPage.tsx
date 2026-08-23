@@ -23,8 +23,8 @@ export default function OrdersPage() {
     const today = new Date();
     const startDate = dayjs().subtract(28, "day").toDate();
     return {
-      start_date: formatDate(startDate, "YYYY-MM-DD"),
-      end_date: formatDate(today, "YYYY-MM-DD"),
+      startDate: formatDate(startDate, "YYYY-MM-DD"),
+      endDate: formatDate(today, "YYYY-MM-DD"),
     };
   });
 
@@ -42,14 +42,14 @@ export default function OrdersPage() {
   });
 
   const handleDateRangeChange = useCallback(
-    (newRange: { start_date?: string; end_date?: string }) => {
-      if (!newRange.start_date || !newRange.end_date) {
+    (newRange: { startDate?: string; endDate?: string }) => {
+      if (!newRange.startDate || !newRange.endDate) {
         return;
       }
 
       setDateRange({
-        start_date: newRange.start_date,
-        end_date: newRange.end_date,
+        startDate: newRange.startDate,
+        endDate: newRange.endDate,
       });
       setPage(1);
     },
@@ -74,7 +74,8 @@ export default function OrdersPage() {
 
   const { data, isLoading, isError } = useGetOrders({
     ...paginationParams,
-    ...dateRange,
+    startDate: dateRange.startDate,
+    endDate: dateRange.endDate,
     ...filters,
   });
 

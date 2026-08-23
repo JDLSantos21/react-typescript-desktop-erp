@@ -29,20 +29,23 @@ export function OrderDetailSections({ order, onOpenMap }: OrderDetailSectionsPro
             </p>
           </div>
           <div className="flex items-center gap-2 text-text-secondary">
-            {order.phone.hasWhatsapp && (
+            {order.phone?.hasWhatsapp && (
               <WhatsAppIcon className="text-green-500 w-4 h-4" />
             )}
             <p className="font-mono text-sm">
-              {formatPhoneNumber(order.phone.phoneNumber)}
+              {order.phone
+                ? formatPhoneNumber(order.phone.phoneNumber)
+                : "Sin teléfono disponible"}
             </p>
           </div>
         </div>
         <div className="flex gap-2">
           <Button
-            onClick={() => handleOpenWhatsapp(order as any)}
+            onClick={() => handleOpenWhatsapp(order)}
             icon={WhatsAppIcon}
             variant="outline"
             size="sm"
+            disabled={!order.phone}
           >
             Mensaje
           </Button>
@@ -66,22 +69,26 @@ export function OrderDetailSections({ order, onOpenMap }: OrderDetailSectionsPro
         <div className="flex justify-between">
           <div className="space-y-2">
             <p className="font-medium text-gray-900">
-              {order.address.branchName}
+              {order.address?.branchName ?? "Sin dirección disponible"}
             </p>
-            <p className="text-gray-600">{order.address.direction}</p>
-            <p className="text-gray-600">{order.address.city}</p>
+            {order.address && (
+              <>
+                <p className="text-gray-600">{order.address.direction}</p>
+                <p className="text-gray-600">{order.address.city}</p>
+              </>
+            )}
           </div>
           <div className="flex flex-col items-end gap-2">
             <div className="flex items-center gap-2">
               <span
                 className={`flex h-2 w-2 rounded-full ${
-                  order.address.coordinates
+                  order.address?.coordinates
                     ? "bg-green-500"
                     : "bg-gray-300"
                 }`}
               />
               <p className="text-sm text-gray-500">
-                {order.address.coordinates?.latitude
+                {order.address?.coordinates?.latitude
                   ? "Ubicación exacta disponible"
                   : "Sin ubicación exacta"}
               </p>
@@ -90,7 +97,7 @@ export function OrderDetailSections({ order, onOpenMap }: OrderDetailSectionsPro
               variant="outline"
               icon={LocationIcon}
               size="sm"
-              disabled={!order.address.coordinates?.latitude}
+              disabled={!order.address?.coordinates?.latitude}
               onClick={onOpenMap}
             >
               Ver en mapa
@@ -115,7 +122,7 @@ export function OrderDetailSections({ order, onOpenMap }: OrderDetailSectionsPro
                   {product.name}
                 </p>
                 <p className="text-sm text-gray-500 mt-0.5">
-                  {product.size} · {product.unit}
+                  {[product.size, product.unit].filter(Boolean).join(" · ")}
                 </p>
               </div>
               <p className="text-lg font-light text-gray-900 tabular-nums">

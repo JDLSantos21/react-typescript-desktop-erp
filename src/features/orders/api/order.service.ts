@@ -2,9 +2,10 @@ import { apiClient } from "@/shared/api/client";
 import { ApiResponse, PaginatedResponse } from "@/shared/types/api.types";
 import {
   Order,
-  OrderProduct,
+  ProductCatalogItem,
   OrderStatus,
   OrderStatusHistoryField,
+  PublicOrderTracking,
 } from "@/shared/types/entities/order.types";
 import {
   CreateOrderDto,
@@ -17,7 +18,7 @@ export interface OrderQueryParams {
   limit?: number;
   orderId?: number;
   trackingCode?: string;
-  customer_id?: string;
+  customerId?: string;
   status?: OrderStatus;
   startDate?: string;
   endDate?: string;
@@ -27,10 +28,10 @@ export interface OrderQueryParams {
 
 export class OrderService {
   static getOrdersByCustomerId = async (
-    customer_id: string,
+    customerId: string,
   ): Promise<ApiResponse<Order[]>> => {
     const res = await apiClient.get<ApiResponse<Order[]>>(
-      `/customers/${customer_id}/orders`,
+      `/customers/${customerId}/orders`,
     );
     return res.data;
   };
@@ -45,8 +46,12 @@ export class OrderService {
     return res.data;
   };
 
-  static getAllProducts = async (): Promise<ApiResponse<OrderProduct[]>> => {
-    const res = await apiClient.get<ApiResponse<OrderProduct[]>>("/products");
+  static getAllProducts = async (): Promise<
+    ApiResponse<ProductCatalogItem[]>
+  > => {
+    const res = await apiClient.get<ApiResponse<ProductCatalogItem[]>>(
+      "/products",
+    );
     return res.data;
   };
 
@@ -68,8 +73,8 @@ export class OrderService {
 
   static getOrderByTrackingCode = async (
     trackingCode: string,
-  ): Promise<ApiResponse<Order>> => {
-    const res = await apiClient.get<ApiResponse<Order>>(
+  ): Promise<ApiResponse<PublicOrderTracking>> => {
+    const res = await apiClient.get<ApiResponse<PublicOrderTracking>>(
       `/orders/tracking/${trackingCode}`,
     );
     return res.data;
@@ -87,9 +92,12 @@ export class OrderService {
   static updateOrderStatus = async (
     params: UpdateOrderStatusDto,
   ): Promise<ApiResponse<Order>> => {
-    const res = await apiClient.post<ApiResponse<Order>>(
+    const res = await apiClient.patch<ApiResponse<Order>>(
       `/orders/${params.orderId}/status`,
-      { status: params.status },
+      {
+        status: params.status.name,
+        description: params.status.description,
+      },
     );
     return res.data;
   };
@@ -110,7 +118,7 @@ export class OrderService {
   > => {
     const res = await apiClient.get<
       ApiResponse<{ pending: number; preparing: number; dispatched: number }>
-    >(`/orders/stats/in-progress`);
+    >(`/orders/stats`);
     return res.data;
   };
 
@@ -120,7 +128,7 @@ export class OrderService {
   ): Promise<ApiResponse<Order>> => {
     const res = await apiClient.post<ApiResponse<Order>>(
       `/orders/${orderId}/assign`,
-      { employee_id: driverId },
+      { employeeId: driverId },
     );
     return res.data;
   };
@@ -128,8 +136,8 @@ export class OrderService {
   static unassignDriver = async (
     orderId: number,
   ): Promise<ApiResponse<Order>> => {
-    const res = await apiClient.post<ApiResponse<Order>>(
-      `/orders/${orderId}/unassign`,
+    const res = await apiClient.delete<ApiResponse<Order>>(
+      `/orders/${orderId}/assign`,
     );
     return res.data;
   };

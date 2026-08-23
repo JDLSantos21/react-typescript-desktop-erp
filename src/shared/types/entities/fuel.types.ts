@@ -61,6 +61,11 @@ export interface TankReset {
 // === KPIs superiores del dashboard ===
 
 export interface DashboardKPIs {
+  tankConfigured: boolean;
+  currentTankLevel: number;
+  tankCapacity: number;
+  minLevel: number;
+  tankPercentage: number;
   totalConsumption: number;
   consumptionChange: number; // % vs período anterior
   totalCost: number;

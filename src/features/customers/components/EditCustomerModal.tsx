@@ -33,11 +33,11 @@ export default memo(function EditCustomerModal({
   } = useForm<UpdateCustomerFormData>({
     resolver: zodResolver(updateCustomerSchema),
     defaultValues: {
-      business_name: customer?.businessName,
-      representative_name: customer?.representativeName,
+      businessName: customer?.businessName,
+      representativeName: customer?.representativeName,
       email: customer?.email || "",
       rnc: customer?.rnc || "",
-      note: customer?.notes || "",
+      notes: customer?.notes || "",
     },
   });
 
@@ -78,14 +78,14 @@ export default memo(function EditCustomerModal({
               <Input
                 label="Nombre del Negocio"
                 placeholder="Ej: Ferretería El Martillo"
-                error={errors.business_name?.message}
-                {...register("business_name")}
+                error={errors.businessName?.message}
+                {...register("businessName")}
               />
               <Input
                 label="Nombre del Representante"
                 placeholder="Ej: Juan Pérez"
-                error={errors.representative_name?.message}
-                {...register("representative_name")}
+                error={errors.representativeName?.message}
+                {...register("representativeName")}
               />
               <Input
                 label="RNC (Opcional)"
@@ -105,8 +105,8 @@ export default memo(function EditCustomerModal({
               <Input
                 label="Nota (Opcional)"
                 placeholder="Información adicional sobre el cliente"
-                error={errors.note?.message}
-                {...register("note")}
+                error={errors.notes?.message}
+                {...register("notes")}
               />
             </div>
           </form>

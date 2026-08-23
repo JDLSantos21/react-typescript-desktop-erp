@@ -1,5 +1,6 @@
 import FuelGauge, { FuelGaugeSkeleton } from "../components/FuelGauge";
 import { ErrorState } from "@/shared/components/ErrorState";
+import { EmptyState } from "@/shared/components/EmptyState";
 import RecentFuelConsumptionsTable from "../components/RecentFuelConsumptionsTable";
 import { FuelIcon } from "@/shared/components/icons";
 import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
@@ -21,16 +22,21 @@ export default function FuelPage() {
     error,
     refetch,
   } = useGetFuelSummary();
+  const dashboardSummary = summary?.data.summary;
 
   const headerActions = useMemo(() => {
     return (
       <div className="flex gap-2">
-        <Button onClick={registerModal.open} variant="outline">
+        <Button
+          onClick={registerModal.open}
+          variant="outline"
+          disabled={!dashboardSummary?.tankConfigured}
+        >
           Registrar consumo
         </Button>
       </div>
     );
-  }, []);
+  }, [dashboardSummary?.tankConfigured, registerModal.open]);
 
   useHeaderConfig({
     title: "Combustible",
@@ -40,20 +46,20 @@ export default function FuelPage() {
 
   const metrics = [
     {
-      label: "Consumo dia de hoy",
-      value: `${summary?.data.todayConsumption ?? 0}`,
+      label: "Consumo del período",
+      value: `${dashboardSummary?.totalConsumption ?? 0}`,
       unit: "GAL",
       icon: <FuelIcon />,
     },
     {
-      label: "Consumido mes en curso",
-      value: `${summary?.data.monthlyConsumption ?? 0}`,
-      unit: "GAL",
+      label: "Costo del período",
+      value: `${dashboardSummary?.totalCost ?? 0}`,
+      unit: "RD$",
       icon: <FuelIcon />,
     },
     {
       label: "Eficiencia promedio",
-      value: `${summary?.data.averageFleetEfficiency ?? 0}`,
+      value: `${dashboardSummary?.avgFleetEfficiency ?? 0}`,
       unit: "KM/G",
       icon: <FuelIcon />,
     },
@@ -66,17 +72,23 @@ export default function FuelPage() {
           <div>
             {isLoading ? (
               <FuelGaugeSkeleton />
-            ) : isError || !summary?.data ? (
+            ) : isError || !dashboardSummary ? (
               <ErrorState
                 error={error}
                 title="No se pudo cargar el estado del tanque"
                 onRetry={() => refetch()}
               />
+            ) : !dashboardSummary.tankConfigured ? (
+              <EmptyState
+                className="min-w-75 rounded-xl border border-gray-100 bg-white p-5 shadow-sm"
+                title="Tanque no configurado"
+                description="Define la capacidad, el nivel actual y el nivel mínimo antes de registrar consumos."
+              />
             ) : (
               <FuelGauge
-                currentLevel={summary?.data.currentTankLevel}
-                capacity={summary?.data.tankCapacity}
-                minLevel={summary?.data.minLevel}
+                currentLevel={dashboardSummary.currentTankLevel}
+                capacity={dashboardSummary.tankCapacity}
+                minLevel={dashboardSummary.minLevel}
               />
             )}
           </div>

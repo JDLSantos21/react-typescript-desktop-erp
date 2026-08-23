@@ -24,7 +24,9 @@ const renderOrderStatus = (order: Order) => {
 };
 
 const renderCustomerAddress = (order: Order) => {
-  return `${order.address.direction}, ${order.address.city}`;
+  return order.address
+    ? `${order.address.direction}, ${order.address.city}`
+    : "Sin dirección disponible";
 };
 
 const renderTrackingCode = (order: Order) => {

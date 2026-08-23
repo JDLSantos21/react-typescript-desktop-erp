@@ -29,9 +29,9 @@ export default function RefillsPage() {
     {
       initialFilters: {
         search: "",
-        user_id: "",
-        start_date: undefined as string | undefined,
-        end_date: undefined as string | undefined,
+        userId: "",
+        startDate: undefined as string | undefined,
+        endDate: undefined as string | undefined,
       },
       defaultLimit: APP_CONFIG.PAGINATION.DEFAULT_LIMIT,
       syncWithUrl: true,
@@ -53,13 +53,13 @@ export default function RefillsPage() {
               <DateRangeSelector
                 className="w-75"
                 value={{
-                  start_date: filters.start_date,
-                  end_date: filters.end_date,
+                  startDate: filters.startDate,
+                  endDate: filters.endDate,
                 }}
                 onChange={(range) =>
                   setFilters({
-                    start_date: range.start_date,
-                    end_date: range.end_date,
+                    startDate: range.startDate,
+                    endDate: range.endDate,
                   })
                 }
               />

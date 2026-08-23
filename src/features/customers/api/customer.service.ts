@@ -18,18 +18,27 @@ export interface CustomerQueryParams {
   limit?: number;
   search?: string;
   businessName?: string;
-  cedula?: string;
+  representativeName?: string;
+  rnc?: string;
+  email?: string;
   active?: boolean;
-  [key: string]: any;
 }
 
 export const CustomerService = {
   fetchAllCustomers: async (
-    params?: CustomerQueryParams
+    params?: CustomerQueryParams,
   ): Promise<PaginatedResponse<Customer>> => {
+    const normalizedParams = params
+      ? Object.fromEntries(
+          Object.entries(params).filter(
+            ([, value]) => value !== "" && value !== undefined && value !== null,
+          ),
+        )
+      : undefined;
+
     const { data } = await apiClient.get<PaginatedResponse<Customer>>(
       "/customers",
-      { params }
+      { params: normalizedParams },
     );
     return data;
   },
@@ -92,7 +101,7 @@ export const CustomerService = {
   ): Promise<ApiResponse<CustomerPhone>> => {
     const { data } = await apiClient.patch<ApiResponse<CustomerPhone>>(
       `/customers/phones/${phoneId}`,
-      { ...phoneData, customer_id: customerId }
+      { ...phoneData, customerId }
     );
     return data;
   },

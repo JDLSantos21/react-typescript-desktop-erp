@@ -18,7 +18,7 @@ export interface CustomerEntity extends Omit<Customer, "phones" | "addreses"> {}
 
 export interface CustomerPhone {
   id: number;
-  description: string;
+  description: string | null;
   phoneNumber: string;
   type: PhoneType;
   hasWhatsapp: boolean;

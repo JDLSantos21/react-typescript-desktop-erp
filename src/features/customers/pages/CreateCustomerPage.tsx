@@ -30,26 +30,26 @@ export default function CreateCustomerPage() {
   } = useForm<CreateCustomerFormData>({
     resolver: zodResolver(createCustomerSchema),
     defaultValues: {
-      business_name: "",
-      representative_name: "",
+      businessName: "",
+      representativeName: "",
       rnc: "",
       email: "",
-      note: "",
+      notes: "",
       phones: [
         {
           description: "",
-          phone_number: "",
+          phoneNumber: "",
           type: "MOVIL",
-          has_whatsapp: false,
-          is_primary: true,
+          hasWhatsapp: false,
+          isPrimary: true,
         },
       ],
       addresses: [
         {
-          branch_name: "",
+          branchName: "",
           direction: "",
           city: "",
-          is_primary: true,
+          isPrimary: true,
         },
       ],
     },
@@ -100,14 +100,14 @@ export default function CreateCustomerPage() {
             <Input
               label="Nombre del Negocio"
               placeholder="Ej: Ferretería El Martillo"
-              error={errors.business_name?.message}
-              {...register("business_name")}
+              error={errors.businessName?.message}
+              {...register("businessName")}
             />
             <Input
               label="Nombre del Representante"
               placeholder="Ej: Juan Pérez"
-              error={errors.representative_name?.message}
-              {...register("representative_name")}
+              error={errors.representativeName?.message}
+              {...register("representativeName")}
             />
             <Input
               label="RNC (Opcional)"
@@ -127,15 +127,23 @@ export default function CreateCustomerPage() {
             <Input
               label="Nota (Opcional)"
               placeholder="Información adicional sobre el cliente"
-              error={errors.note?.message}
-              {...register("note")}
+              error={errors.notes?.message}
+              {...register("notes")}
             />
           </div>
         </section>
 
         <div className="xl:flex">
-          <CustomerPhonesSection control={control} register={register} errors={errors} />
-          <CustomerAddressesSection control={control} register={register} errors={errors} />
+          <CustomerPhonesSection
+            control={control}
+            register={register}
+            errors={errors}
+          />
+          <CustomerAddressesSection
+            control={control}
+            register={register}
+            errors={errors}
+          />
         </div>
       </form>
     </div>

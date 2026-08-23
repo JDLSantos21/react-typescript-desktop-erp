@@ -21,8 +21,8 @@ export default function ConsumptionsTableModal({
   const { queryParams, setPage, setLimit } = useListParams({
     initialFilters: {
       search: "",
-      vehicle_id: "",
-      driver_id: "",
+      vehicleId: "",
+      driverId: "",
     },
     defaultLimit: APP_CONFIG.PAGINATION.DEFAULT_LIMIT,
     syncWithUrl: false,
@@ -31,7 +31,7 @@ export default function ConsumptionsTableModal({
   const { data: consumptions, isLoading } = useGetFuelConsumptions(
     {
       ...queryParams,
-      tank_refill_id: tankRefillId,
+      tankRefillId: tankRefillId,
     },
     isOpen,
   );

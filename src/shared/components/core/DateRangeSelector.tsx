@@ -13,8 +13,8 @@ import dayjs from "dayjs";
 import { formatDate } from "@/shared/utils/formatters";
 
 interface DateRangeValue {
-  start_date?: string;
-  end_date?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 interface DateRangeSelectorProps {
@@ -49,19 +49,19 @@ export default function DateRangeSelector({
   const selectedRange = useMemo<DateRange>(
     () =>
       draftRange ?? {
-        from: parseDateString(value.start_date),
-        to: parseDateString(value.end_date),
+        from: parseDateString(value.startDate),
+        to: parseDateString(value.endDate),
       },
-    [draftRange, value.end_date, value.start_date],
+    [draftRange, value.endDate, value.startDate],
   );
 
   const displayDateRange = useMemo(() => {
-    if (!value.start_date || !value.end_date) {
+    if (!value.startDate || !value.endDate) {
       return placeholder;
     }
 
-    return `${dayjs(value.start_date).format("DD MMM")} - ${dayjs(value.end_date).format("DD MMM")}`;
-  }, [placeholder, value.end_date, value.start_date]);
+    return `${dayjs(value.startDate).format("DD MMM")} - ${dayjs(value.endDate).format("DD MMM")}`;
+  }, [placeholder, value.endDate, value.startDate]);
 
   return (
     <div>
@@ -96,8 +96,8 @@ export default function DateRangeSelector({
 
               if (range?.from && range?.to) {
                 onChange({
-                  start_date: formatDate(range.from, "YYYY-MM-DD"),
-                  end_date: formatDate(range.to, "YYYY-MM-DD"),
+                  startDate: formatDate(range.from, "YYYY-MM-DD"),
+                  endDate: formatDate(range.to, "YYYY-MM-DD"),
                 });
               }
             }}
@@ -105,7 +105,7 @@ export default function DateRangeSelector({
             disabled={(date) => date > new Date()}
           />
 
-          {allowClear && (value.start_date || value.end_date) ? (
+          {allowClear && (value.startDate || value.endDate) ? (
             <div className="flex justify-end">
               <button
                 type="button"
@@ -113,8 +113,8 @@ export default function DateRangeSelector({
                 onClick={() => {
                   setDraftRange(undefined);
                   onChange({
-                    start_date: undefined,
-                    end_date: undefined,
+                    startDate: undefined,
+                    endDate: undefined,
                   });
                   setOpen(false);
                 }}

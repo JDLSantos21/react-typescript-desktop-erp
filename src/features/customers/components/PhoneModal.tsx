@@ -47,10 +47,10 @@ export default function PhoneModal({
     resolver: zodResolver(customerPhoneSchema),
     defaultValues: {
       description: "",
-      phone_number: "",
+      phoneNumber: "",
       type: "MOVIL",
-      has_whatsapp: false,
-      is_primary: false,
+      hasWhatsapp: false,
+      isPrimary: false,
     },
   });
 
@@ -58,18 +58,18 @@ export default function PhoneModal({
     if (isOpen && phone) {
       reset({
         description: phone.description || "",
-        phone_number: phone.phoneNumber,
+        phoneNumber: phone.phoneNumber,
         type: phone.type,
-        has_whatsapp: phone.hasWhatsapp,
-        is_primary: phone.isPrimary,
+        hasWhatsapp: phone.hasWhatsapp,
+        isPrimary: phone.isPrimary,
       });
     } else if (isOpen && !phone) {
       reset({
         description: "",
-        phone_number: "",
+        phoneNumber: "",
         type: "MOVIL",
-        has_whatsapp: false,
-        is_primary: false,
+        hasWhatsapp: false,
+        isPrimary: false,
       });
     }
   }, [phone?.id, isOpen, reset]);
@@ -125,11 +125,11 @@ export default function PhoneModal({
         >
           <Input
             label="Número de teléfono"
-            id="phone_number"
+            id="phoneNumber"
             type="text"
-            error={errors.phone_number?.message}
+            error={errors.phoneNumber?.message}
             placeholder="809-123-4567"
-            {...register("phone_number")}
+            {...register("phoneNumber")}
           />
 
           <Input
@@ -163,14 +163,14 @@ export default function PhoneModal({
 
           <Checkbox
             label="¿Tiene WhatsApp?"
-            id="has_whatsapp"
-            {...register("has_whatsapp")}
+            id="hasWhatsapp"
+            {...register("hasWhatsapp")}
           />
 
           <Checkbox
             label="¿Es el teléfono principal?"
-            id="is_primary"
-            {...register("is_primary")}
+            id="isPrimary"
+            {...register("isPrimary")}
           />
         </form>
       </Modal.Body>

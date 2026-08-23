@@ -4,7 +4,6 @@ import {
   FuelConsumption,
   FuelDashboard,
   FuelRefill,
-  FuelSummary,
   FuelTank,
   TankReset,
 } from "@/shared/types/entities/fuel.types";
@@ -31,9 +30,9 @@ export const FuelService = {
     return response.data;
   },
 
-  getFuelSummary: async (): Promise<ApiResponse<FuelSummary>> => {
-    const response = await apiClient.get<ApiResponse<FuelSummary>>(
-      "fuel/dashboard/summary",
+  getFuelSummary: async (): Promise<ApiResponse<FuelDashboard>> => {
+    const response = await apiClient.get<ApiResponse<FuelDashboard>>(
+      "fuel/dashboard",
     );
     return response.data;
   },
@@ -91,7 +90,7 @@ export const FuelService = {
 
   getFuelMetrics: async (): Promise<ApiResponse<FuelDashboard>> => {
     const response = await apiClient.get<ApiResponse<FuelDashboard>>(
-      "fuel/dashboard?alert_threshold=1",
+      "fuel/dashboard?alertThreshold=1",
     );
     return response.data;
   },

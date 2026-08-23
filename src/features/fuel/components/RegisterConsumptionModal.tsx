@@ -34,14 +34,14 @@ export default function RegisterConsumptionModal({
   } = useForm<RegisterConsumptionInput, unknown, RegisterConsumptionFormData>({
     resolver: zodResolver(registerConsumptionSchema),
     defaultValues: {
-      vehicle_type: "vehicle",
-      tank_refill_id: null,
+      vehicleType: "VEHICLE",
+      tankRefillId: null,
       notes: null,
-      consumed_at: null,
+      consumedAt: null,
     },
   });
 
-  const vehicleType = watch("vehicle_type");
+  const vehicleType = watch("vehicleType");
 
   const { data: drivers, isLoading: isLoadingDrivers } = useGetEmployees(
     {
@@ -60,8 +60,8 @@ export default function RegisterConsumptionModal({
 
   // Limpiar campos exclusivos de vehículo al cambiar a planta
   useEffect(() => {
-    if (vehicleType === "plant") {
-      setValue("driver_id", null);
+    if (vehicleType === "PLANT") {
+      setValue("driverId", null);
       setValue("mileage", null);
 
       if (!isLoadingVehicles && vehicles?.data) {
@@ -70,9 +70,9 @@ export default function RegisterConsumptionModal({
         );
 
         if (plant) {
-          setValue("vehicle_id", plant.id, { shouldValidate: true });
+          setValue("vehicleId", plant.id, { shouldValidate: true });
         } else {
-          setValue("vehicle_id", "", { shouldValidate: true });
+          setValue("vehicleId", "", { shouldValidate: true });
         }
       }
     }
@@ -116,21 +116,21 @@ export default function RegisterConsumptionModal({
           className="flex flex-col gap-4"
         >
           <Controller
-            name="vehicle_type"
+            name="vehicleType"
             control={control}
             render={({ field }) => (
               <div className="flex gap-2">
                 <Button
                   type="button"
-                  variant={field.value === "vehicle" ? "primary" : "outline"}
-                  onClick={() => field.onChange("vehicle")}
+                  variant={field.value === "VEHICLE" ? "primary" : "outline"}
+                  onClick={() => field.onChange("VEHICLE")}
                 >
                   Vehículo
                 </Button>
                 <Button
                   type="button"
-                  variant={field.value === "plant" ? "primary" : "outline"}
-                  onClick={() => field.onChange("plant")}
+                  variant={field.value === "PLANT" ? "primary" : "outline"}
+                  onClick={() => field.onChange("PLANT")}
                 >
                   Planta
                 </Button>
@@ -138,9 +138,9 @@ export default function RegisterConsumptionModal({
             )}
           />
 
-          {vehicleType === "vehicle" && (
+          {vehicleType === "VEHICLE" && (
             <Controller
-              name="driver_id"
+              name="driverId"
               control={control}
               render={({ field }) => (
                 <SearchSelect
@@ -149,7 +149,7 @@ export default function RegisterConsumptionModal({
                   value={field.value ?? undefined}
                   onValueChange={field.onChange}
                   placeholder="Buscar conductor..."
-                  error={errors.driver_id?.message}
+                  error={errors.driverId?.message}
                   disabled={isLoadingDrivers}
                 />
               )}
@@ -157,39 +157,39 @@ export default function RegisterConsumptionModal({
           )}
 
           <Controller
-            name="vehicle_id"
+            name="vehicleId"
             control={control}
             render={({ field }) => (
               <SearchSelect
-                label={vehicleType === "vehicle" ? "Vehículo" : "Planta"}
+                label={vehicleType === "VEHICLE" ? "Vehículo" : "Planta"}
                 options={vehicleOptions}
                 value={field.value}
                 onValueChange={field.onChange}
                 placeholder={
-                  vehicleType === "vehicle"
+                  vehicleType === "VEHICLE"
                     ? "Buscar vehículo..."
                     : isLoadingVehicles
                       ? "Buscando planta..."
                       : "Planta seleccionada"
                 }
                 error={
-                  vehicleType === "plant" &&
+                  vehicleType === "PLANT" &&
                   !isLoadingVehicles &&
                   !vehicles?.data?.some((v) =>
                     v.currentTag.toUpperCase().includes("PLANTA"),
                   )
                     ? "No se ha encontrado ninguna planta registrada en el sistema."
-                    : errors.vehicle_id?.message
+                    : errors.vehicleId?.message
                 }
-                disabled={isLoadingVehicles || vehicleType === "plant"}
+                disabled={isLoadingVehicles || vehicleType === "PLANT"}
               />
             )}
           />
 
           <div
-            className={`grid gap-4 ${vehicleType === "vehicle" ? "grid-cols-3" : "grid-cols-2"}`}
+            className={`grid gap-4 ${vehicleType === "VEHICLE" ? "grid-cols-3" : "grid-cols-2"}`}
           >
-            {vehicleType === "vehicle" && (
+            {vehicleType === "VEHICLE" && (
               <Input
                 label="Kilometraje"
                 type="number"
@@ -212,8 +212,8 @@ export default function RegisterConsumptionModal({
               label="Fecha"
               type="datetime-local"
               placeholder="Ingrese la fecha"
-              error={errors.consumed_at?.message}
-              {...register("consumed_at")}
+              error={errors.consumedAt?.message}
+              {...register("consumedAt")}
             />
           </div>
 

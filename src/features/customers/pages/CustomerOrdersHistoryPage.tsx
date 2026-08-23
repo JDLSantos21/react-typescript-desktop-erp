@@ -26,7 +26,7 @@ export default function CustomerOrdersHistoryPage() {
     error,
     refetch,
   } = useGetOrders({
-    customer_id: id,
+    customerId: id,
     ...paginationParams,
   });
 

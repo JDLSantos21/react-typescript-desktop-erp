@@ -99,7 +99,7 @@ export default function OrderDetailPage() {
             <OrderDetailSections
               order={order}
               onOpenMap={() => {
-                if (order.address.coordinates?.latitude) {
+                if (order.address?.coordinates?.latitude) {
                   mapModal.open();
                 }
               }}
@@ -128,7 +128,7 @@ export default function OrderDetailPage() {
             isOpen={driverAssignModal.isOpen}
             onClose={() => driverAssignModal.close()}
           />
-          {order.address.coordinates && (
+          {order.address?.coordinates && (
             <MapModal
               isOpen={mapModal.isOpen}
               onClose={() => mapModal.close()}

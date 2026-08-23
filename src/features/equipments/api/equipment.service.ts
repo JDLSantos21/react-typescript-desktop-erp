@@ -62,7 +62,7 @@ export const EquipmentService = {
   },
 
   createEquipment: async (equipment: {
-    model_id: number;
+    modelId: number;
   }): Promise<ApiResponse<CreateEquipmentOutput>> => {
     console.log(equipment);
     const response = await apiClient.post<ApiResponse<CreateEquipmentOutput>>(
@@ -81,9 +81,9 @@ export const EquipmentService = {
     const response = await apiClient.post<ApiResponse<{ message: string }>>(
       `equipment/assign`,
       {
-        equipment_id: data.equipmentId,
-        customer_id: data.customerId,
-        customer_address_id: data.customerAddressId,
+        equipmentId: data.equipmentId,
+        customerId: data.customerId,
+        customerAddressId: data.customerAddressId,
         notes: data.notes,
       },
     );
@@ -94,7 +94,7 @@ export const EquipmentService = {
     const response = await apiClient.post<ApiResponse<{ message: string }>>(
       `equipment/unassign`,
       {
-        assignment_id: data.assignmentId,
+        assignmentId: data.assignmentId,
         reason: data.reason,
         notes: data.notes,
       },

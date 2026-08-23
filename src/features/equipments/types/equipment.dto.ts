@@ -3,10 +3,10 @@ import { EquipmentStatus } from "@/shared/types/entities/equipment.types";
 export interface EquipmentFilters {
   page: number;
   limit: number;
-  model_id?: number;
-  serial_number?: string;
+  modelId?: number;
+  serialNumber?: string;
   status?: EquipmentStatus;
-  customer_id?: string;
-  customer_name?: string;
+  customerId?: string;
+  customerName?: string;
   search?: string;
 }

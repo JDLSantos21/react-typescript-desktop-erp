@@ -35,10 +35,10 @@ export function CustomerAddressesSection({ control, register, errors }: Customer
           icon={PlusIcon}
           onClick={() =>
             append({
-              branch_name: "",
+              branchName: "",
               direction: "",
               city: "",
-              is_primary: false,
+              isPrimary: false,
             })
           }
         >
@@ -72,8 +72,8 @@ export function CustomerAddressesSection({ control, register, errors }: Customer
               <Input
                 label="Nombre de Sucursal (Opcional)"
                 placeholder="Ej: Sucursal Centro"
-                error={errors.addresses?.[index]?.branch_name?.message}
-                {...register(`addresses.${index}.branch_name`)}
+                error={errors.addresses?.[index]?.branchName?.message}
+                {...register(`addresses.${index}.branchName`)}
               />
               <Input
                 label="Ciudad"
@@ -92,7 +92,7 @@ export function CustomerAddressesSection({ control, register, errors }: Customer
               <div className="flex items-center pt-6">
                 <Checkbox
                   label="Dirección principal"
-                  {...register(`addresses.${index}.is_primary`)}
+                  {...register(`addresses.${index}.isPrimary`)}
                 />
               </div>
             </div>

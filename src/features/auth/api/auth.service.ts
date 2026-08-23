@@ -20,13 +20,13 @@ export const authService = {
   ): Promise<ApiResponse<refreshTokenRes>> => {
     const { data } = await apiClient.post<ApiResponse<refreshTokenRes>>(
       "/auth/refresh-token",
-      { refresh_token: refreshToken }
+      { refreshToken }
     );
     return data;
   },
 
-  logout: async (refresh_token: string): Promise<void> => {
-    await apiClient.post("/auth/logout", { refresh_token });
+  logout: async (refreshToken: string): Promise<void> => {
+    await apiClient.post("/auth/logout", { refreshToken });
   },
 
   revokeAllTokens: async (): Promise<void> => {

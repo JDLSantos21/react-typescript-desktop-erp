@@ -22,7 +22,7 @@ export interface LoginResponse {
 }
 
 export interface refreshTokenReq {
-  refresh_token: string;
+  refreshToken: string;
 }
 
 export interface refreshTokenRes {

@@ -35,9 +35,9 @@ export default function CreateEquipment() {
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const model_id = Number(e.currentTarget.model_id.value);
-    if (!model_id) return;
-    createEquipment({ model_id });
+    const modelId = Number(e.currentTarget.modelId.value);
+    if (!modelId) return;
+    createEquipment({ modelId });
   };
 
   return (
@@ -59,7 +59,7 @@ export default function CreateEquipment() {
               label: m.name,
             })) ?? []
           }
-          name="model_id"
+          name="modelId"
         />
 
         <div className="p-4 mt-5 bg-background-secondary border border-border-light rounded-sm">

@@ -81,7 +81,7 @@ export const useCreateModel = () => {
 
 export const useCreateEquipment = () => {
   return useMutation({
-    mutationFn: (model: { model_id: number }) =>
+    mutationFn: (model: { modelId: number }) =>
       EquipmentService.createEquipment(model),
     onSuccess: () => {
       queryClient.invalidateQueries({

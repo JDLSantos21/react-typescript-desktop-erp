@@ -38,16 +38,14 @@ export default function EditOrderPage() {
     if (order?.data) {
       updateOrderData({
         customerId: order.data.customer.id,
-        customerAddressId: order.data.address.id,
+        customerAddressId: order.data.address?.id,
         orderItems: order.data.products.map((p) => ({
           productId: p.id,
           productName: p.name,
           requestedQuantity: p.quantity,
           notes: "", // The API response might not have notes for items if not requested, assuming empty for now or need to check Order entity
         })),
-        scheduledDate: order.data.scheduledDate
-          ? new Date(order.data.scheduledDate).toISOString().split("T")[0]
-          : undefined,
+        scheduledDate: order.data.scheduledDate ?? undefined,
         deliveryNotes: order.data.deliveryNotes || "",
         notes: order.data.notes || "",
       });
@@ -58,13 +56,13 @@ export default function EditOrderPage() {
     if (!id) return;
 
     const payload = {
-      order_items: orderData.orderItems.map((item) => ({
-        product_id: item.productId,
-        requested_quantity: item.requestedQuantity,
+      orderItems: orderData.orderItems.map((item) => ({
+        productId: item.productId,
+        requestedQuantity: item.requestedQuantity,
         notes: item.notes,
       })),
-      scheduled_date: orderData.scheduledDate,
-      delivery_notes: orderData.deliveryNotes,
+      scheduledDate: orderData.scheduledDate,
+      deliveryNotes: orderData.deliveryNotes,
       notes: orderData.notes,
     };
 

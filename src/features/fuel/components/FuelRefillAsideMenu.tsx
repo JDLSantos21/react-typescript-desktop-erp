@@ -11,7 +11,7 @@ interface FuelRefillAsideMenuProps {
 }
 
 export const FuelRefillAsideMenu = ({
-  refill,
+  refill: _refill,
   onOpenConsumptions,
 }: FuelRefillAsideMenuProps) => {
   return (

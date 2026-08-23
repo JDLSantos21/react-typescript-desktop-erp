@@ -42,10 +42,10 @@ export default function AddressModal({
   } = useForm<CustomerAddressFormData>({
     resolver: zodResolver(customerAddressSchema),
     defaultValues: {
-      branch_name: "",
+      branchName: "",
       direction: "",
       city: "",
-      is_primary: false,
+      isPrimary: false,
     },
   });
 
@@ -57,17 +57,17 @@ export default function AddressModal({
   useEffect(() => {
     if (isOpen && address) {
       reset({
-        branch_name: address.branchName || "",
+        branchName: address.branchName || "",
         direction: address.direction,
         city: address.city,
-        is_primary: address.isPrimary,
+        isPrimary: address.isPrimary,
       });
     } else if (isOpen && !address) {
       reset({
-        branch_name: "",
+        branchName: "",
         direction: "",
         city: "",
-        is_primary: false,
+        isPrimary: false,
       });
     }
 
@@ -125,11 +125,11 @@ export default function AddressModal({
 
           <Input
             label="Sucursal"
-            id="branch_name"
+            id="branchName"
             type="text"
             placeholder="Ej: Sucursal Principal"
-            error={errors.branch_name?.message}
-            {...register("branch_name")}
+            error={errors.branchName?.message}
+            {...register("branchName")}
           />
 
           <Input
@@ -152,8 +152,8 @@ export default function AddressModal({
 
           <Checkbox
             label="Dirección principal"
-            id="is_primary"
-            {...register("is_primary")}
+            id="isPrimary"
+            {...register("isPrimary")}
           />
         </Modal.Body>
         <Modal.Footer>

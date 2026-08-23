@@ -5,31 +5,31 @@
 import { OrderStatus } from "@/shared/types/entities/order.types";
 
 export interface CreateOrderItemDto {
-  product_id: number;
-  requested_quantity: number;
+  productId: number;
+  requestedQuantity: number;
   notes?: string;
 }
 
 export interface CreateOrderDto {
-  customer_id: string;
-  address_id: number;
-  order_items: CreateOrderItemDto[];
-  scheduled_date?: string;
-  delivery_notes?: string;
+  customerId: string;
+  customerAddressId: number;
+  orderItems: CreateOrderItemDto[];
+  scheduledDate?: string;
+  deliveryNotes?: string;
   notes?: string;
 }
 
 export interface UpdateOrderDto {
   orderId: number;
-  order_items?: CreateOrderItemDto[];
-  delivery_notes?: string;
+  orderItems?: CreateOrderItemDto[];
+  deliveryNotes?: string;
   notes?: string;
-  scheduled_date?: string;
+  scheduledDate?: string;
 }
 
 export interface AssignOrderToEmployeeDto {
-  order_id: number;
-  user_id: string;
+  orderId: number;
+  userId: string;
 }
 
 export interface UpdateOrderStatusDto {

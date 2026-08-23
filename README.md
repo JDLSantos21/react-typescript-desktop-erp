@@ -34,6 +34,7 @@ pnpm tauri build
 | **[DEVELOPMENT_CHECKLIST.md](./docs/DEVELOPMENT_CHECKLIST.md)** | ✅ Checklist y templates rápidos para desarrollo                    |
 | **[API_REFERENCE.md](./docs/API_REFERENCE.md)**                 | 🔌 Referencia de endpoints y contratos del backend                  |
 | **[ARCHITECTURE.md](./docs/ARCHITECTURE.md)**                   | 🏗️ Decisiones de arquitectura y diseño técnico                      |
+| **[MIGRATION_STATUS.md](./docs/MIGRATION_STATUS.md)**           | 🚚 Estado y plan de migración al backend NestJS                      |
 
 ### Lectura Recomendada
 
@@ -173,13 +174,13 @@ Ver `.env.example` para más configuraciones.
 
 ## 📦 Integración con Backend
 
-Este frontend se conecta a la API ubicada en:
+Este frontend se está migrando a la API NestJS ubicada en:
 
 ```
-C:\Workspace\erp-clean-architecture-api
+C:\w\erp-api
 ```
 
-La API usa Clean Architecture con Node.js + TypeScript + Prisma.
+El backend original `erp-clean-architecture-api` se conserva sólo como referencia durante la migración.
 
 Ver endpoints disponibles en [API_REFERENCE.md](./docs/API_REFERENCE.md)
 

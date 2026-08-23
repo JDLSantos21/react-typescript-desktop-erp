@@ -38,10 +38,10 @@ export default function FuelHistoryPage() {
   } = useListParams({
     initialFilters: {
       search: "",
-      vehicle_id: "",
-      driver_id: "",
-      start_date: undefined as string | undefined,
-      end_date: undefined as string | undefined,
+      vehicleId: "",
+      driverId: "",
+      startDate: undefined as string | undefined,
+      endDate: undefined as string | undefined,
     },
     defaultLimit: APP_CONFIG.PAGINATION.DEFAULT_LIMIT,
     syncWithUrl: true,
@@ -106,13 +106,13 @@ export default function FuelHistoryPage() {
             <DateRangeSelector
               className="w-75"
               value={{
-                start_date: filters.start_date,
-                end_date: filters.end_date,
+                startDate: filters.startDate,
+                endDate: filters.endDate,
               }}
               onChange={(range) =>
                 setFilters({
-                  start_date: range.start_date,
-                  end_date: range.end_date,
+                  startDate: range.startDate,
+                  endDate: range.endDate,
                 })
               }
             />
@@ -120,8 +120,8 @@ export default function FuelHistoryPage() {
           <div className="flex gap-4">
             <SearchSelect
               placeholder="Filtrar por vehículo"
-              value={filters.vehicle_id}
-              onValueChange={(value) => setFilter("vehicle_id", value)}
+              value={filters.vehicleId}
+              onValueChange={(value) => setFilter("vehicleId", value)}
               options={vehicleOptions}
               disabled={isLoadingVehicles}
               emptyMessage="No se encontraron vehículos"
@@ -130,8 +130,8 @@ export default function FuelHistoryPage() {
 
             <SearchSelect
               placeholder="Filtrar por conductor"
-              value={filters.driver_id}
-              onValueChange={(value) => setFilter("driver_id", value)}
+              value={filters.driverId}
+              onValueChange={(value) => setFilter("driverId", value)}
               options={driverOptions}
               disabled={isLoadingDrivers}
               emptyMessage="No se encontraron conductores"

@@ -105,7 +105,7 @@ export default function Step4Summary({ orderData }: Step4SummaryProps) {
             <div>
               <p className="text-gray-500">Fecha Programada</p>
               <p className="font-medium text-gray-900">
-                {new Date(orderData.scheduledDate).toLocaleDateString("es-DO", {
+                {new Date(`${orderData.scheduledDate}T00:00:00`).toLocaleDateString("es-DO", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",

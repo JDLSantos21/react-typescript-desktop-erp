@@ -37,10 +37,10 @@ export function CustomerPhonesSection({ control, register, errors }: CustomerPho
           onClick={() =>
             append({
               description: "",
-              phone_number: "",
+              phoneNumber: "",
               type: "MOVIL",
-              has_whatsapp: false,
-              is_primary: false,
+              hasWhatsapp: false,
+              isPrimary: false,
             })
           }
         >
@@ -80,8 +80,8 @@ export function CustomerPhonesSection({ control, register, errors }: CustomerPho
               <Input
                 label="Número"
                 placeholder="(809) 555-5555"
-                error={errors.phones?.[index]?.phone_number?.message}
-                {...register(`phones.${index}.phone_number`)}
+                error={errors.phones?.[index]?.phoneNumber?.message}
+                {...register(`phones.${index}.phoneNumber`)}
               />
               <Select
                 label="Tipo"
@@ -96,11 +96,11 @@ export function CustomerPhonesSection({ control, register, errors }: CustomerPho
               <div className="flex items-center gap-4 pt-6">
                 <Checkbox
                   label="¿Tiene WhatsApp?"
-                  {...register(`phones.${index}.has_whatsapp`)}
+                  {...register(`phones.${index}.hasWhatsapp`)}
                 />
                 <Checkbox
                   label="Principal"
-                  {...register(`phones.${index}.is_primary`)}
+                  {...register(`phones.${index}.isPrimary`)}
                 />
               </div>
             </div>

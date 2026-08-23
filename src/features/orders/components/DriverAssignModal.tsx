@@ -67,7 +67,7 @@ export default function DriverAssignModal({
                   <p className="text-sm text-muted-foreground">
                     Conductor asignado
                   </p>
-                  <p className="font-medium">{order.assignedTo.name}</p>
+                  <p className="font-medium">{order.assignedTo?.name}</p>
                 </div>
               </div>
             </div>

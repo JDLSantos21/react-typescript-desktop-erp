@@ -46,15 +46,15 @@ export default function CreateOrderPage() {
   const handleCreateOrder = () => {
     // Transform orderData to CreateOrderDto
     const orderPayload = {
-      customer_id: orderData.customerId!,
-      address_id: orderData.customerAddressId!,
-      order_items: orderData.orderItems.map((item) => ({
-        product_id: item.productId,
-        requested_quantity: item.requestedQuantity,
+      customerId: orderData.customerId!,
+      customerAddressId: orderData.customerAddressId!,
+      orderItems: orderData.orderItems.map((item) => ({
+        productId: item.productId,
+        requestedQuantity: item.requestedQuantity,
         notes: item.notes,
       })),
-      scheduled_date: orderData.scheduledDate,
-      delivery_notes: orderData.deliveryNotes,
+      scheduledDate: orderData.scheduledDate,
+      deliveryNotes: orderData.deliveryNotes,
       notes: orderData.notes,
     };
 

@@ -30,6 +30,11 @@ export const apiClient = axios.create({
 // Request interceptor: agregar token JWT
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (timeZone && config.headers) {
+      config.headers["X-Timezone"] = timeZone;
+    }
+
     const accessToken = useAuthStore.getState().accessToken;
     if (accessToken && config.headers) {
       config.headers.Authorization = `Bearer ${accessToken}`;

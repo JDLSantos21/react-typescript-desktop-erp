@@ -25,7 +25,9 @@ export default memo(function OrderCard({ order }: OrderCardProps) {
   }, [order.trackingCode]);
 
   const onOpenWhatsapp = useCallback(() => {
-    handleOpenWhatsapp(order);
+    if (order.phone) {
+      handleOpenWhatsapp(order);
+    }
   }, [order]);
 
   const onNavigate = useCallback(() => {
@@ -59,15 +61,17 @@ export default memo(function OrderCard({ order }: OrderCardProps) {
           <p className="flex items-center gap-1 text-xs text-primary">
             <LocationIcon className="w-4 h-4" /> <span>Dirección</span>
           </p>
-          {order.address.branchName && (
+          {order.address?.branchName && (
             <p className="mt-2 ml-5 text-xs text-gray-800 font-medium">
               Sucursal: {order.address.branchName}
             </p>
           )}
-          {order.address && (
+          {order.address ? (
             <p className="ml-5 text-xs text-gray-800 truncate">
               {order.address.direction} - {order.address.city}
             </p>
+          ) : (
+            <p className="ml-5 text-xs text-gray-500">Sin dirección disponible</p>
           )}
         </div>
         <div className="mt-2 bg-blue-50 p-2 rounded flex justify-between items-center">
@@ -82,7 +86,7 @@ export default memo(function OrderCard({ order }: OrderCardProps) {
             )}
           </div>
           <div>
-            {order.phone.hasWhatsapp && (
+            {order.phone?.hasWhatsapp && (
               <Button
                 icon={WhatsAppIcon}
                 iconClassName="text-green-500"

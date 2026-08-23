@@ -2,6 +2,10 @@ import { Order } from "@/shared/types/entities/order.types";
 import { openUrl } from "@tauri-apps/plugin-opener";
 
 export const handleOpenWhatsapp = async (order: Order) => {
+  if (!order.phone) {
+    return;
+  }
+
   const phoneNumber = order.phone.phoneNumber;
   const text = encodeURIComponent(
     `Hola, sobre su pedido #${order.trackingCode} `,

@@ -1,34 +1,34 @@
 export interface CreateCustomerPhoneDto {
   description: string;
-  phone_number: string;
+  phoneNumber: string;
   type: "MOVIL" | "FIJO" | "TRABAJO" | "OTROS";
-  has_whatsapp: boolean;
-  is_primary: boolean;
+  hasWhatsapp: boolean;
+  isPrimary: boolean;
 }
 
 export interface CreateCustomerAddressDto {
-  branch_name?: string;
+  branchName?: string;
   direction: string;
   city: string;
-  is_primary: boolean;
+  isPrimary: boolean;
 }
 
 export interface CreateCustomerDto {
-  business_name: string;
-  representative_name: string;
+  businessName: string;
+  representativeName: string;
   rnc?: string;
   email?: string;
-  note?: string;
+  notes?: string;
   phones: CreateCustomerPhoneDto[];
   addresses: CreateCustomerAddressDto[];
 }
 
 export interface UpdateCustomerDto {
-  business_name: string;
-  representative_name: string;
+  businessName: string;
+  representativeName: string;
   rnc?: string;
   email?: string;
-  note?: string;
+  notes?: string;
 }
 
 export interface UpdateCustomerPhoneDto extends CreateCustomerPhoneDto {}

@@ -127,8 +127,8 @@ export default function FuelRefillModal({
             label="Precio por galón"
             type="number"
             placeholder="Ingrese el precio por galón"
-            error={errors.price_per_gallon?.message}
-            {...register("price_per_gallon")}
+            error={errors.pricePerGallon?.message}
+            {...register("pricePerGallon")}
           />
         </form>
       </Modal.Body>
@@ -152,7 +152,7 @@ export default function FuelRefillModal({
         title="Confirmar reabastecimiento"
         description={
           pendingData
-            ? `¿Estás seguro de registrar ${pendingData.gallons} galones a $${pendingData.price_per_gallon} por galón?`
+            ? `¿Estás seguro de registrar ${pendingData.gallons} galones a $${pendingData.pricePerGallon} por galón?`
             : undefined
         }
         confirmText="Confirmar registro"

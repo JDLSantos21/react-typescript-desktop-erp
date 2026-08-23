@@ -1,7 +1,7 @@
 # 🔌 Integración con Backend API - ERP
 
 > **Referencia de endpoints y contratos de la API**  
-> Backend ubicado en: `C:\Workspace\erp-clean-architecture-api`
+> Backend actual ubicado en: `C:\w\erp-api`
 
 ---
 
@@ -66,7 +66,7 @@ Development: http://localhost:4000
 
 ```json
 {
-  "refresh_token": "eyJhbG..."
+  "refreshToken": "eyJhbG..."
 }
 ```
 
@@ -699,3 +699,8 @@ Todos los endpoints de lista soportan:
 - Routes: `src/presentation/[modulo]/routes.ts`
 - DTOs: `src/domain/dtos/[modulo]/`
 - Entities: `src/domain/entities/[modulo]/`
+# Aviso de migración
+
+Este documento describe principalmente el contrato histórico de `erp-clean-architecture-api` y contiene rutas desactualizadas. Para el estado vigente de compatibilidad con NestJS, consulte [MIGRATION_STATUS.md](./MIGRATION_STATUS.md). Los contratos nuevos deben quedar respaldados por pruebas en `erp-api` antes de actualizar esta referencia.
+
+---
