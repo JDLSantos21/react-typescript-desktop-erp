@@ -32,7 +32,7 @@ SHOW TimeZone;
 SELECT now();
 ```
 
-El desarrollo actual usa `synchronize: true`; al reiniciar, TypeORM alineará `orders.scheduled_date` con el tipo `DATE`. Antes de aplicar este cambio en producción se debe crear y ejecutar una migración versionada, con respaldo previo de la base de datos.
+`DB_SYNCHRONIZE` queda en `false`. Los cambios de esquema se aplican con `pnpm db:migrate:time`; la migración temporal convierte los timestamps históricos interpretándolos como UTC y separa las fechas operativas como `DATE`.
 
 No se debe sustituir una zona IANA por un offset fijo como `UTC-4`: los offsets cambian en países con horario de verano. República Dominicana usa `America/Santo_Domingo`.
 

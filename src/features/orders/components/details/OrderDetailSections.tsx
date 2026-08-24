@@ -82,13 +82,13 @@ export function OrderDetailSections({ order, onOpenMap }: OrderDetailSectionsPro
             <div className="flex items-center gap-2">
               <span
                 className={`flex h-2 w-2 rounded-full ${
-                  order.address?.coordinates
+                  order.address?.coords
                     ? "bg-green-500"
                     : "bg-gray-300"
                 }`}
               />
               <p className="text-sm text-gray-500">
-                {order.address?.coordinates?.latitude
+                {order.address?.coords?.latitude != null
                   ? "Ubicación exacta disponible"
                   : "Sin ubicación exacta"}
               </p>
@@ -97,7 +97,7 @@ export function OrderDetailSections({ order, onOpenMap }: OrderDetailSectionsPro
               variant="outline"
               icon={LocationIcon}
               size="sm"
-              disabled={!order.address?.coordinates?.latitude}
+              disabled={order.address?.coords?.latitude == null}
               onClick={onOpenMap}
             >
               Ver en mapa

@@ -61,15 +61,16 @@ export default function NearbyVehiclesMapModal({
   onClose,
   addreses,
 }: NearbyVehiclesMapModalProps) {
-  const RADIAL_DISTANCE_METERS = 1000;
+  const RADIAL_DISTANCE_METERS = 7000;
 
   const firstWithCoords = addreses.find(
-    (a) => a.coordinates?.latitude && a.coordinates?.longitude,
+    (address) =>
+      address.coords?.latitude != null && address.coords?.longitude != null,
   );
 
   const [cPostion, setCPosition] = useState<CurrentPosition>({
-    Clat: firstWithCoords?.coordinates?.latitude ?? 0,
-    Clng: firstWithCoords?.coordinates?.longitude ?? 0,
+    Clat: firstWithCoords?.coords?.latitude ?? 0,
+    Clng: firstWithCoords?.coords?.longitude ?? 0,
   });
 
   const {
@@ -96,7 +97,7 @@ export default function NearbyVehiclesMapModal({
     });
   };
 
-  if (!isOpen || !firstWithCoords?.coordinates) return null;
+  if (!isOpen || !firstWithCoords?.coords) return null;
 
   return (
     <Modal
@@ -157,35 +158,37 @@ export default function NearbyVehiclesMapModal({
               <div className="flex flex-wrap gap-2">
                 {addreses.map((a) => {
                   const isActive =
-                    Math.abs(a.coordinates?.latitude! - cPostion.Clat) <
+                    a.coords != null &&
+                    Math.abs(a.coords.latitude - cPostion.Clat) <
                       0.00001 &&
-                    Math.abs(a.coordinates?.longitude! - cPostion.Clng) <
+                    Math.abs(a.coords.longitude - cPostion.Clng) <
                       0.00001;
 
-                  const hasCoordinates = !!a.coordinates?.latitude;
+                  const hasCoords =
+                    a.coords?.latitude != null && a.coords?.longitude != null;
 
                   const button = (
                     <Button
-                      disabled={!hasCoordinates}
+                      disabled={!hasCoords}
                       onClick={() => {
-                        if (!hasCoordinates) return;
+                        if (!hasCoords || !a.coords) return;
 
                         setCPosition({
-                          Clat: a.coordinates!.latitude,
-                          Clng: a.coordinates!.longitude,
+                          Clat: a.coords.latitude,
+                          Clng: a.coords.longitude,
                         });
                       }}
                       variant={isActive ? "primary" : "outline"}
                       size="sm"
                       className={
-                        !hasCoordinates ? "opacity-50 cursor-not-allowed" : ""
+                        !hasCoords ? "opacity-50 cursor-not-allowed" : ""
                       }
                     >
                       {a.branchName}
                     </Button>
                   );
 
-                  if (!hasCoordinates) {
+                  if (!hasCoords) {
                     return (
                       <Tooltip
                         key={a.id}

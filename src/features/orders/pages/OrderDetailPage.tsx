@@ -99,7 +99,7 @@ export default function OrderDetailPage() {
             <OrderDetailSections
               order={order}
               onOpenMap={() => {
-                if (order.address?.coordinates?.latitude) {
+                if (order.address?.coords?.latitude != null) {
                   mapModal.open();
                 }
               }}
@@ -128,21 +128,21 @@ export default function OrderDetailPage() {
             isOpen={driverAssignModal.isOpen}
             onClose={() => driverAssignModal.close()}
           />
-          {order.address?.coordinates && (
+          {order.address?.coords && (
             <MapModal
               isOpen={mapModal.isOpen}
               onClose={() => mapModal.close()}
               title={`Ubicación - ${order.address.branchName}`}
               center={{
-                lat: order.address.coordinates.latitude,
-                lng: order.address.coordinates.longitude,
+                lat: order.address.coords.latitude,
+                lng: order.address.coords.longitude,
               }}
               markers={[
                 {
                   id: "customer-location",
                   position: {
-                    lat: order.address.coordinates.latitude,
-                    lng: order.address.coordinates.longitude,
+                    lat: order.address.coords.latitude,
+                    lng: order.address.coords.longitude,
                   },
                   icon: MapPinUserIcon,
                   iconColor: "#3b82f6",

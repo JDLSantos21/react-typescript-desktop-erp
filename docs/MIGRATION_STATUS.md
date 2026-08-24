@@ -19,6 +19,7 @@ Convenciones establecidas:
 - JSON y DTOs nuevos usan `camelCase`.
 - `snake_case` queda restringido a nombres físicos de columnas SQL y contratos externos que lo exijan; no se usa en formularios, estado del frontend, query strings ni cuerpos HTTP propios.
 - Instantes se almacenan y transmiten en UTC; fechas operativas sin hora usan `YYYY-MM-DD`. Los filtros de calendario se interpretan en la zona IANA enviada por el navegador. Ver `docs/TIMEZONE_STRATEGY.md`.
+- La base de desarrollo fue migrada: 85 columnas temporales se convirtieron a `TIMESTAMPTZ` o `DATE` según su semántica. `DB_SYNCHRONIZE` queda desactivado.
 - Las respuestas HTTP usan `{ success, data, meta }`; las listas paginadas agregan `meta.pagination`.
 - La identidad del usuario se obtiene del JWT. Nunca se acepta `userId` del cuerpo para acciones autenticadas.
 - Los seriales de equipos y códigos de rastreo se generan en el backend.

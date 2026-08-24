@@ -30,7 +30,7 @@ export interface CustomerAddress {
   branchName: string | null;
   direction: string;
   city: string;
-  coordinates?: {
+  coords: {
     latitude: number;
     longitude: number;
   } | null;
