@@ -25,8 +25,8 @@ export const FuelConsumptionTableColumns: Column<FuelConsumption>[] = [
     render: (value) => (value.mileage ? value.mileage : "N/A"),
   },
   {
-    key: "createdAt",
+    key: "consumedAt",
     label: "Fecha",
-    render: (value) => formatDate(value.createdAt),
+    render: (value) => formatDate(value.consumedAt),
   },
 ];
