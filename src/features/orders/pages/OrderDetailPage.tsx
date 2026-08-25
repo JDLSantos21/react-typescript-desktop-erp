@@ -20,6 +20,8 @@ import StatusHistoryModal from "../components/StatusHistoryModal";
 import StatusModal from "../components/StatusModal";
 import DriverAssignModal from "../components/DriverAssignModal";
 import { OrderDetailSections } from "../components/details/OrderDetailSections";
+import { PermissionGate } from "@/shared/authorization/PermissionGate";
+import { PermissionLevel } from "@/shared/authorization/permissions";
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -71,6 +73,7 @@ export default function OrderDetailPage() {
             </div>
             <div className="flex gap-2 self-end">
               {order.status !== "ENTREGADO" && order.status !== "CANCELADO" && (
+                <PermissionGate minimumLevel={PermissionLevel.ADVANCED_OPERATIONS}>
                 <Button
                   icon={HistoryIcon}
                   variant="ghost"
@@ -79,6 +82,7 @@ export default function OrderDetailPage() {
                 >
                   Cambiar estado
                 </Button>
+                </PermissionGate>
               )}
             </div>
           </div>

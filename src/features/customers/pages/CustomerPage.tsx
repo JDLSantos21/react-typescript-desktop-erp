@@ -17,9 +17,13 @@ import { APP_CONFIG } from "@/shared/constants/config";
 import { useListParams } from "@/shared/hooks/useListParams";
 import { CustomerQueryParams } from "../api/customer.service";
 import { useDebouncedSearchFilter } from "@/shared/hooks/useDebouncedSearchFilter";
+import { PermissionGate } from "@/shared/authorization/PermissionGate";
+import { PermissionLevel } from "@/shared/authorization/permissions";
+import { useCanAccess } from "@/shared/authorization/usePermission";
 
 export default function CustomerPage() {
   const navigate = useNavigate();
+  const canCreateCustomer = useCanAccess(PermissionLevel.ADVANCED_OPERATIONS);
 
   const {
     filters,
@@ -74,9 +78,7 @@ export default function CustomerPage() {
     return (
       <div className="flex gap-2">
         <Button variant="outline">Exportar</Button>
-        <Button onClick={() => navigate("/customers/new")}>
-          Crear cliente
-        </Button>
+        <PermissionGate minimumLevel={PermissionLevel.ADVANCED_OPERATIONS}><Button variant="outline" onClick={() => navigate("/customers/new")}>Crear cliente</Button></PermissionGate>
       </div>
     );
   }, [navigate]);
@@ -179,7 +181,7 @@ export default function CustomerPage() {
             title={emptyMessage.title}
             description={emptyMessage.description}
             action={
-              !hasActiveFilters
+              !hasActiveFilters && canCreateCustomer
                 ? {
                     label: "Agregar cliente",
                     onClick: () => navigate("/customers/new"),

@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { authService } from "../api/auth.service";
 import { useAuthStore } from "@/shared/stores/authStore";
 import { useNavigate } from "react-router-dom";
@@ -51,3 +52,29 @@ export const useRevokeAllTokens = () => {
     },
   });
 };
+
+export const useSystemUsers = () =>
+  useQuery({
+    queryKey: ["auth", "users"],
+    queryFn: authService.getUsers,
+    staleTime: 60_000,
+  });
+export const useSystemRoles = () =>
+  useQuery({
+    queryKey: ["auth", "roles"],
+    queryFn: authService.getRoles,
+    staleTime: 5 * 60_000,
+  });
+export const useRegisterSystemUser = () =>
+  useMutation({
+    mutationFn: authService.registerUser,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["auth", "users"] }),
+  });
+export const useAssignSystemUserRoles = () =>
+  useMutation({
+    mutationFn: ({ userId, roleIds }: { userId: string; roleIds: number[] }) =>
+      authService.setUserRoles(userId, roleIds),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["auth", "users"] }),
+  });

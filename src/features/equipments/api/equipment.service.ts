@@ -61,6 +61,24 @@ export const EquipmentService = {
     return response.data;
   },
 
+  updateModel: async (
+    id: number,
+    model: Partial<Omit<EquipmentModel, "id" | "createdAt" | "updatedAt">>,
+  ): Promise<ApiResponse<EquipmentModel>> => {
+    const response = await apiClient.patch<ApiResponse<EquipmentModel>>(
+      `equipment/models/${id}`,
+      model,
+    );
+    return response.data;
+  },
+
+  deleteModel: async (id: number): Promise<ApiResponse<void>> => {
+    const response = await apiClient.delete<ApiResponse<void>>(
+      `equipment/models/${id}`,
+    );
+    return response.data;
+  },
+
   createEquipment: async (equipment: {
     modelId: number;
   }): Promise<ApiResponse<CreateEquipmentOutput>> => {

@@ -41,14 +41,14 @@ export default function CreateEquipment() {
   };
 
   return (
-    <section className="p-3 border border-border-light rounded-sm shadow">
+    <section className="border-y border-slate-200 py-6">
       <div className="flex items-center gap-3">
-        <h3 className="text-lg font-bold text-text-primary uppercase">
+        <h3 className="text-base font-semibold text-slate-900">
           Generar unidad de equipo
         </h3>
         {isRefetching ? <RefreshIcon className="animate-spin" /> : null}
       </div>
-      <form onSubmit={handleSubmit} className="gap-4 mt-4">
+      <form onSubmit={handleSubmit} className="mt-5 space-y-5">
         <Select
           helperText="Si no existe el modelo, crealo en la pestaña de modelos."
           label="Modelo"
@@ -62,17 +62,15 @@ export default function CreateEquipment() {
           name="modelId"
         />
 
-        <div className="p-4 mt-5 bg-background-secondary border border-border-light rounded-sm">
-          <p className="text-sm text-text-muted mb-2">
-            Informacion de la nueva unidad:
-          </p>
-          <div className="flex items-center gap-2">
-            <div className="flex text-muted-foreground italic text-xs items-center gap-1">
+        <div className="border-y border-slate-200 py-4">
+          <p className="mb-2 text-sm font-medium text-slate-700">Información de la nueva unidad</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <div className="flex items-center gap-1 text-xs text-slate-500">
               <BarcodeIcon className="w-4 h-4" />
               <span>El serial será autogenerado</span>
             </div>
-            <div className="flex items-center gap-2">
-              <CalendarIcon />
+            <div className="flex items-center gap-1 text-xs text-slate-500">
+              <CalendarIcon className="h-4 w-4" />
               <span>Fecha: {new Date().toLocaleDateString("es-DO")}</span>
             </div>
           </div>
@@ -82,7 +80,7 @@ export default function CreateEquipment() {
           icon={QRCodeIcon}
           isLoading={isPending}
           disabled={isPending || isLoadingModels}
-          className="w-full mt-5"
+          className="w-full"
         >
           Generar equipo
         </Button>

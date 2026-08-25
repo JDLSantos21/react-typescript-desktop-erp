@@ -127,3 +127,9 @@ export interface FuelDashboard {
   typeDistribution: TypeDistribution[];
   efficiencyAlerts: EfficiencyAlert[];
 }
+
+export interface VehicleFuelAnalytics {
+  history: Array<{ month: string; totalGallons: number; totalKilometers: number; efficiency: number | null }>;
+  recentConsumptions: Array<{ id: number; gallons: number; mileage: number; consumedAt: string }>;
+  summary: { records: number; totalGallons: number; averageMonthlyConsumption: number; averageEfficiency: number | null };
+}

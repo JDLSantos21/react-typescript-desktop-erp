@@ -27,6 +27,7 @@ interface SearchSelectProps {
   allowClear?: boolean;
   clearLabel?: string;
   className?: string;
+  size?: "sm" | "md";
 }
 
 export function SearchSelect({
@@ -44,6 +45,7 @@ export function SearchSelect({
   allowClear = false,
   clearLabel = "Limpiar selección",
   className = "w-full",
+  size = "md",
 }: SearchSelectProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -142,19 +144,20 @@ export function SearchSelect({
             type="button"
             disabled={disabled}
             className={`
-              w-full h-10 px-3 py-2 text-sm text-left
+              w-full px-3 text-sm text-left
               rounded-md border bg-background
               transition-colors duration-200
               flex items-center justify-between gap-2
               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
+              ${size === "sm" ? "h-8 py-1.5" : "h-10 py-2"}
               ${error ? "border-danger focus:ring-danger/20" : "border-border"}
               ${disabled ? "opacity-50 cursor-not-allowed bg-background-secondary" : "cursor-pointer"}
             `}
           >
             <span
-              className={
+              className={`min-w-0 flex-1 truncate whitespace-nowrap ${
                 selectedLabel ? "text-text-primary" : "text-text-muted"
-              }
+              }`}
             >
               {selectedLabel || placeholder}
             </span>
@@ -215,7 +218,9 @@ export function SearchSelect({
                       ${isSelected ? "bg-primary/10 text-primary font-medium" : "text-text-primary hover:bg-background-hover"}
                     `}
                   >
-                    <span>{option.label}</span>
+                    <span className="min-w-0 flex-1 truncate whitespace-nowrap">
+                      {option.label}
+                    </span>
                     {isSelected && (
                       <CheckIcon className="w-4 h-4 text-primary shrink-0" />
                     )}

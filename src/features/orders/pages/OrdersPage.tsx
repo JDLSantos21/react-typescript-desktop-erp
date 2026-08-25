@@ -17,6 +17,8 @@ import { OrderStatus } from "@/shared/types/entities/order.types";
 import SectionLoader from "@/shared/components/SectionLoader";
 import { APP_CONFIG } from "@/shared/constants/config";
 import DateRangeSelector from "@/shared/components/core/DateRangeSelector";
+import { PermissionGate } from "@/shared/authorization/PermissionGate";
+import { PermissionLevel } from "@/shared/authorization/permissions";
 
 export default function OrdersPage() {
   const [dateRange, setDateRange] = useState(() => {
@@ -84,13 +86,7 @@ export default function OrdersPage() {
   const headerActions = useMemo(() => {
     return (
       <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          icon={PlusIcon}
-          onClick={() => navigate("/orders/new")}
-        >
-          Nuevo pedido
-        </Button>
+        <PermissionGate minimumLevel={PermissionLevel.ADVANCED_OPERATIONS}><Button variant="outline" icon={PlusIcon} onClick={() => navigate("/orders/new")}>Nuevo pedido</Button></PermissionGate>
         <DateRangeSelector value={dateRange} onChange={handleDateRangeChange} />
       </div>
     );

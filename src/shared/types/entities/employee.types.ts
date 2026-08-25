@@ -19,3 +19,14 @@ export interface Employee {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface EmployeeInput {
+  name: string;
+  lastName: string;
+  employeeCode: string;
+  position: EmployeePosition;
+  phoneNumber?: string;
+  cedula?: string;
+  licenseExpirationDate?: string;
+  isActive?: boolean;
+}

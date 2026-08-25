@@ -18,6 +18,8 @@ import { extractApiError } from "@/shared/utils/error-handler";
 import { AxiosError } from "axios";
 import ConfirmDialog from "@/shared/components/core/ConfirmDialog";
 import { useModal } from "@/shared/hooks/useModal";
+import { PermissionLevel } from "@/shared/authorization/permissions";
+import { useCanAccess } from "@/shared/authorization/usePermission";
 
 interface AsideMenuProps {
   onOpenCreateAddressModal: () => void;
@@ -47,29 +49,30 @@ export default function CustomerAsideMenu({
   };
 
   const confirmModal = useModal();
+  const canManageCustomer = useCanAccess(PermissionLevel.ADVANCED_OPERATIONS);
 
   return (
     <AsideMenu>
-      <AsideButton
+      {canManageCustomer ? <AsideButton
         label="Editar información"
         onClick={() => onOpenEditModal()}
         icon={<UserEditIcon className="w-4 h-4" />}
-      />
-      <AsideButton
+      /> : null}
+      {canManageCustomer ? <AsideButton
         label="Crear pedido"
         onClick={() => navigate(`/orders/new/${id}`)}
         icon={<ShoppingCartPlusIcon className="w-4 h-4" />}
-      />
-      <AsideButton
+      /> : null}
+      {canManageCustomer ? <AsideButton
         label="Agregar dirección"
         onClick={() => onOpenCreateAddressModal()}
         icon={<MapPinPlusIcon className="w-4 h-4" />}
-      />
-      <AsideButton
+      /> : null}
+      {canManageCustomer ? <AsideButton
         label="Agregar teléfono"
         onClick={() => onOpenCreatePhoneModal()}
         icon={<PhonePlusIcon className="w-4 h-4" />}
-      />
+      /> : null}
       <AsideButton
         label="Historial de pedidos"
         onClick={() => navigate(`/customers/${id}/orders-history`)}
@@ -80,21 +83,21 @@ export default function CustomerAsideMenu({
         onClick={() => onOpenNearbyVehiclesMapModal()}
         icon={<DistanceIcon className="w-4 h-4" />}
       />
-      <AsideButton
+      {canManageCustomer ? <AsideButton
         label="Eliminar cliente"
         onClick={() => confirmModal.open()}
         variant="danger"
         icon={<DeleteIcon className="w-4 h-4" />}
-      />
+      /> : null}
 
-      <ConfirmDialog
+      {canManageCustomer ? <ConfirmDialog
         title="Eliminar cliente"
         description="¿Estás seguro de que deseas eliminar este cliente?"
         variant="danger"
         isOpen={confirmModal.isOpen}
         onConfirm={() => handleDeleteCustomer()}
         onCancel={() => confirmModal.close()}
-      />
+      /> : null}
     </AsideMenu>
   );
 }

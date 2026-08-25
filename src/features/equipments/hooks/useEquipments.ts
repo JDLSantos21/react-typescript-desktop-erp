@@ -79,6 +79,26 @@ export const useCreateModel = () => {
   });
 };
 
+export const useUpdateModel = () =>
+  useMutation({
+    mutationFn: ({
+      id,
+      model,
+    }: {
+      id: number;
+      model: EquipmentModelFormInput;
+    }) => EquipmentService.updateModel(id, model),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: EquipmentKeys.models() }),
+  });
+
+export const useDeleteModel = () =>
+  useMutation({
+    mutationFn: EquipmentService.deleteModel,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: EquipmentKeys.models() }),
+  });
+
 export const useCreateEquipment = () => {
   return useMutation({
     mutationFn: (model: { modelId: number }) =>

@@ -9,6 +9,7 @@ export interface GetEmployeeParams extends PaginationParams {
   cedula?: string;
   employeeCode?: string;
   search?: string;
+  isActive?: boolean;
 }
 
 export interface EmployeeQueryDto {
@@ -21,4 +22,5 @@ export interface EmployeeQueryDto {
   cedula?: string;
   employeeCode?: string;
   search?: string;
+  isActive?: boolean;
 }

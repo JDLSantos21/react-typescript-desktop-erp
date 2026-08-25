@@ -5,6 +5,7 @@ import { GetFuelConsumptionsParams, GetTankRefillsParams } from "../types/fuel";
 import {
   RegisterConsumptionFormData,
   RegisterRefillFormData,
+  FuelTankFormData,
 } from "../schemas/fuel.schema";
 import { sileo } from "sileo";
 import { extractApiError } from "@/shared/utils/error-handler";
@@ -126,3 +127,20 @@ export const useGetFuelMetrics = () => {
     staleTime: 1000 * 60 * 5,
   });
 };
+
+export const useCreateFuelTank = () => useMutation({
+  mutationFn: (data: FuelTankFormData) => FuelService.createTank(data),
+  onSuccess: () => {
+    sileo.success({ title: "Tanque configurado", description: "El tanque principal quedó registrado correctamente" });
+    queryClient.invalidateQueries({ queryKey: FuelKeys.all });
+  },
+  onError: (error) => sileo.error({ title: "No se pudo configurar el tanque", description: extractApiError(error).message }),
+});
+
+export const useGetVehicleFuelAnalytics = (vehicleId?: string, enabled = true) =>
+  useQuery({
+    queryKey: [...FuelKeys.all, "vehicle-analytics", vehicleId],
+    queryFn: () => FuelService.getVehicleAnalytics(vehicleId ?? ""),
+    enabled: Boolean(vehicleId) && enabled,
+    staleTime: 1000 * 60 * 5,
+  });

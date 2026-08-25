@@ -47,3 +47,12 @@ export const registerRefillSchema = z.object({
 
 export type RegisterRefillInput = z.input<typeof registerRefillSchema>;
 export type RegisterRefillFormData = z.infer<typeof registerRefillSchema>;
+
+export const fuelTankSchema = z.object({
+  capacity: z.coerce.number().positive("La capacidad debe ser mayor que cero"),
+  currentLevel: z.coerce.number().min(0, "El nivel actual no puede ser negativo"),
+  minLevel: z.coerce.number().min(0, "El nivel mínimo no puede ser negativo"),
+}).refine((data) => data.currentLevel <= data.capacity, { message: "El nivel actual no puede superar la capacidad", path: ["currentLevel"] }).refine((data) => data.minLevel <= data.capacity, { message: "El nivel mínimo no puede superar la capacidad", path: ["minLevel"] });
+
+export type FuelTankFormInput = z.input<typeof fuelTankSchema>;
+export type FuelTankFormData = z.infer<typeof fuelTankSchema>;

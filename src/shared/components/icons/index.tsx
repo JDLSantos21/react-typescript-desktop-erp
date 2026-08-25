@@ -34,7 +34,7 @@ import { AiOutlineBars } from "react-icons/ai";
 import { MdOutlineLogout } from "react-icons/md";
 import { CiCalendar, CiFilter, CiLocationOn, CiSearch } from "react-icons/ci";
 import { IoMdCheckmark, IoMdClose } from "react-icons/io";
-import { FiPlusCircle } from "react-icons/fi";
+import { FiPlusCircle, FiSettings } from "react-icons/fi";
 import { VscSearchStop } from "react-icons/vsc";
 import { CiCircleQuestion } from "react-icons/ci";
 import { GiPathDistance } from "react-icons/gi";
@@ -118,6 +118,8 @@ export const PlusIcon = (props: IconProps) => <FiPlusCircle {...props} />;
 export const FridgeIcon = (props: IconProps) => <RiFridgeLine {...props} />;
 
 export const EquipmentIcon = (props: IconProps) => <LiaCogsSolid {...props} />;
+
+export const SettingsIcon = (props: IconProps) => <FiSettings {...props} />;
 
 export const MenuIcon = (props: IconProps) => <AiOutlineBars {...props} />;
 

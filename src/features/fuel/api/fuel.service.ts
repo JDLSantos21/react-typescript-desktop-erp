@@ -5,6 +5,7 @@ import {
   FuelDashboard,
   FuelRefill,
   FuelTank,
+  VehicleFuelAnalytics,
   TankReset,
 } from "@/shared/types/entities/fuel.types";
 import { GetFuelConsumptionsParams, GetTankRefillsParams } from "../types/fuel";
@@ -92,6 +93,16 @@ export const FuelService = {
     const response = await apiClient.get<ApiResponse<FuelDashboard>>(
       "fuel/dashboard?alertThreshold=1",
     );
+    return response.data;
+  },
+
+  createTank: async (data: Pick<FuelTank, "capacity" | "currentLevel" | "minLevel">): Promise<ApiResponse<FuelTank>> => {
+    const response = await apiClient.post<ApiResponse<FuelTank>>("fuel/tank", data);
+    return response.data;
+  },
+
+  getVehicleAnalytics: async (vehicleId: string): Promise<ApiResponse<VehicleFuelAnalytics>> => {
+    const response = await apiClient.get<ApiResponse<VehicleFuelAnalytics>>(`fuel/vehicles/${vehicleId}/analytics`);
     return response.data;
   },
 };

@@ -84,3 +84,19 @@ export const formatDate = (
     return dayjs(dateString).format("DD MMMM [de] YYYY [a las] HH:mm");
   return dayjs(dateString).format(format);
 };
+
+export const formatDateTime = (dateString: string | Date): string => {
+  const formatted = dayjs(dateString).format("D MMMM h:mm A");
+  return formatted.replace(
+    /\b([a-záéíóúñ])/,
+    (letter) => letter.toUpperCase(),
+  );
+};
+
+export const formatLongDate = (dateString: string | Date): string => {
+  const formatted = dayjs(dateString).format("D MMMM YYYY");
+  return formatted.replace(
+    /\b([a-záéíóúñ])/,
+    (letter) => letter.toUpperCase(),
+  );
+};
