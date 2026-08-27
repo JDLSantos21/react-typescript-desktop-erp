@@ -265,3 +265,9 @@ input[type="number"]::-webkit-outer-spin-button {
 [data-sileo-viewport] {
   z-index: 99999 !important;
 }
+
+/* Leaflet TileLayer Dark Filter */
+.map-tiles-dark {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+

@@ -20,6 +20,9 @@ export function useHeaderConfig(config?: HeaderConfig) {
     config?.description,
     config?.customContent,
     config?.actions,
+    config?.showBackButton,
+    config?.onBack,
+    config?.dropdownMenu,
     setHeaderConfig,
     resetHeader,
   ]);

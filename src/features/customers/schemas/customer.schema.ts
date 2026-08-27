@@ -33,6 +33,12 @@ export const customerAddressSchema = z.object({
     .min(2, "Mínimo 2 caracteres")
     .max(100, "Máximo 100 caracteres"),
   isPrimary: z.boolean(),
+  latitude: z.number().min(-90).max(90).optional(),
+  longitude: z.number().min(-180).max(180).optional(),
+  locationSource: z.enum(["MANUAL", "MAP", "MOBILE_GPS"]).optional(),
+}).refine((value) => (value.latitude == null) === (value.longitude == null), {
+  message: "Debe indicar latitud y longitud juntas",
+  path: ["latitude"],
 });
 
 const customerBaseSchema = z.object({

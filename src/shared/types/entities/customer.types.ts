@@ -4,6 +4,8 @@ export interface Customer {
   representativeName: string;
   rnc?: string | null;
   email?: string | null;
+  receivesOrderEmails: boolean;
+  orderEmailsUnsubscribedAt: string | null;
   phones: CustomerPhone[];
   addresses: CustomerAddress[];
   notes?: string | null;
@@ -35,4 +37,5 @@ export interface CustomerAddress {
     longitude: number;
   } | null;
   isPrimary: boolean;
+  locationSource: "MANUAL" | "MAP" | "MOBILE_GPS";
 }

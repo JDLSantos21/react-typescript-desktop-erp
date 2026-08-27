@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { EquipmentAsideMenu } from "../components/EquipmentAsideMenu";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { MapModal } from "@/shared/components/core/MapModal";
+import { DEFAULT_TILE_LAYER } from "@/shared/components/core/Map";
 import LastAsignment from "../components/LastAsignment";
 import AssignEquipmentModal from "../components/AssignEquipmentModal";
 import { useModal } from "@/shared/hooks/useModal";
@@ -218,7 +219,10 @@ export default function EquipmentDetailPage() {
                   keyboard={false}
                   attributionControl={false}
                 >
-                  <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+                  <TileLayer
+                    url={DEFAULT_TILE_LAYER.url}
+                    attribution={DEFAULT_TILE_LAYER.attribution}
+                  />
                   <Marker
                     position={[equipmentLocation.lat, equipmentLocation.lng]}
                   />

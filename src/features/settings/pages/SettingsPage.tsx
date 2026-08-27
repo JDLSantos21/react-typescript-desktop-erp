@@ -5,6 +5,8 @@ import { useAuthStore } from "@/shared/stores/authStore";
 const settingsDestinations = [
   { href: "/settings/access", level: PermissionLevel.SYSTEM_ADMIN },
   { href: "/settings/employees", level: PermissionLevel.ADMINISTRATION },
+  { href: "/settings/email", level: PermissionLevel.ADMINISTRATION },
+  { href: "/settings/products", level: PermissionLevel.ADVANCED_OPERATIONS },
   { href: "/settings/vehicles", level: PermissionLevel.SUPERVISION },
   { href: "/settings/maintenance/procedures", level: PermissionLevel.SUPERVISION },
   { href: "/settings/fuel", level: PermissionLevel.ADMINISTRATION },

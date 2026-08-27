@@ -22,6 +22,11 @@ import { useRefetchToast } from "@/shared/hooks/useRefetchToast";
 import CustomerAsideMenu from "../components/CustomerAsideMenu";
 import NearbyVehiclesMapModal from "../components/NearbyVehiclesMapModal";
 import { FeatureErrorBoundary } from "@/shared/components/error-boundary/FeatureErrorBoundary";
+import { CustomerEmailModal } from "@/features/email/components/CustomerEmailModal";
+import { AddressDetailModal } from "../components/AddressDetailModal";
+import { PhoneDetailModal } from "../components/PhoneDetailModal";
+import { useDeleteCustomerAddress, useDeleteCustomerPhone } from "../hooks/useCustomer";
+import { toast } from "sonner";
 
 export default function CustomerDetailPage() {
   const { id } = useParams();
@@ -39,6 +44,11 @@ export default function CustomerDetailPage() {
   const ordersHistoryModal = useModal();
   const editModal = useModal();
   const mapModal = useModal();
+  const emailModal = useModal();
+  const addressDetailModal = useModal();
+  const phoneDetailModal = useModal();
+  const deleteAddress = useDeleteCustomerAddress(id ?? "");
+  const deletePhone = useDeleteCustomerPhone(id ?? "");
 
   const headerConfig = useMemo(
     () => ({
@@ -157,7 +167,7 @@ export default function CustomerDetailPage() {
                     addresses={data!.data.addresses}
                     onSelect={(address) => {
                       setSelectedAddress(address);
-                      addressModal.open();
+                      addressDetailModal.open();
                     }}
                   />
                 </section>
@@ -171,7 +181,7 @@ export default function CustomerDetailPage() {
                     phones={data!.data.phones}
                     onSelect={(phone) => {
                       setSelectedPhone(phone);
-                      phoneModal.open();
+                      phoneDetailModal.open();
                     }}
                   />
                 </section>
@@ -199,6 +209,7 @@ export default function CustomerDetailPage() {
               onOpenCreateAddressModal={addressModal.open}
               onOpenEditModal={editModal.open}
               onOpenNearbyVehiclesMapModal={mapModal.open}
+              onOpenEmailModal={emailModal.open}
             />
           </div>
         )}
@@ -212,11 +223,25 @@ export default function CustomerDetailPage() {
         customerId={id}
         address={selectedAddress}
       />
+      <AddressDetailModal
+        address={selectedAddress}
+        isOpen={addressDetailModal.isOpen}
+        onClose={addressDetailModal.close}
+        onEdit={() => { addressDetailModal.close(); addressModal.open(); }}
+        onDelete={() => { if (!selectedAddress) return; deleteAddress.mutate(selectedAddress.id, { onSuccess: () => { toast.success("Dirección eliminada"); addressDetailModal.close(); setSelectedAddress(undefined); }, onError: () => toast.error("No se pudo eliminar la dirección") }); }}
+      />
       <PhoneModal
         isOpen={phoneModal.isOpen}
         onClose={phoneModal.close}
         customerId={id}
         phone={selectedPhone}
+      />
+      <PhoneDetailModal
+        phone={selectedPhone}
+        isOpen={phoneDetailModal.isOpen}
+        onClose={phoneDetailModal.close}
+        onEdit={() => { phoneDetailModal.close(); phoneModal.open(); }}
+        onDelete={() => { if (!selectedPhone) return; deletePhone.mutate(selectedPhone.id, { onSuccess: () => { toast.success("Teléfono eliminado"); phoneDetailModal.close(); setSelectedPhone(undefined); }, onError: () => toast.error("No se pudo eliminar el teléfono") }); }}
       />
       <CustomerHistoryModal
         isOpen={equipmentModal.isOpen}
@@ -235,6 +260,14 @@ export default function CustomerDetailPage() {
           isOpen={mapModal.isOpen}
           onClose={mapModal.close}
           addreses={data?.data.addresses}
+        />
+      ) : null}
+      {data?.data ? (
+        <CustomerEmailModal
+          customerId={id}
+          email={data.data.email}
+          isOpen={emailModal.isOpen}
+          onClose={emailModal.close}
         />
       ) : null}
     </div>

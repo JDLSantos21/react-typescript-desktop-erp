@@ -48,7 +48,7 @@ export interface MapProps {
   circles?: MapCircleProps[];
   className?: string;
   height?: string;
-  tileLayer?: "default" | "satellite" | "dark";
+  tileLayer?: TileLayerType;
   showAttribution?: boolean;
   enableRecenter?: boolean;
   onMarkerClick?: (markerId: string | number) => void;
@@ -129,20 +129,41 @@ function createMarkerIcon(
 // Tile Layer Configurations
 // ============================================================================
 
-const TILE_LAYERS = {
+export const TILE_LAYERS = {
   default: {
-    url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
+    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors',
+    className: "",
+  },
+  hot: {
+    url: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank" rel="noopener noreferrer">HOT</a>',
+    className: "",
   },
   satellite: {
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    attribution: "Tiles &copy; Esri",
+    attribution:
+      "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+    className: "",
+  },
+  topo: {
+    url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>',
+    className: "",
   },
   dark: {
-    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-    attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
+    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors',
+    className: "map-tiles-dark",
   },
 } as const;
+
+export type TileLayerType = keyof typeof TILE_LAYERS;
+export const DEFAULT_TILE_LAYER = TILE_LAYERS.default;
 
 // ============================================================================
 // Main Map Component
@@ -169,7 +190,7 @@ export function Map({
     [center.lat, center.lng]
   );
 
-  const selectedTileLayer = TILE_LAYERS[tileLayer];
+  const selectedTileLayer = TILE_LAYERS[tileLayer] ?? TILE_LAYERS.default;
 
   return (
     <MapContainer
@@ -185,6 +206,7 @@ export function Map({
       <TileLayer
         url={selectedTileLayer.url}
         attribution={showAttribution ? selectedTileLayer.attribution : ""}
+        className={selectedTileLayer.className || undefined}
       />
 
       {/* Render Circles */}

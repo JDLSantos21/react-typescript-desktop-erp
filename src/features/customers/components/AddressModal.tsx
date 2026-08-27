@@ -17,6 +17,8 @@ import { Alert } from "@/shared/components/core/Alert";
 import { extractApiError } from "@/shared/utils/error-handler";
 import { CustomerAddress } from "@/shared/types/entities/customer.types";
 import { toast } from "sonner";
+import { MapPin } from "lucide-react";
+import { LocationPickerModal } from "./LocationPickerModal";
 
 interface AddressModalProps {
   isOpen: boolean;
@@ -33,11 +35,14 @@ export default function AddressModal({
 }: AddressModalProps) {
   const isEditing = !!address;
   const [apiError, setApiError] = useState<string | null>(null);
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors, isDirty },
   } = useForm<CustomerAddressFormData>({
     resolver: zodResolver(customerAddressSchema),
@@ -46,6 +51,9 @@ export default function AddressModal({
       direction: "",
       city: "",
       isPrimary: false,
+      latitude: undefined,
+      longitude: undefined,
+      locationSource: "MANUAL",
     },
   });
 
@@ -61,6 +69,9 @@ export default function AddressModal({
         direction: address.direction,
         city: address.city,
         isPrimary: address.isPrimary,
+        latitude: address.coords?.latitude,
+        longitude: address.coords?.longitude,
+        locationSource: address.locationSource ?? "MANUAL",
       });
     } else if (isOpen && !address) {
       reset({
@@ -68,6 +79,9 @@ export default function AddressModal({
         direction: "",
         city: "",
         isPrimary: false,
+        latitude: undefined,
+        longitude: undefined,
+        locationSource: "MANUAL",
       });
     }
 
@@ -155,6 +169,17 @@ export default function AddressModal({
             id="isPrimary"
             {...register("isPrimary")}
           />
+
+          <div className="border-t border-slate-200 pt-4">
+            <div className="flex items-center justify-between gap-3">
+              <div><p className="text-sm font-medium text-slate-900">Ubicación exacta</p><p className="mt-0.5 text-xs text-slate-500">Opcional: agrega coordenadas para facilitar la entrega.</p></div>
+              <Button type="button" variant="outline" size="sm" icon={MapPin} onClick={() => setIsPickerOpen(true)}>Seleccionar en mapa</Button>
+            </div>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <Input label="Latitud" type="number" step="any" error={errors.latitude?.message} {...register("latitude", { setValueAs: (value) => value === "" ? undefined : Number(value) })} />
+              <Input label="Longitud" type="number" step="any" {...register("longitude", { setValueAs: (value) => value === "" ? undefined : Number(value) })} />
+            </div>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button type="button" variant="outline" onClick={onClose}>
@@ -169,6 +194,12 @@ export default function AddressModal({
           </Button>
         </Modal.Footer>
       </form>
+      <LocationPickerModal
+        isOpen={isPickerOpen}
+        onClose={() => setIsPickerOpen(false)}
+        initialPosition={watch("latitude") != null && watch("longitude") != null ? { latitude: watch("latitude")!, longitude: watch("longitude")! } : null}
+        onSelect={(position) => { setValue("latitude", position.latitude, { shouldDirty: true }); setValue("longitude", position.longitude, { shouldDirty: true }); setValue("locationSource", "MAP", { shouldDirty: true }); }}
+      />
     </Modal>
   );
 }

@@ -142,6 +142,16 @@ export const useDeleteCustomer = (customerId: string) => {
   });
 };
 
+export const useDeleteCustomerAddress = (customerId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({ mutationFn: CustomerService.deleteCustomerAddress, onSuccess: () => { void queryClient.invalidateQueries({ queryKey: customerKeys.detail(customerId) }); } });
+};
+
+export const useDeleteCustomerPhone = (customerId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({ mutationFn: CustomerService.deleteCustomerPhone, onSuccess: () => { void queryClient.invalidateQueries({ queryKey: customerKeys.detail(customerId) }); } });
+};
+
 export const useEditCustomer = () => {
   const queryClient = useQueryClient();
 

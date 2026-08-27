@@ -17,6 +17,7 @@ export interface CreateOrderDto {
   scheduledDate?: string;
   deliveryNotes?: string;
   notes?: string;
+  sendCustomerEmail?: boolean;
 }
 
 export interface UpdateOrderDto {

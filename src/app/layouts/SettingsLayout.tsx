@@ -2,7 +2,9 @@ import {
   ArrowLeft,
   Boxes,
   Fuel,
+  Mail,
   Package,
+  ShoppingBasket,
   Truck,
   Users,
   UserRound,
@@ -49,6 +51,12 @@ const groups: Array<{ label: string; items: SettingsItem[] }> = [
     label: "Operación",
     items: [
       {
+        label: "Correo electrónico",
+        href: "/settings/email",
+        icon: Mail,
+        minimumLevel: PermissionLevel.ADMINISTRATION,
+      },
+      {
         label: "Vehículos",
         href: "/settings/vehicles",
         icon: Truck,
@@ -71,6 +79,12 @@ const groups: Array<{ label: string; items: SettingsItem[] }> = [
   {
     label: "Catálogos",
     items: [
+      {
+        label: "Productos",
+        href: "/settings/products",
+        icon: ShoppingBasket,
+        minimumLevel: PermissionLevel.ADVANCED_OPERATIONS,
+      },
       {
         label: "Inventario",
         href: "/settings/inventory",

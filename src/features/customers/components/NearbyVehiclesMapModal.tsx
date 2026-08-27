@@ -24,6 +24,7 @@ import {
   useRefreshVehiclesLocations,
 } from "../hooks/useCustomer";
 import { createIcon } from "./CreateIcon";
+import { DEFAULT_TILE_LAYER } from "@/shared/components/core/Map";
 
 interface VehicleGPS {
   id: number;
@@ -221,8 +222,8 @@ export default function NearbyVehiclesMapModal({
             )}
             <RecenterMap lat={cPostion.Clat} lng={cPostion.Clng} />
             <TileLayer
-              url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-              attribution="&copy; OpenStreetMap"
+              url={DEFAULT_TILE_LAYER.url}
+              attribution={DEFAULT_TILE_LAYER.attribution}
             />
 
             <Marker

@@ -56,6 +56,23 @@ export interface ProductCatalogItem {
   unit: string;
 }
 
+export interface Product extends ProductCatalogItem {
+  description: string | null;
+  sku: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProductInput {
+  name: string;
+  unit: string;
+  size?: string;
+  description?: string;
+  sku?: string;
+  isActive?: boolean;
+}
+
 export interface PublicOrderTracking {
   trackingCode: string;
   status: OrderStatus;

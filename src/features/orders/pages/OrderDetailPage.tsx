@@ -22,6 +22,7 @@ import DriverAssignModal from "../components/DriverAssignModal";
 import { OrderDetailSections } from "../components/details/OrderDetailSections";
 import { PermissionGate } from "@/shared/authorization/PermissionGate";
 import { PermissionLevel } from "@/shared/authorization/permissions";
+import { OrderEmailHistory } from "@/features/email/components/OrderEmailHistory";
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -99,7 +100,7 @@ export default function OrderDetailPage() {
         <SectionLoader placeholder="Cargando detalles del pedido" />
       ) : order && !isError ? (
         <div className="flex h-full">
-          <div className="flex-1 px-8 py-4 space-y-2 max-w-4xl max-h-[calc(100vh-96px)] overflow-y-auto show-scrollbar">
+          <div className="flex-1 max-w-5xl overflow-y-auto px-8 py-7 show-scrollbar">
             <OrderDetailSections
               order={order}
               onOpenMap={() => {
@@ -108,6 +109,7 @@ export default function OrderDetailPage() {
                 }
               }}
             />
+            <OrderEmailHistory orderId={order.id} />
           </div>
           <OrderAsideMenu
             onOpenStatusHistoryModal={() => statusHistoryModal.open()}

@@ -17,6 +17,7 @@ export interface OrderStepData {
   scheduledDate?: string;
   deliveryNotes?: string;
   notes?: string;
+  sendCustomerEmail?: boolean;
 
   // User ID (required for backend)
   userId?: string;

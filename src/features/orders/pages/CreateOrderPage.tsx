@@ -2,7 +2,7 @@ import { Button } from "@/shared/components/core/Button";
 import { OverlayLoader } from "@/shared/components/OverlayLoader";
 import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
 import { useModal } from "@/shared/hooks/useModal";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { extractApiError } from "@/shared/utils/error-handler";
 import { AxiosError } from "axios";
@@ -26,6 +26,7 @@ const STEPS = [
 
 export default function CreateOrderPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { customerId } = useParams();
 
   const { mutate: createOrder, isPending } = useCreateOrder();
@@ -56,6 +57,7 @@ export default function CreateOrderPage() {
       scheduledDate: orderData.scheduledDate,
       deliveryNotes: orderData.deliveryNotes,
       notes: orderData.notes,
+      sendCustomerEmail: orderData.sendCustomerEmail,
     };
 
     createOrder(
@@ -76,22 +78,36 @@ export default function CreateOrderPage() {
 
   const canGoNext = isStepValid(currentStep);
 
+  const handleExit = () => {
+    if (location.state?.from) {
+      navigate(location.state.from);
+    } else if (customerId) {
+      navigate(`/customers/${customerId}`);
+    } else {
+      navigate("/orders");
+    }
+  };
+
+  const handleCancelOrBack = () => {
+    if (currentStep !== 1) {
+      confirmCancelCreateOrderModal.open();
+      return;
+    }
+    handleExit();
+  };
+
   useHeaderConfig({
     title: "Crear nuevo pedido",
     description: `Paso ${currentStep} de ${STEPS.length}: ${
       STEPS[currentStep - 1].title
     }`,
+    showBackButton: Boolean(customerId || location.state?.from),
+    onBack: handleCancelOrBack,
     actions: (
       <div className="flex gap-2">
         <Button
           variant="outline"
-          onClick={() => {
-            if (currentStep !== 1) {
-              confirmCancelCreateOrderModal.open();
-              return;
-            }
-            navigate("/orders");
-          }}
+          onClick={handleCancelOrBack}
           disabled={isPending}
         >
           Cancelar
@@ -158,7 +174,9 @@ export default function CreateOrderPage() {
           />
         )}
 
-        {currentStep === 4 && <Step4Summary orderData={orderData} />}
+        {currentStep === 4 && (
+          <Step4Summary orderData={orderData} updateOrderData={updateOrderData} />
+        )}
       </div>
 
       <div className="absolute bottom-0 w-full">
@@ -192,7 +210,7 @@ export default function CreateOrderPage() {
         description="¿Estás seguro? Se perderán los datos ingresados."
         variant="danger"
         isOpen={confirmCancelCreateOrderModal.isOpen}
-        onConfirm={() => navigate("/orders")}
+        onConfirm={handleExit}
         onCancel={() => confirmCancelCreateOrderModal.close()}
       />
     </div>

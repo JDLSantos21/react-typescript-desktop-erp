@@ -103,6 +103,12 @@ const AccessSettingsPage = lazy(
 const EmployeesSettingsPage = lazy(
   () => import("@/features/settings/pages/EmployeesSettingsPage"),
 );
+const ProductsSettingsPage = lazy(
+  () => import("@/features/settings/pages/ProductsSettingsPage"),
+);
+const EmailSettingsPage = lazy(
+  () => import("@/features/settings/pages/EmailSettingsPage"),
+);
 
 const FuelPage = lazy(() => import("@/features/fuel/pages/FuelPage"));
 
@@ -455,6 +461,30 @@ export const router = createBrowserRouter([
                 <Suspense fallback={<PageLoader />}>
                   <PageErrorBoundary pageName="gestión de empleados">
                     <EmployeesSettingsPage />
+                  </PageErrorBoundary>
+                </Suspense>
+              </PermissionRoute>
+            ),
+          },
+          {
+            path: "email",
+            element: (
+              <PermissionRoute minimumLevel={PermissionLevel.ADMINISTRATION}>
+                <Suspense fallback={<PageLoader />}>
+                  <PageErrorBoundary pageName="correo electrónico">
+                    <EmailSettingsPage />
+                  </PageErrorBoundary>
+                </Suspense>
+              </PermissionRoute>
+            ),
+          },
+          {
+            path: "products",
+            element: (
+              <PermissionRoute minimumLevel={PermissionLevel.ADVANCED_OPERATIONS}>
+                <Suspense fallback={<PageLoader />}>
+                  <PageErrorBoundary pageName="productos">
+                    <ProductsSettingsPage />
                   </PageErrorBoundary>
                 </Suspense>
               </PermissionRoute>

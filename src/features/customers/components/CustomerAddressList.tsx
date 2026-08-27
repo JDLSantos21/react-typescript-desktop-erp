@@ -1,6 +1,6 @@
 import { CustomerAddress } from "@/shared/types/entities/customer.types";
 import { Badge } from "@/shared/components/core/Badge";
-import { MapPinPlusIcon } from "@/shared/components/icons";
+import { MapPin, Navigation } from "lucide-react";
 
 interface CustomerAddressListProps {
   addresses: CustomerAddress[];
@@ -22,45 +22,27 @@ export default function CustomerAddressList({
   }
 
   return (
-    <div className={`grid 3xl:grid-cols-2  gap-3`}>
+      <div className="grid gap-3">
       {addresses.map((address) => (
-        <div
+        <button
+          type="button"
           key={address.id}
-          role="button"
-          tabIndex={0}
-          className="bg-background-secondary border border-border-light rounded-lg p-4 hover:border-primary/30 focus-visible:ring-2 focus-visible:outline-none focus:outline-none transition-colors select-none cursor-pointer"
+          className="group min-w-0 rounded-xl border border-slate-200 bg-white p-4 text-left transition-colors hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           onClick={() => onSelect(address)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              onSelect(address);
-            }
-          }}
         >
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                {address.branchName && (
-                  <span className="text-sm font-semibold text-text-primary">
-                    {address.branchName}
-                  </span>
-                )}
-                {address.isPrimary && (
-                  <Badge variant="primary" size="sm">
-                    Principal
-                  </Badge>
-                )}
+          <div className="flex min-w-0 items-start gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 group-hover:bg-primary/10 group-hover:text-primary"><MapPin className="h-4 w-4" /></span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <span className="truncate text-sm font-semibold text-slate-900">{address.branchName || "Principal"}</span>
+                {address.isPrimary ? <Badge variant="primary" size="sm">Principal</Badge> : null}
               </div>
-              <p className="text-sm text-text-secondary mb-0.5">
-                {address.direction}
-              </p>
-              <p className="text-xs text-text-muted flex items-center gap-1">
-                <MapPinPlusIcon className="w-3 h-3 text-text-muted" />
-                {address.city}
-              </p>
+              <p className="mt-2 truncate text-sm text-slate-700">{address.direction}</p>
+              <p className="mt-1 truncate text-xs text-slate-500">{address.city}</p>
+              <p className="mt-3 flex items-center gap-1.5 text-xs text-slate-500"><Navigation className="h-3.5 w-3.5" />{address.coords ? "Ubicación exacta registrada" : "Sin ubicación exacta"}</p>
             </div>
           </div>
-        </div>
+        </button>
       ))}
     </div>
   );

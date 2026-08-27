@@ -109,6 +109,8 @@ export const CustomerService = {
   deleteCustomer: async (customerId: string): Promise<void> => {
     await apiClient.delete(`/customers/${customerId}`);
   },
+  deleteCustomerAddress: async (addressId: number): Promise<void> => { await apiClient.delete(`/customers/addresses/${addressId}`); },
+  deleteCustomerPhone: async (phoneId: number): Promise<void> => { await apiClient.delete(`/customers/phones/${phoneId}`); },
 
   updateCustomer: async (
     customerId: string,

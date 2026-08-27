@@ -7,13 +7,17 @@ import {
   TruckIcon,
   UserIcon,
 } from "lucide-react";
+import { Checkbox } from "@/shared/components/core/Checkbox";
+import { useOrderEmailDefaults } from "@/features/email/hooks/useEmail";
 
 interface Step4SummaryProps {
   orderData: OrderStepData;
+  updateOrderData?: (data: Partial<OrderStepData>) => void;
 }
 
-export default function Step4Summary({ orderData }: Step4SummaryProps) {
+export default function Step4Summary({ orderData, updateOrderData }: Step4SummaryProps) {
   const { data: customerData } = useCustomerById(orderData.customerId || "");
+  const defaults = useOrderEmailDefaults();
 
   const customer = customerData?.data;
   const selectedAddress = customer?.addresses.find(
@@ -24,6 +28,10 @@ export default function Step4Summary({ orderData }: Step4SummaryProps) {
     (sum, p) => sum + p.requestedQuantity,
     0,
   );
+  const canSendEmail = Boolean(customer?.email && customer.receivesOrderEmails);
+  const emailEnabled =
+    orderData.sendCustomerEmail ??
+    Boolean(defaults.data?.data.orderCreatedEmailEnabled && canSendEmail);
 
   return (
     <div className="space-y-6">
@@ -133,6 +141,27 @@ export default function Step4Summary({ orderData }: Step4SummaryProps) {
           )}
         </div>
       </div>
+
+      {updateOrderData ? <div className="border border-border rounded-lg p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="font-semibold text-text-primary">Notificación al cliente</p>
+            <p className="mt-1 text-sm text-text-secondary">
+              {canSendEmail
+                ? `Se enviará una confirmación a ${customer?.email}.`
+                : customer?.email
+                  ? "El cliente no tiene activadas las notificaciones de pedidos."
+                  : "El cliente no tiene un correo electrónico registrado."}
+            </p>
+          </div>
+          <Checkbox
+            checked={emailEnabled}
+            disabled={!canSendEmail || defaults.isLoading}
+            onChange={(event) => updateOrderData({ sendCustomerEmail: event.target.checked })}
+            label="Enviar correo"
+          />
+        </div>
+      </div> : null}
 
       {/* Success Alert */}
       <Alert variant="success">

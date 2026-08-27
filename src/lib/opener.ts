@@ -6,17 +6,27 @@ export const handleOpenWhatsapp = async (order: Order) => {
     return;
   }
 
-  const phoneNumber = order.phone.phoneNumber;
-  const text = encodeURIComponent(
+  await handleOpenWhatsappPhone(
+    order.phone.phoneNumber,
     `Hola, sobre su pedido #${order.trackingCode} `,
+  );
+};
+
+export const handleOpenWhatsappPhone = async (
+  phoneNumber: string,
+  message = "Hola",
+) => {
+  const normalizedPhoneNumber = phoneNumber.replace(/\D/g, "");
+  const text = encodeURIComponent(
+    message,
   );
 
   try {
-    await openUrl(`whatsapp://send?phone=${phoneNumber}&text=${text}`);
+    await openUrl(`whatsapp://send?phone=${normalizedPhoneNumber}&text=${text}`);
   } catch (error) {
     console.warn("No se pudo abrir la app nativa, intentando web...", error);
 
-    await openUrl(`https://wa.me/${phoneNumber}?text=${text}`);
+    await openUrl(`https://wa.me/${normalizedPhoneNumber}?text=${text}`);
   }
 };
 

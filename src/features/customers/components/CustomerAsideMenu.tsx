@@ -10,7 +10,7 @@ import {
   AsideButton,
   AsideMenu,
 } from "@/shared/components/navigation/AsideMenu";
-import { MapPinPlusIcon } from "lucide-react";
+import { Mail, MapPinPlusIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDeleteCustomer } from "../hooks/useCustomer";
 import { toast } from "sonner";
@@ -26,6 +26,7 @@ interface AsideMenuProps {
   onOpenCreatePhoneModal: () => void;
   onOpenEditModal: () => void;
   onOpenNearbyVehiclesMapModal: () => void;
+  onOpenEmailModal: () => void;
 }
 
 export default function CustomerAsideMenu({
@@ -33,6 +34,7 @@ export default function CustomerAsideMenu({
   onOpenCreatePhoneModal,
   onOpenEditModal,
   onOpenNearbyVehiclesMapModal,
+  onOpenEmailModal,
 }: AsideMenuProps) {
   const { id } = useParams();
   const {
@@ -53,26 +55,43 @@ export default function CustomerAsideMenu({
 
   return (
     <AsideMenu>
-      {canManageCustomer ? <AsideButton
-        label="Editar información"
-        onClick={() => onOpenEditModal()}
-        icon={<UserEditIcon className="w-4 h-4" />}
-      /> : null}
-      {canManageCustomer ? <AsideButton
-        label="Crear pedido"
-        onClick={() => navigate(`/orders/new/${id}`)}
-        icon={<ShoppingCartPlusIcon className="w-4 h-4" />}
-      /> : null}
-      {canManageCustomer ? <AsideButton
-        label="Agregar dirección"
-        onClick={() => onOpenCreateAddressModal()}
-        icon={<MapPinPlusIcon className="w-4 h-4" />}
-      /> : null}
-      {canManageCustomer ? <AsideButton
-        label="Agregar teléfono"
-        onClick={() => onOpenCreatePhoneModal()}
-        icon={<PhonePlusIcon className="w-4 h-4" />}
-      /> : null}
+      {canManageCustomer ? (
+        <AsideButton
+          label="Editar información"
+          onClick={() => onOpenEditModal()}
+          icon={<UserEditIcon className="w-4 h-4" />}
+        />
+      ) : null}
+      {canManageCustomer ? (
+        <AsideButton
+          label="Crear pedido"
+          onClick={() =>
+            navigate(`/orders/new/${id}`, {
+              state: { from: `/customers/${id}` },
+            })
+          }
+          icon={<ShoppingCartPlusIcon className="w-4 h-4" />}
+        />
+      ) : null}
+      {canManageCustomer ? (
+        <AsideButton
+          label="Agregar dirección"
+          onClick={() => onOpenCreateAddressModal()}
+          icon={<MapPinPlusIcon className="w-4 h-4" />}
+        />
+      ) : null}
+      {canManageCustomer ? (
+        <AsideButton
+          label="Agregar teléfono"
+          onClick={() => onOpenCreatePhoneModal()}
+          icon={<PhonePlusIcon className="w-4 h-4" />}
+        />
+      ) : null}
+      <AsideButton
+        label="Correo electrónico"
+        onClick={onOpenEmailModal}
+        icon={<Mail className="w-4 h-4" />}
+      />
       <AsideButton
         label="Historial de pedidos"
         onClick={() => navigate(`/customers/${id}/orders-history`)}
@@ -83,21 +102,25 @@ export default function CustomerAsideMenu({
         onClick={() => onOpenNearbyVehiclesMapModal()}
         icon={<DistanceIcon className="w-4 h-4" />}
       />
-      {canManageCustomer ? <AsideButton
-        label="Eliminar cliente"
-        onClick={() => confirmModal.open()}
-        variant="danger"
-        icon={<DeleteIcon className="w-4 h-4" />}
-      /> : null}
+      {canManageCustomer ? (
+        <AsideButton
+          label="Eliminar cliente"
+          onClick={() => confirmModal.open()}
+          variant="danger"
+          icon={<DeleteIcon className="w-4 h-4" />}
+        />
+      ) : null}
 
-      {canManageCustomer ? <ConfirmDialog
-        title="Eliminar cliente"
-        description="¿Estás seguro de que deseas eliminar este cliente?"
-        variant="danger"
-        isOpen={confirmModal.isOpen}
-        onConfirm={() => handleDeleteCustomer()}
-        onCancel={() => confirmModal.close()}
-      /> : null}
+      {canManageCustomer ? (
+        <ConfirmDialog
+          title="Eliminar cliente"
+          description="¿Estás seguro de que deseas eliminar este cliente?"
+          variant="danger"
+          isOpen={confirmModal.isOpen}
+          onConfirm={() => handleDeleteCustomer()}
+          onCancel={() => confirmModal.close()}
+        />
+      ) : null}
     </AsideMenu>
   );
 }

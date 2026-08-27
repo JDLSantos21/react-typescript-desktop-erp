@@ -1,6 +1,6 @@
 import { CustomerPhone } from "@/shared/types/entities/customer.types";
 import { Badge } from "@/shared/components/core/Badge";
-import { WhatsAppIcon } from "@/shared/components/icons";
+import { Phone, Smartphone } from "lucide-react";
 import { formatPhoneNumber } from "@/shared/utils/formatters";
 
 const phoneTypeLabels: Record<string, string> = {
@@ -27,55 +27,25 @@ export default function CustomerPhoneList({
     );
   }
 
-  const isMoreThanTwo = phones.length > 2;
   return (
-    <div
-      className={`grid 3xl:grid-cols-2 ${
-        isMoreThanTwo ? "3xl:grid-cols-3" : ""
-      } gap-3`}
-    >
+    <div className="grid gap-3">
       {phones.map((phone) => (
-        <div
+        <button
+          type="button"
           key={phone.id}
-          role="button"
-          tabIndex={0}
-          className="bg-background-secondary border border-border-light rounded-lg p-4 hover:border-primary/30 focus-visible:ring-2 focus-visible:outline-none focus:outline-none transition-colors select-none cursor-pointer"
+          className="group min-w-0 rounded-xl border border-slate-200 bg-white p-4 text-left transition-colors hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           onClick={() => onSelect?.(phone)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              onSelect?.(phone);
-            }
-          }}
         >
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 flex-col">
-              <div className="flex gap-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-sm font-semibold text-text-primary">
-                    {formatPhoneNumber(phone.phoneNumber)}
-                  </span>
-                  {phone.isPrimary && (
-                    <Badge variant="primary" size="sm">
-                      Principal
-                    </Badge>
-                  )}
-                  {phone.hasWhatsapp && (
-                    <Badge variant="success" size="sm" className="gap-1">
-                      <WhatsAppIcon />
-                      WhatsApp
-                    </Badge>
-                  )}
-                </div>
-              </div>
-
-              <p className="text-xs text-text-muted">
-                {phoneTypeLabels[phone.type] || phone.type}
-                {phone.description && ` • ${phone.description}`}
-              </p>
+          <div className="flex min-w-0 items-start gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 group-hover:bg-primary/10 group-hover:text-primary"><Phone className="h-4 w-4" /></span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2"><span className="truncate text-sm font-semibold text-slate-900">{formatPhoneNumber(phone.phoneNumber)}</span>{phone.isPrimary ? <Badge variant="primary" size="sm">Principal</Badge> : null}</div>
+              <p className="mt-2 truncate text-sm text-slate-700">{phoneTypeLabels[phone.type] || phone.type}</p>
+              <p className="mt-1 truncate text-xs text-slate-500">{phone.description || "Sin descripción"}</p>
+              <p className="mt-3 flex items-center gap-1.5 text-xs text-slate-500">{phone.hasWhatsapp ? <><Smartphone className="h-3.5 w-3.5 text-emerald-600" />WhatsApp disponible</> : "WhatsApp no disponible"}</p>
             </div>
           </div>
-        </div>
+        </button>
       ))}
     </div>
   );
