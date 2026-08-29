@@ -1,6 +1,6 @@
 import { ApiResponse, PaginatedResponse } from "@/shared/types/api.types";
 import { GetVehicleParams, VehicleInput } from "../types/vehicles";
-import { Vehicle } from "@/shared/types/entities/vehicle.type";
+import { Vehicle, VehicleOperationalSummary } from "@/shared/types/entities/vehicle.type";
 import { apiClient } from "@/shared/api/client";
 
 export class VehicleService {
@@ -14,6 +14,13 @@ export class VehicleService {
 
   static async getVehicle(id: string) {
     const response = await apiClient.get<ApiResponse<Vehicle>>(`/vehicles/${id}`);
+    return response.data;
+  }
+
+  static async getOperationalSummary(id: string) {
+    const response = await apiClient.get<ApiResponse<VehicleOperationalSummary>>(
+      `/vehicles/${id}/operational-summary`,
+    );
     return response.data;
   }
 

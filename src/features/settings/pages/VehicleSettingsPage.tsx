@@ -33,7 +33,7 @@ export default function VehicleSettingsPage() {
             Alta de unidades
           </h2>
           <p className="mt-1 max-w-xl text-sm leading-6 text-slate-600">
-            Cada placa, chasis y tag debe corresponder a una unidad física y
+            Cada placa, chasis y ficha debe corresponder a una unidad física y
             única antes de incorporarla a la operación.
           </p>
           <Button

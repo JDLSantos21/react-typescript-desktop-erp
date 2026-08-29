@@ -19,7 +19,7 @@ export const vehicleSchema = z.object({
     .int("El año debe ser un número entero")
     .min(1900, "El año debe ser 1900 o posterior")
     .max(currentYear + 1, `El año no puede superar ${currentYear + 1}`),
-  currentTag: requiredText("El tag", 50),
+  currentTag: requiredText("La ficha", 50),
 });
 
 export type VehicleFormData = z.infer<typeof vehicleSchema>;

@@ -1,171 +1,184 @@
-import { EmptyState } from "@/shared/components/EmptyState";
+import { useNavigate } from "react-router-dom";
+import { ReactNode } from "react";
+import { ClipboardList, PackageCheck, Truck } from "lucide-react";
 import { Badge } from "@/shared/components/core/Badge";
-import { formatDate } from "@/shared/utils/formatters";
+import { Button } from "@/shared/components/core/Button";
+import { useGetOrders } from "@/features/orders/hooks/useOrder";
 import { useGetEquipmentsByCustomerId } from "@/features/equipments/hooks/useEquipments";
-import { useParams } from "react-router-dom";
-
-// const statusLabels = {
-//   OPERATIVO: { label: "Operativo", variant: "success" as const },
-//   EN_MANTENIMIENTO: { label: "Mantenimiento", variant: "warning" as const },
-//   FUERA_DE_SERVICIO: { label: "Fuera de servicio", variant: "danger" as const },
-// };
-
-// const orderStatusLabels = {
-//   PENDIENTE: { label: "Pendiente", variant: "warning" as const },
-//   PROCESANDO: { label: "Procesando", variant: "info" as const },
-//   COMPLETADO: { label: "Completado", variant: "success" as const },
-//   CANCELADO: { label: "Cancelado", variant: "danger" as const },
-// };
+import { formatDate } from "@/shared/utils/formatters";
+import { getStatusColor } from "@/shared/utils/status.utils";
 
 interface CustomerActivitySectionProps {
+  customerId: string;
   onViewEquipmentHistory: () => void;
-  onViewOrderHistory: () => void;
 }
 
 export default function CustomerActivitySection({
+  customerId,
   onViewEquipmentHistory,
-  onViewOrderHistory,
 }: CustomerActivitySectionProps) {
-  const { customerId } = useParams();
+  const navigate = useNavigate();
+  const { data: orders, isLoading: isLoadingOrders, isError: hasOrdersError } =
+    useGetOrders({ customerId, page: 1, limit: 4 });
+  const {
+    data: equipments,
+    isLoading: isLoadingEquipments,
+    isError: hasEquipmentsError,
+  } = useGetEquipmentsByCustomerId(customerId);
 
-  const { data: equipments, isLoading: isLoadingEquipments } =
-    useGetEquipmentsByCustomerId(customerId ?? "");
-
-  if (isLoadingEquipments) {
-    return (
-      <div className="bg-background border border-border-light rounded-lg shadow-sm overflow-hidden">
-        <div className="bg-background-secondary px-6 py-4 border-b border-border-light">
-          <h3 className="text-lg font-semibold text-text-primary">
-            Información de Actividad
-          </h3>
-        </div>
-        <div className="p-6 animate-pulse space-y-4">
-          <div className="h-20 bg-background-secondary rounded"></div>
-          <div className="h-20 bg-background-secondary rounded"></div>
-        </div>
-      </div>
-    );
-  }
+  const recentOrders = orders?.data ?? [];
+  const assignedEquipments = equipments?.data ?? [];
 
   return (
-    <div className="bg-background border border-border-light rounded-lg shadow-sm overflow-hidden">
-      <div className="bg-background-secondary px-6 py-4 border-b border-border-light">
-        <h3 className="text-lg font-semibold text-text-primary">
-          Información de Actividad
+    <section>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <SectionTitle icon={ClipboardList}>Actividad reciente</SectionTitle>
+        <Button
+          variant="link"
+          size="sm"
+          onClick={() => navigate(`/customers/${customerId}/orders-history`)}
+        >
+          Ver historial de pedidos
+        </Button>
+      </div>
+
+      <div className="mt-4 grid gap-7 xl:grid-cols-2">
+        <ActivityGroup
+          title="Últimos pedidos"
+          icon={Truck}
+          isLoading={isLoadingOrders}
+          hasError={hasOrdersError}
+          emptyMessage="Este cliente aún no tiene pedidos registrados."
+        >
+          {recentOrders.map((order) => (
+            <button
+              key={order.id}
+              type="button"
+              onClick={() => navigate(`/orders/${order.id}`)}
+              className="group flex w-full items-center justify-between gap-4 rounded-lg bg-slate-50 px-4 py-3 text-left transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              <div className="min-w-0">
+                <p className="font-medium text-slate-900 group-hover:text-primary">
+                  {order.trackingCode}
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  {formatDate(order.date)}
+                  {order.products.length > 0
+                    ? ` · ${order.products.length} ${order.products.length === 1 ? "producto" : "productos"}`
+                    : ""}
+                </p>
+              </div>
+              <Badge className={getStatusColor(order.status)} size="sm">
+                {order.status}
+              </Badge>
+            </button>
+          ))}
+        </ActivityGroup>
+
+        <ActivityGroup
+          title="Equipos asignados"
+          icon={PackageCheck}
+          action={
+            assignedEquipments.length > 0 ? (
+              <Button variant="link" size="sm" onClick={onViewEquipmentHistory}>
+                Ver todos
+              </Button>
+            ) : undefined
+          }
+          isLoading={isLoadingEquipments}
+          hasError={hasEquipmentsError}
+          emptyMessage="No hay equipos asignados actualmente."
+        >
+          {assignedEquipments.slice(0, 4).map((equipment) => {
+            const assignment = equipment.assignments[0];
+
+            return (
+              <div
+                key={equipment.id}
+                className="flex items-center justify-between gap-4 rounded-lg bg-slate-50 px-4 py-3"
+              >
+                <div className="min-w-0">
+                  <p className="truncate font-medium text-slate-900">
+                    {equipment.model.name}
+                  </p>
+                  <p className="mt-1 truncate text-xs text-slate-500">
+                    S/N {equipment.serialNumber}
+                    {assignment?.assignedAt
+                      ? ` · Asignado ${formatDate(assignment.assignedAt)}`
+                      : ""}
+                  </p>
+                </div>
+                <Badge className={getStatusColor(equipment.status)} size="sm">
+                  {equipment.status}
+                </Badge>
+              </div>
+            );
+          })}
+        </ActivityGroup>
+      </div>
+    </section>
+  );
+}
+
+function SectionTitle({
+  icon: Icon,
+  children,
+}: {
+  icon: typeof ClipboardList;
+  children: string;
+}) {
+  return (
+    <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+      <Icon className="h-4 w-4 text-slate-500" />
+      {children}
+    </h2>
+  );
+}
+
+function ActivityGroup({
+  title,
+  icon: Icon,
+  action,
+  isLoading,
+  hasError,
+  emptyMessage,
+  children,
+}: {
+  title: string;
+  icon: typeof ClipboardList;
+  action?: ReactNode;
+  isLoading: boolean;
+  hasError: boolean;
+  emptyMessage: string;
+  children: ReactNode;
+}) {
+  const hasItems = Array.isArray(children) && children.length > 0;
+
+  return (
+    <div>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h3 className="flex items-center gap-2 text-sm font-medium text-slate-700">
+          <Icon className="h-4 w-4 text-slate-400" />
+          {title}
         </h3>
+        {action}
       </div>
-      <div className="p-6 space-y-6">
-        {/* Equipos Asignados Actualmente */}
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm font-semibold text-text-primary flex items-center gap-2">
-              Equipos Asignados
-              {equipments?.data && equipments.data.length > 0 && (
-                <Badge variant="info" size="sm">
-                  {equipments.data.length}
-                </Badge>
-              )}
-            </h4>
-            <button
-              onClick={onViewEquipmentHistory}
-              className="text-xs text-primary hover:text-primary-dark font-medium hover:underline"
-            >
-              Ver historial completo
-            </button>
-          </div>
-
-          {isLoadingEquipments ? (
-            <div className="space-y-2">
-              <div className="h-12 bg-background-secondary rounded animate-pulse"></div>
-              <div className="h-12 bg-background-secondary rounded animate-pulse"></div>
-            </div>
-          ) : !equipments?.data || equipments.data.length === 0 ? (
-            <div className="text-center bg-background-secondary rounded-lg">
-              <EmptyState description="No hay equipos asignados" />
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {equipments?.data?.slice(0, 3).map((equipment) => (
-                <div
-                  key={equipment.id}
-                  className="bg-background-secondary border border-border-light rounded-lg p-3 hover:border-primary/30 transition-colors"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-text-primary">
-                        {equipment.model.name}
-                      </p>
-                      <p className="text-xs text-text-muted mt-0.5">
-                        S/N: {equipment.serialNumber}
-                      </p>
-                      <p className="text-xs text-text-muted mt-0.5">
-                        Asignado:{" "}
-                        {formatDate(equipment?.assignments[0]?.assignedAt)}
-                      </p>
-                    </div>
-                    <Badge size="sm">{equipment.status}</Badge>
-                  </div>
-                </div>
-              ))}
-              {equipments?.data?.length > 3 && (
-                <button
-                  onClick={onViewEquipmentHistory}
-                  className="w-full py-2 text-xs text-primary hover:text-primary-dark font-medium"
-                >
-                  Ver {equipments.data.length - 3} más...
-                </button>
-              )}
-            </div>
-          )}
+      {isLoading ? (
+        <div className="space-y-2" aria-label={`Cargando ${title.toLowerCase()}`}>
+          <div className="h-16 animate-pulse rounded-lg bg-slate-100" />
+          <div className="h-16 animate-pulse rounded-lg bg-slate-100" />
         </div>
-
-        {/* Último Pedido */}
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm font-semibold text-text-primary flex items-center gap-2">
-              Último Pedido
-            </h4>
-            <button
-              onClick={onViewOrderHistory}
-              className="text-xs text-primary hover:text-primary-dark font-medium hover:underline"
-            >
-              Ver todos los pedidos
-            </button>
-          </div>
-
-          {false ? (
-            <div className="text-center bg-background-secondary rounded-lg">
-              <EmptyState description="Este cliente aun no tiene pedidos registrados" />
-            </div>
-          ) : (
-            <div className="bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 rounded-lg p-4">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <p className="text-sm font-semibold text-text-primary">
-                    Pedido #12
-                  </p>
-                  <p className="text-xs text-text-muted mt-0.5">
-                    {formatDate(new Date().toISOString())}
-                  </p>
-                </div>
-                <Badge variant={"success"} size="sm">
-                  {"Completado"}
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between pt-3 border-t border-primary/20">
-                <div>
-                  <p className="text-xs text-text-muted">Total</p>
-                  <p className="text-lg font-bold text-primary">{2500}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs text-text-muted">Items</p>
-                  <p className="text-lg font-semibold text-text-primary">{3}</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      ) : hasError ? (
+        <p className="rounded-lg bg-slate-50 px-4 py-4 text-sm text-slate-500">
+          No se pudo cargar esta información.
+        </p>
+      ) : hasItems ? (
+        <div className="space-y-2">{children}</div>
+      ) : (
+        <p className="rounded-lg bg-slate-50 px-4 py-4 text-sm text-slate-500">
+          {emptyMessage}
+        </p>
+      )}
     </div>
   );
 }

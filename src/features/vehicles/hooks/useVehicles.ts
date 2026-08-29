@@ -19,6 +19,13 @@ export const useGetVehicle = (id?: string) =>
     enabled: Boolean(id),
   });
 
+export const useVehicleOperationalSummary = (id?: string) =>
+  useQuery({
+    queryKey: vehicleKeys.operationalSummary(id ?? ""),
+    queryFn: () => VehicleService.getOperationalSummary(id ?? ""),
+    enabled: Boolean(id),
+  });
+
 const invalidateVehicles = () =>
   queryClient.invalidateQueries({ queryKey: vehicleKeys.all });
 

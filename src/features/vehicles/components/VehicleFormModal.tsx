@@ -92,7 +92,7 @@ export function VehicleFormModal({
         <p className="mb-6 text-sm text-text-secondary">
           {isEditing
             ? "Actualiza los datos operativos e identificadores del vehículo."
-            : "Registra la unidad de flota. La placa, el chasis y el tag deben ser únicos."}
+            : "Registra la unidad de flota. La placa, el chasis y la ficha deben ser únicos."}
         </p>
         <form
           id="vehicle-form"
@@ -106,8 +106,8 @@ export function VehicleFormModal({
             {...register("licensePlate")}
           />
           <Input
-            label="Tag actual"
-            placeholder="TAG-001"
+            label="Ficha"
+            placeholder="FICHA-001"
             error={errors.currentTag?.message}
             {...register("currentTag")}
           />

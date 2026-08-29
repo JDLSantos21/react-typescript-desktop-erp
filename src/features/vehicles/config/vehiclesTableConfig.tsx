@@ -3,19 +3,19 @@ import { Vehicle } from "@/shared/types/entities/vehicle.type";
 import { formatDateTime } from "@/shared/utils/formatters";
 
 export const vehicleColumns: Column<Vehicle>[] = [
-  { key: "licensePlate", label: "Placa", className: "w-[16%]" },
+  { key: "currentTag", label: "Ficha", className: "w-[18%]" },
+  { key: "licensePlate", label: "Placa", className: "w-[15%]" },
   {
     key: "vehicle",
     label: "Vehículo",
-    className: "w-[27%]",
+    className: "w-[25%]",
     render: (vehicle) => `${vehicle.brand} ${vehicle.model}`,
   },
   { key: "year", label: "Año", className: "w-[12%]" },
-  { key: "currentTag", label: "Tag actual", className: "w-[20%]" },
   {
     key: "updatedAt",
     label: "Actualizado",
-    className: "w-[25%]",
+    className: "w-[30%]",
     render: (vehicle) => formatDateTime(vehicle.updatedAt),
   },
 ];

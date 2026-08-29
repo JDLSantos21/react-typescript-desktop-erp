@@ -69,14 +69,6 @@ export default function VehiclesPage() {
             </p>
           </div>
           <TableFilters className="items-end justify-end">
-            <div className="w-72">
-              <Input
-                placeholder="Placa, tag, marca o chasis…"
-                value={searchFilter.inputValue}
-                onChange={(event) => searchFilter.setInputValue(event.target.value)}
-                endIcon={<SearchIcon className="text-text-muted" />}
-              />
-            </div>
             {hasVisibleFilters ? (
               <Button
                 variant="outline"
@@ -88,6 +80,14 @@ export default function VehiclesPage() {
                 Limpiar filtros
               </Button>
             ) : null}
+            <div className="w-72">
+              <Input
+                placeholder="Ficha, placa, marca o chasis…"
+                value={searchFilter.inputValue}
+                onChange={(event) => searchFilter.setInputValue(event.target.value)}
+                endIcon={<SearchIcon className="text-text-muted" />}
+              />
+            </div>
           </TableFilters>
         </div>
 

@@ -8,7 +8,6 @@ import AddressModal from "../components/AddressModal";
 import CustomerAddressList from "../components/CustomerAddressList";
 import CustomerPhoneList from "../components/CustomerPhoneList";
 import CustomerActivitySection from "../components/CustomerActivitySection";
-import CustomerHistoryModal from "../components/CustomerHistoryModal";
 import { useModal } from "@/shared/hooks/useModal";
 import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
 import EditCustomerModal from "../components/EditCustomerModal";
@@ -41,7 +40,6 @@ export default function CustomerDetailPage() {
   const addressModal = useModal();
   const phoneModal = useModal();
   const equipmentModal = useModal();
-  const ordersHistoryModal = useModal();
   const editModal = useModal();
   const mapModal = useModal();
   const emailModal = useModal();
@@ -114,91 +112,52 @@ export default function CustomerDetailPage() {
           />
         ) : (
           <div className="flex h-full">
-            <div className="flex-1 p-8 space-y-8 max-w-4xl overflow-y-auto">
-              {/* Información General */}
-              <section>
-                <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-4">
-                  Información General
-                </h2>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-                    <div>
-                      <p className="text-xs text-gray-400 mb-1.5">
-                        Nombre comercial
-                      </p>
-                      <p className="text-gray-900">{data!.data.businessName}</p>
+            <div className="flex-1 max-w-5xl overflow-y-auto px-8 py-7 show-scrollbar">
+              <div className="space-y-8 pb-8">
+                <section>
+                  <h2 className="text-sm font-semibold text-slate-900">Perfil del cliente</h2>
+                  <dl className="mt-4 grid gap-x-8 gap-y-5 sm:grid-cols-2 xl:grid-cols-4">
+                    <Detail label="Nombre comercial" value={data!.data.businessName} />
+                    <Detail label="Representante" value={data!.data.representativeName} />
+                    <Detail label="Correo electrónico" value={data!.data.email || "Sin correo registrado"} />
+                    <Detail label="RNC" value={data!.data.rnc ? formatRNC(data!.data.rnc) : "Sin RNC registrado"} mono />
+                  </dl>
+                </section>
+
+                <div className="grid gap-8 xl:grid-cols-2">
+                  <section>
+                    <h2 className="text-sm font-semibold text-slate-900">Direcciones</h2>
+                    <div className="mt-4">
+                      <CustomerAddressList
+                        addresses={data!.data.addresses}
+                        onSelect={(address) => {
+                          setSelectedAddress(address);
+                          addressDetailModal.open();
+                        }}
+                      />
                     </div>
-                    <div>
-                      <p className="text-xs text-gray-400 mb-1.5">
-                        Representante
-                      </p>
-                      <p className="text-gray-900">
-                        {data!.data.representativeName}
-                      </p>
+                  </section>
+                  <section>
+                    <h2 className="text-sm font-semibold text-slate-900">Teléfonos</h2>
+                    <div className="mt-4">
+                      <CustomerPhoneList
+                        phones={data!.data.phones}
+                        onSelect={(phone) => {
+                          setSelectedPhone(phone);
+                          phoneDetailModal.open();
+                        }}
+                      />
                     </div>
-                    {data!.data.email && (
-                      <div>
-                        <p className="text-xs text-gray-400 mb-1.5">
-                          Correo electrónico
-                        </p>
-                        <p className="text-gray-900">{data!.data.email}</p>
-                      </div>
-                    )}
-                    {data!.data.rnc && (
-                      <div>
-                        <p className="text-xs text-gray-400 mb-1.5">RNC</p>
-                        <p className="font-mono text-gray-900">
-                          {formatRNC(data!.data.rnc)}
-                        </p>
-                      </div>
-                    )}
-                  </div>
+                  </section>
                 </div>
-              </section>
 
-              {/* Direcciones y Teléfonos */}
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 border-t border-gray-100 pt-8">
-                {/* Direcciones */}
-                <section>
-                  <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-4">
-                    Direcciones
-                  </h2>
-                  <CustomerAddressList
-                    addresses={data!.data.addresses}
-                    onSelect={(address) => {
-                      setSelectedAddress(address);
-                      addressDetailModal.open();
-                    }}
-                  />
-                </section>
-
-                {/* Teléfonos */}
-                <section>
-                  <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-4">
-                    Teléfonos
-                  </h2>
-                  <CustomerPhoneList
-                    phones={data!.data.phones}
-                    onSelect={(phone) => {
-                      setSelectedPhone(phone);
-                      phoneDetailModal.open();
-                    }}
-                  />
-                </section>
-              </div>
-
-              {/* Actividad Reciente */}
-              <section className="border-t border-gray-100 pt-8">
-                <h2 className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-4">
-                  Actividad Reciente
-                </h2>
-                <FeatureErrorBoundary featureName="Actividad Reciente">
+                <FeatureErrorBoundary featureName="Actividad reciente">
                   <CustomerActivitySection
+                    customerId={id}
                     onViewEquipmentHistory={equipmentModal.open}
-                    onViewOrderHistory={ordersHistoryModal.open}
                   />
                 </FeatureErrorBoundary>
-              </section>
+              </div>
             </div>
 
             <CustomerAsideMenu
@@ -243,11 +202,6 @@ export default function CustomerDetailPage() {
         onEdit={() => { phoneDetailModal.close(); phoneModal.open(); }}
         onDelete={() => { if (!selectedPhone) return; deletePhone.mutate(selectedPhone.id, { onSuccess: () => { toast.success("Teléfono eliminado"); phoneDetailModal.close(); setSelectedPhone(undefined); }, onError: () => toast.error("No se pudo eliminar el teléfono") }); }}
       />
-      <CustomerHistoryModal
-        isOpen={equipmentModal.isOpen}
-        onClose={equipmentModal.close}
-        customerId={id}
-      />
       {data?.data ? (
         <EditCustomerModal
           customer={data.data}
@@ -270,6 +224,27 @@ export default function CustomerDetailPage() {
           onClose={emailModal.close}
         />
       ) : null}
+    </div>
+  );
+}
+
+function Detail({
+  label,
+  value,
+  mono = false,
+}: {
+  label: string;
+  value: string;
+  mono?: boolean;
+}) {
+  return (
+    <div>
+      <dt className="text-xs font-medium text-slate-500">{label}</dt>
+      <dd
+        className={`mt-1.5 break-words text-sm text-slate-800 ${mono ? "font-mono" : ""}`}
+      >
+        {value}
+      </dd>
     </div>
   );
 }

@@ -6,20 +6,13 @@ import { ErrorState } from "@/shared/components/ErrorState";
 import SectionLoader from "@/shared/components/SectionLoader";
 import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
 import { useModal } from "@/shared/hooks/useModal";
-import { formatDateTime } from "@/shared/utils/formatters";
 import { extractApiError } from "@/shared/utils/error-handler";
 import { VehicleFormModal } from "../components/VehicleFormModal";
-import { useDeleteVehicle, useGetVehicle } from "../hooks/useVehicles";
+import { useDeleteVehicle, useGetVehicle, useVehicleOperationalSummary } from "../hooks/useVehicles";
 import { VehicleAsideMenu } from "../components/VehicleAsideMenu";
 import { VehicleFuelAnalyticsModal } from "../components/VehicleFuelAnalyticsModal";
 import { VehicleMaintenanceModal } from "../components/VehicleMaintenanceModal";
-
-const Field = ({ label, value }: { label: string; value: string | number }) => (
-  <div className="space-y-1">
-    <p className="text-xs text-text-muted">{label}</p>
-    <p className="text-sm font-medium text-text-primary">{value}</p>
-  </div>
-);
+import { VehicleDetailSections } from "../components/VehicleDetailSections";
 
 export default function VehicleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -29,6 +22,7 @@ export default function VehicleDetailPage() {
   const fuelModal = useModal();
   const maintenanceModal = useModal();
   const { data, isLoading, isError, error, refetch } = useGetVehicle(id);
+  const operationalSummary = useVehicleOperationalSummary(id);
   const deleteVehicle = useDeleteVehicle();
   const vehicle = data?.data;
 
@@ -38,7 +32,7 @@ export default function VehicleDetailPage() {
       ? `${vehicle.brand} ${vehicle.model}`
       : "Detalle del vehículo",
     description: vehicle
-      ? `Placa ${vehicle.licensePlate} · Tag ${vehicle.currentTag}`
+      ? `Ficha ${vehicle.currentTag} · Placa ${vehicle.licensePlate}`
       : "Consulta la información operativa de la unidad.",
   });
 
@@ -75,37 +69,13 @@ export default function VehicleDetailPage() {
   return (
     <div className="flex h-full overflow-hidden">
       <div className="min-w-0 flex-1 overflow-y-auto">
-        <div className="max-w-4xl p-8">
-          <div className="space-y-8">
-            <section>
-              <h2 className="mb-4 text-xs font-medium uppercase tracking-wider text-gray-400">
-                Información general
-              </h2>
-              <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-                <Field label="Placa" value={vehicle.licensePlate} />
-                <Field label="Tag actual" value={vehicle.currentTag} />
-                <Field label="Chasis" value={vehicle.chasis} />
-                <Field label="Marca" value={vehicle.brand} />
-                <Field label="Modelo" value={vehicle.model} />
-                <Field label="Año" value={vehicle.year} />
-              </div>
-            </section>
-            <section className="border-t border-gray-100 pt-8">
-              <h2 className="mb-4 text-xs font-medium uppercase tracking-wider text-gray-400">
-                Trazabilidad del registro
-              </h2>
-              <div className="grid gap-6 sm:grid-cols-2">
-                <Field
-                  label="Registrado"
-                  value={formatDateTime(vehicle.createdAt)}
-                />
-                <Field
-                  label="Última actualización"
-                  value={formatDateTime(vehicle.updatedAt)}
-                />
-              </div>
-            </section>
-          </div>
+        <div className="max-w-5xl px-8 py-7">
+          <VehicleDetailSections
+            vehicle={vehicle}
+            summary={operationalSummary.data?.data ?? null}
+            isSummaryLoading={operationalSummary.isLoading}
+            hasSummaryError={operationalSummary.isError}
+          />
         </div>
       </div>
       <VehicleAsideMenu
