@@ -25,6 +25,7 @@ const moveTypes: Array<{ value: StockMoveType; label: string }> = [
 export default function InventoryMovementsPage() {
   const movementModal = useModal();
   const canRegisterMove = useCanAccess(PermissionLevel.ADVANCED_OPERATIONS);
+  const canAdjust = useCanAccess(PermissionLevel.SUPERVISION);
   const { filters, queryParams, setFilter, setPage, setLimit, clearAll, hasActiveFilters } = useListParams({
     initialFilters: {
       search: "",
@@ -65,8 +66,8 @@ export default function InventoryMovementsPage() {
         {moves.isLoading ? <SectionLoader placeholder="Cargando movimientos" /> : moves.isError ? <ErrorState title="No se pudo cargar el historial de inventario" error={moves.error} onRetry={moves.refetch} /> : <InventoryMovesTable moves={moves.data?.data ?? []} />}
       </div>
 
-      {pagination && pagination.total > 0 ? <div className="shrink-0 border-t border-gray-200 bg-white px-4 py-2"><Pagination currentPage={pagination.page} totalPages={pagination.totalPages} limit={pagination.limit} totalItems={pagination.total} onPageChange={setPage} onLimitChange={setLimit} /></div> : null}
+      {pagination ? <div className="shrink-0 border-t border-gray-200 bg-white px-4 py-2"><Pagination currentPage={pagination.page} totalPages={pagination.totalPages} limit={pagination.limit} totalItems={pagination.total} onPageChange={setPage} onLimitChange={setLimit} /></div> : null}
     </div>
-    {canRegisterMove ? <StockMovementModal isOpen={movementModal.isOpen} onClose={movementModal.close} materials={materials.data?.data ?? []} /> : null}
+    {canRegisterMove ? <StockMovementModal isOpen={movementModal.isOpen} onClose={movementModal.close} materials={materials.data?.data ?? []} canAdjust={canAdjust} /> : null}
   </>;
 }

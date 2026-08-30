@@ -1,6 +1,6 @@
 import { Modal } from "@/shared/components/core/Modal";
 import CustomerSearch from "@/shared/components/CustomerSearch";
-import { useAssignEquipment } from "../hooks/useEquipments";
+import { useAssignEquipment, useAttachCustomerDocument, useCustomerDocumentStatus } from "../hooks/useEquipments";
 import {
   Customer,
   CustomerAddress,
@@ -8,6 +8,9 @@ import {
 import { useState } from "react";
 import { Button } from "@/shared/components/core/Button";
 import { Textarea } from "@/shared/components/core/Textarea";
+import { FileText, Upload } from "lucide-react";
+import { useRef } from "react";
+import { toast } from "sonner";
 
 interface assignmentModalProps {
   equipmentId: string;
@@ -25,6 +28,9 @@ export default function AssignEquipmentModal({
   const [address, setAddress] = useState<CustomerAddress | null>(null);
   const [notes, setNotes] = useState("");
   const [step, setStep] = useState(1);
+  const identityStatus = useCustomerDocumentStatus(customer?.id);
+  const attachIdentity = useAttachCustomerDocument();
+  const identityInput = useRef<HTMLInputElement>(null);
 
   const handleSelectCustomer = (customer: Customer) => {
     setCustomer(customer);
@@ -57,6 +63,16 @@ export default function AssignEquipmentModal({
       });
     } finally {
       handleCancel();
+    }
+  };
+
+  const uploadIdentity = async (file?: File) => {
+    if (!file || !customer) return;
+    try {
+      await attachIdentity.mutateAsync({ customerId: customer.id, file });
+      toast.success("Cédula agregada al expediente");
+    } catch {
+      toast.error("No se pudo cargar la cédula. Puedes continuar con la asignación.");
     }
   };
 
@@ -157,6 +173,13 @@ export default function AssignEquipmentModal({
             label="Notas"
             placeholder="Este campo es opcional"
           />
+          <div className="mt-5 rounded-xl bg-slate-50 p-4">
+            <div className="flex items-center gap-3">
+              <FileText className="h-5 w-5 text-slate-400" />
+              <div className="min-w-0 flex-1"><p className="text-sm font-medium text-slate-900">Cédula del cliente</p><p className="text-xs text-slate-500">{identityStatus.data?.data.hasIdentity ? "Documento registrado" : "Pendiente; no bloquea la asignación ni la entrega"}</p></div>
+              {!identityStatus.data?.data.hasIdentity ? <><input ref={identityInput} type="file" accept="application/pdf,image/jpeg,image/png" className="hidden" onChange={(event) => uploadIdentity(event.target.files?.[0])} /><Button type="button" size="sm" variant="outline" icon={Upload} isLoading={attachIdentity.isPending} onClick={() => identityInput.current?.click()}>Agregar</Button></> : null}
+            </div>
+          </div>
         </div>
       ),
     },

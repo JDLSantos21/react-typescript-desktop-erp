@@ -17,6 +17,7 @@ export type ModelFormInput = z.input<typeof modelSchema>;
 
 export const unassignSchema = z.object({
   assignmentId: z.number().min(1, "La asignación es obligatoria"),
+  siteId: z.number().min(1, "Selecciona la ubicación de destino"),
   reason: z.enum(["DAÑADO", "DEVUELTO", "MANTENIMIENTO", "REMOVIDO"], {
     error: "Debe seleccionar un motivo válido",
   }),
@@ -24,4 +25,4 @@ export const unassignSchema = z.object({
 });
 
 export type UnassignFormData = z.infer<typeof unassignSchema>;
-export type UnassignFormInput = z.input<typeof unassignSchema>;
+export type UnassignFormInput = z.infer<typeof unassignSchema>;

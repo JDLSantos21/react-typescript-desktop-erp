@@ -57,6 +57,11 @@ const navigationItems: NavigationItem[] = [
     name: "Equipos",
     href: "/equipments",
     icon: EquipmentIcon,
+    children: [
+      { name: "Inventario de equipos", href: "/equipments/inventory" },
+      { name: "Asignaciones", href: "/equipments/assignments" },
+      { name: "Alertas de consumo", href: "/equipments/alerts" },
+    ],
   },
   {
     name: "Clientes",

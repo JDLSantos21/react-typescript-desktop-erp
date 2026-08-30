@@ -1,18 +1,29 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { printerService } from "@/shared/services/printer.service";
 import { Equipment } from "@/shared/types/entities/equipment.types";
 import { sileo } from "sileo";
+import { EquipmentService } from "../api/equipment.service";
 
 export function usePrintEquipmentLabel(equipment: Equipment | undefined) {
-  const printLabel = useCallback(() => {
+  const [isPrinting, setIsPrinting] = useState(false);
+  const printLabel = useCallback((reason?: string) => {
     if (!equipment) return;
 
-    const printPromise = printerService
-      .printEquipmentLabel(equipment)
-      .then((res) => {
+    const printPromise = (async () => {
+      setIsPrinting(true);
+      const authorization = await EquipmentService.authorizeLabelPrint(equipment.id, reason);
+      try {
+        const res = await printerService.printEquipmentLabel(equipment);
         if (!res.success) throw new Error(res.message);
+        await EquipmentService.completeLabelPrint(authorization.data.id, "IMPRESO");
         return res;
-      });
+      } catch (error) {
+        await EquipmentService.completeLabelPrint(authorization.data.id, "FALLIDO").catch(() => undefined);
+        throw error;
+      } finally {
+        setIsPrinting(false);
+      }
+    })();
 
     sileo.promise(printPromise, {
       loading: { title: "Enviando impresión..." },
@@ -28,5 +39,5 @@ export function usePrintEquipmentLabel(equipment: Equipment | undefined) {
     });
   }, [equipment]);
 
-  return { printLabel };
+  return { printLabel, isPrinting };
 }

@@ -1,6 +1,6 @@
 import { Button } from "@/shared/components/core/Button";
 import { Modal } from "@/shared/components/core/Modal";
-import { useUnassignEquipment } from "../hooks/useEquipments";
+import { useEquipmentSites, useUnassignEquipment } from "../hooks/useEquipments";
 import { EquipmentAssignment } from "@/shared/types/entities/equipment.types";
 import { Select } from "@/shared/components/core/Select";
 import { unassignReasons } from "../equipment.constant";
@@ -27,6 +27,7 @@ export default function RemoveAssignModal({
   assignment,
 }: RemoveAssignModalProps) {
   const { mutateAsync: unassignEquipment, isPending } = useUnassignEquipment();
+  const sites = useEquipmentSites();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [formData, setFormData] = useState<UnassignFormInput | null>(null);
 
@@ -39,6 +40,7 @@ export default function RemoveAssignModal({
   } = useForm<UnassignFormInput>({
     defaultValues: {
       assignmentId: assignment.id,
+      siteId: 0,
       notes: "",
     },
     resolver: zodResolver(unassignSchema),
@@ -104,6 +106,23 @@ export default function RemoveAssignModal({
                   error={errors.reason?.message}
                   value={field.value}
                   onValueChange={field.onChange}
+                />
+              )}
+            />
+            <Controller
+              name="siteId"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  label="Ubicación de destino"
+                  placeholder="Selecciona dónde quedará el equipo"
+                  options={(sites.data?.data ?? []).map((site) => ({
+                    value: String(site.id),
+                    label: site.name,
+                  }))}
+                  error={errors.siteId?.message}
+                  value={field.value ? String(field.value) : ""}
+                  onValueChange={(value) => field.onChange(Number(value))}
                 />
               )}
             />

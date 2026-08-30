@@ -7,7 +7,7 @@ import {
   QRCodeIcon,
   RefreshIcon,
 } from "@/shared/components/icons";
-import { useCreateEquipment, useGetModels } from "../hooks/useEquipments";
+import { useCreateEquipment, useEquipmentSites, useGetModels } from "../hooks/useEquipments";
 import { Modal } from "@/shared/components/core/Modal";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/shared/components/core/Badge";
@@ -20,6 +20,7 @@ export default function CreateEquipment() {
     isLoading: isLoadingModels,
     isRefetching,
   } = useGetModels();
+  const sites = useEquipmentSites();
 
   const navigate = useNavigate();
 
@@ -36,8 +37,9 @@ export default function CreateEquipment() {
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const modelId = Number(e.currentTarget.modelId.value);
-    if (!modelId) return;
-    createEquipment({ modelId });
+    const siteId = Number(e.currentTarget.siteId.value);
+    if (!modelId || !siteId) return;
+    createEquipment({ modelId, siteId });
   };
 
   return (
@@ -61,6 +63,16 @@ export default function CreateEquipment() {
           }
           name="modelId"
         />
+        <Select
+          helperText="Ubicación física inicial de la unidad."
+          label="Ubicación inicial"
+          placeholder="Selecciona una ubicación"
+          options={(sites.data?.data ?? []).map((site) => ({
+            value: String(site.id),
+            label: site.name,
+          }))}
+          name="siteId"
+        />
 
         <div className="border-y border-slate-200 py-4">
           <p className="mb-2 text-sm font-medium text-slate-700">Información de la nueva unidad</p>
@@ -79,7 +91,7 @@ export default function CreateEquipment() {
         <Button
           icon={QRCodeIcon}
           isLoading={isPending}
-          disabled={isPending || isLoadingModels}
+          disabled={isPending || isLoadingModels || sites.isLoading}
           className="w-full"
         >
           Generar equipo
@@ -106,11 +118,12 @@ export default function CreateEquipment() {
               <li>Serial: {data?.data.serialNumber}</li>
               <li>Tipo: {data?.data.model.type}</li>
               <li>Modelo: {data?.data.model.name}</li>
+              <li>Ubicación: {data?.data.currentSite?.name ?? "—"}</li>
             </ul>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button icon={PrinterIcon} variant="outline" onClick={printLabel}>
+          <Button icon={PrinterIcon} variant="outline" onClick={() => printLabel()}>
             Imprimir etiqueta
           </Button>
           <Button onClick={() => navigate(`/equipments/${data?.data.id}`)}>

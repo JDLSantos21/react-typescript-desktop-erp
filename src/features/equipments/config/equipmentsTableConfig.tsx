@@ -26,6 +26,16 @@ export const equipmentColumns: Column<Equipment>[] = [
     render: renderStatus,
   },
   {
+    key: "currentSite",
+    label: "Ubicación actual",
+    render: (equipment) => {
+      const assignment = equipment.assignments?.find((item) => item.status === "ACTIVO" && !item.unassignedAt);
+      if (assignment?.deliveryStatus === "ENTREGADO") return assignment.customer?.businessName ?? "Cliente";
+      if (assignment) return "Pendiente de entrega";
+      return equipment.currentSite?.name ?? "Sin ubicación";
+    },
+  },
+  {
     key: "createdAt",
     label: "Ultima actualización",
     render: (e) => formatDate(e.updatedAt),

@@ -16,6 +16,7 @@ export interface CreateEquipmentOutput extends Omit<
 
 export interface UnassignEquipmentInput {
   assignmentId: number;
+  siteId: number;
   reason: UnassignReason;
   notes?: string;
 }

@@ -47,9 +47,21 @@ const EditOrderPage = lazy(
 const EquipmentsPage = lazy(
   () => import("@/features/equipments/pages/EquipmentsPage"),
 );
+const EquipmentDashboardPage = lazy(
+  () => import("@/features/equipments/pages/EquipmentDashboardPage"),
+);
+const EquipmentAssignmentsPage = lazy(
+  () => import("@/features/equipments/pages/EquipmentAssignmentsPage"),
+);
+const EquipmentInactivityAlertsPage = lazy(
+  () => import("@/features/equipments/pages/EquipmentInactivityAlertsPage"),
+);
 
 const EquipmentDetailPage = lazy(
   () => import("@/features/equipments/pages/EquipmentDetailPage"),
+);
+const EquipmentAssignmentDetailPage = lazy(
+  () => import("@/features/equipments/pages/EquipmentAssignmentDetailPage"),
 );
 
 const VehiclesPage = lazy(
@@ -96,6 +108,12 @@ const EquipmentModelsSettingsPage = lazy(
 );
 const EquipmentUnitsSettingsPage = lazy(
   () => import("@/features/settings/pages/EquipmentUnitsSettingsPage"),
+);
+const EquipmentLocationsSettingsPage = lazy(
+  () => import("@/features/settings/pages/EquipmentLocationsSettingsPage"),
+);
+const EquipmentMonitoringSettingsPage = lazy(
+  () => import("@/features/settings/pages/EquipmentMonitoringSettingsPage"),
 );
 const AccessSettingsPage = lazy(
   () => import("@/features/settings/pages/AccessSettingsPage"),
@@ -323,7 +341,37 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PageLoader />}>
                 <PageErrorBoundary pageName="equipos">
+                  <EquipmentDashboardPage />
+                </PageErrorBoundary>
+              </Suspense>
+            ),
+          },
+          {
+            path: "inventory",
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <PageErrorBoundary pageName="inventario de equipos">
                   <EquipmentsPage />
+                </PageErrorBoundary>
+              </Suspense>
+            ),
+          },
+          {
+            path: "assignments",
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <PageErrorBoundary pageName="asignaciones de equipos">
+                  <EquipmentAssignmentsPage />
+                </PageErrorBoundary>
+              </Suspense>
+            ),
+          },
+          {
+            path: "alerts",
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <PageErrorBoundary pageName="alertas de consumo de equipos">
+                  <EquipmentInactivityAlertsPage />
                 </PageErrorBoundary>
               </Suspense>
             ),
@@ -339,6 +387,16 @@ export const router = createBrowserRouter([
             ),
           },
         ],
+      },
+      {
+        path: "/equipment-assignments/:id",
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PageErrorBoundary pageName="detalle de asignación de equipo">
+              <EquipmentAssignmentDetailPage />
+            </PageErrorBoundary>
+          </Suspense>
+        ),
       },
       {
         path: "/vehicles",
@@ -556,6 +614,30 @@ export const router = createBrowserRouter([
                   <EquipmentUnitsSettingsPage />
                 </PageErrorBoundary>
               </Suspense>
+            ),
+          },
+          {
+            path: "equipment/locations",
+            element: (
+              <PermissionRoute minimumLevel={PermissionLevel.SUPERVISION}>
+                <Suspense fallback={<PageLoader />}>
+                  <PageErrorBoundary pageName="ubicaciones de equipos">
+                    <EquipmentLocationsSettingsPage />
+                  </PageErrorBoundary>
+                </Suspense>
+              </PermissionRoute>
+            ),
+          },
+          {
+            path: "equipment/monitoring",
+            element: (
+              <PermissionRoute minimumLevel={PermissionLevel.SUPERVISION}>
+                <Suspense fallback={<PageLoader />}>
+                  <PageErrorBoundary pageName="seguimiento de consumo de equipos">
+                    <EquipmentMonitoringSettingsPage />
+                  </PageErrorBoundary>
+                </Suspense>
+              </PermissionRoute>
             ),
           },
         ],

@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { PackagePlus, Search } from "lucide-react";
+import { useState } from "react";
+import { Search } from "lucide-react";
 import ConfirmDialog from "@/shared/components/core/ConfirmDialog";
 import { Button } from "@/shared/components/core/Button";
 import { Input } from "@/shared/components/core/Input";
@@ -7,7 +7,6 @@ import { Pagination } from "@/shared/components/core/Pagination";
 import { SearchSelect } from "@/shared/components/core/SearchSelect";
 import { ErrorState } from "@/shared/components/ErrorState";
 import SectionLoader from "@/shared/components/SectionLoader";
-import { PermissionGate } from "@/shared/authorization/PermissionGate";
 import { PermissionLevel } from "@/shared/authorization/permissions";
 import { useCanAccess } from "@/shared/authorization/usePermission";
 import { useHeaderConfig } from "@/shared/hooks/useHeaderConfig";
@@ -28,7 +27,7 @@ export default function InventoryMaterialsPage() {
   const canMove = useCanAccess(PermissionLevel.ADVANCED_OPERATIONS);
   const canDelete = useCanAccess(PermissionLevel.ADMINISTRATION);
   const { filters, queryParams, setFilter, setPage, setLimit, clearAll, hasActiveFilters } = useListParams({
-    initialFilters: { search: "", categoryId: undefined as number | undefined },
+    initialFilters: { search: "", unitId: undefined as number | undefined },
     defaultLimit: 10,
   });
   const materials = useMaterials(queryParams);
@@ -37,16 +36,9 @@ export default function InventoryMaterialsPage() {
   const units = useInventoryUnits();
   const deleteMaterial = useDeleteMaterial();
 
-  const openCreate = () => { setSelectedMaterial(null); materialModal.open(); };
   const openEdit = (material: InventoryMaterial) => { setSelectedMaterial(material); materialModal.open(); };
   const openMove = (material: InventoryMaterial) => { setSelectedMaterial(material); movementModal.open(); };
-  const headerActions = useMemo(() => (
-    <PermissionGate minimumLevel={PermissionLevel.SUPERVISION}>
-      <Button variant="outline" size="sm" onClick={openCreate} icon={PackagePlus}>Nuevo material</Button>
-    </PermissionGate>
-  ), [materialModal.open]);
-
-  useHeaderConfig({ title: "Materiales", description: "Catálogo, existencias y mínimos de inventario", actions: headerActions });
+  useHeaderConfig({ title: "Materiales", description: "Catálogo, existencias y mínimos de inventario" });
   const pagination = materials.data?.meta.pagination;
   const confirmDelete = async () => {
     if (!pendingDelete || !canDelete) return;
@@ -59,7 +51,7 @@ export default function InventoryMaterialsPage() {
       <div className="shrink-0 border-b border-gray-200 bg-white px-6 py-3">
         <div className="grid items-center gap-3 md:grid-cols-[minmax(16rem,1.4fr)_minmax(13rem,1fr)_auto] xl:max-w-3xl">
           <Input aria-label="Buscar materiales" value={filters.search} onChange={(event) => setFilter("search", event.target.value)} placeholder="Buscar material o descripción" inputSize="sm" startIcon={<Search className="h-4 w-4" />} />
-          <SearchSelect size="sm" options={(categories.data?.data ?? []).map((category) => ({ value: String(category.id), label: category.name }))} value={filters.categoryId ? String(filters.categoryId) : ""} onValueChange={(value) => setFilter("categoryId", value ? Number(value) : undefined)} allowClear clearLabel="Todas las categorías" placeholder="Todas las categorías" />
+          <SearchSelect size="sm" options={(units.data?.data ?? []).map((unit) => ({ value: String(unit.id), label: unit.name }))} value={filters.unitId ? String(filters.unitId) : ""} onValueChange={(value) => setFilter("unitId", value ? Number(value) : undefined)} allowClear clearLabel="Todas las unidades" placeholder="Todas las unidades" />
           <Button variant="outline" size="sm" onClick={clearAll} disabled={!hasActiveFilters}>Limpiar</Button>
         </div>
       </div>
@@ -68,10 +60,10 @@ export default function InventoryMaterialsPage() {
         {materials.isLoading ? <SectionLoader placeholder="Cargando materiales" /> : materials.isError ? <ErrorState title="No se pudieron cargar los materiales" error={materials.error} onRetry={materials.refetch} /> : <InventoryMaterialsTable materials={materials.data?.data ?? []} onEdit={openEdit} onMove={openMove} onDelete={setPendingDelete} canEdit={canManage} canMove={canMove} canDelete={canDelete} />}
       </div>
 
-      {pagination && pagination.total > 0 ? <div className="shrink-0 border-t border-gray-200 bg-white px-4 py-2"><Pagination currentPage={pagination.page} totalPages={pagination.totalPages} limit={pagination.limit} totalItems={pagination.total} onPageChange={setPage} onLimitChange={setLimit} /></div> : null}
+      {pagination ? <div className="shrink-0 border-t border-gray-200 bg-white px-4 py-2"><Pagination currentPage={pagination.page} totalPages={pagination.totalPages} limit={pagination.limit} totalItems={pagination.total} onPageChange={setPage} onLimitChange={setLimit} /></div> : null}
     </div>
     {canManage ? <MaterialFormModal isOpen={materialModal.isOpen} onClose={materialModal.close} material={selectedMaterial} categories={categories.data?.data ?? []} units={units.data?.data ?? []} /> : null}
-    {canMove ? <StockMovementModal isOpen={movementModal.isOpen} onClose={movementModal.close} materials={materialOptions.data?.data ?? []} initialMaterialId={selectedMaterial?.id} /> : null}
+    {canMove ? <StockMovementModal isOpen={movementModal.isOpen} onClose={movementModal.close} materials={materialOptions.data?.data ?? []} initialMaterialId={selectedMaterial?.id} canAdjust={canManage} /> : null}
     {canDelete ? <ConfirmDialog isOpen={Boolean(pendingDelete)} onCancel={() => setPendingDelete(null)} onConfirm={confirmDelete} isLoading={deleteMaterial.isPending} variant="danger" title="Eliminar material" description={`Eliminarás “${pendingDelete?.name ?? ""}”. Solo se permitirá si no tiene movimientos asociados.`} confirmText="Eliminar material" /> : null}
   </>;
 }

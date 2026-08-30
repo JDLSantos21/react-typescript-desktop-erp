@@ -10,7 +10,7 @@ import {
   AsideButton,
   AsideMenu,
 } from "@/shared/components/navigation/AsideMenu";
-import { Mail, MapPinPlusIcon } from "lucide-react";
+import { Files, Mail, MapPinPlusIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDeleteCustomer } from "../hooks/useCustomer";
 import { toast } from "sonner";
@@ -27,6 +27,7 @@ interface AsideMenuProps {
   onOpenEditModal: () => void;
   onOpenNearbyVehiclesMapModal: () => void;
   onOpenEmailModal: () => void;
+  onOpenDocumentsModal: () => void;
 }
 
 export default function CustomerAsideMenu({
@@ -35,6 +36,7 @@ export default function CustomerAsideMenu({
   onOpenEditModal,
   onOpenNearbyVehiclesMapModal,
   onOpenEmailModal,
+  onOpenDocumentsModal,
 }: AsideMenuProps) {
   const { id } = useParams();
   const {
@@ -52,6 +54,7 @@ export default function CustomerAsideMenu({
 
   const confirmModal = useModal();
   const canManageCustomer = useCanAccess(PermissionLevel.ADVANCED_OPERATIONS);
+  const canManageDocuments = useCanAccess(PermissionLevel.SUPERVISION);
 
   return (
     <AsideMenu>
@@ -87,6 +90,7 @@ export default function CustomerAsideMenu({
           icon={<PhonePlusIcon className="w-4 h-4" />}
         />
       ) : null}
+      {canManageDocuments ? <AsideButton label="Documentos" onClick={onOpenDocumentsModal} icon={<Files className="w-4 h-4" />} /> : null}
       <AsideButton
         label="Correo electrónico"
         onClick={onOpenEmailModal}

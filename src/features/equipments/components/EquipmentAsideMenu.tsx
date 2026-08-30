@@ -9,13 +9,15 @@ import {
   AsideMenu,
 } from "@/shared/components/navigation/AsideMenu";
 import { EquipmentDetail } from "@/shared/types/entities/equipment.types";
-import { usePrintEquipmentLabel } from "../hooks/usePrintEquipmentLabel";
 
 interface EquipmentAsideMenuProps {
   equipment: EquipmentDetail;
   onAssign: () => void;
   onViewAssignmentHistory: () => void;
   onRemoveAssignment: () => void;
+  onViewAssignment: () => void;
+  onMove: () => void;
+  onPrint: () => void;
   onDelete: () => void;
 }
 
@@ -24,12 +26,13 @@ export const EquipmentAsideMenu = ({
   onAssign,
   onViewAssignmentHistory,
   onRemoveAssignment,
+  onViewAssignment,
+  onMove,
+  onPrint,
   onDelete,
 }: EquipmentAsideMenuProps) => {
-  const { printLabel } = usePrintEquipmentLabel(equipment);
-
   const hasActiveAssignment = equipment.assignments.some(
-    (assignment) => assignment.status === "ACTIVO",
+    (assignment) => assignment.status === "ACTIVO" && !assignment.unassignedAt,
   );
 
   return (
@@ -48,8 +51,20 @@ export const EquipmentAsideMenu = ({
       />
 
       <AsideButton
+        label="Ver asignación activa"
+        disabled={!hasActiveAssignment}
+        onClick={onViewAssignment}
+        icon={<AssignmentIcon className="w-4 h-4" />}
+      />
+      <AsideButton
         label="Historial de asignaciones"
         onClick={onViewAssignmentHistory}
+        icon={<HistoryIcon className="w-4 h-4" />}
+      />
+      <AsideButton
+        label="Mover a otra ubicación"
+        disabled={equipment.assignments.some((item) => item.status === "ACTIVO" && item.deliveryStatus === "ENTREGADO")}
+        onClick={onMove}
         icon={<HistoryIcon className="w-4 h-4" />}
       />
       <AsideButton
@@ -66,7 +81,7 @@ export const EquipmentAsideMenu = ({
       />
       <AsideButton
         label="Imprimir etiqueta"
-        onClick={printLabel}
+        onClick={onPrint}
         icon={<PrinterIcon className="w-4 h-4" />}
       />
       <AsideButton

@@ -26,6 +26,9 @@ import { AddressDetailModal } from "../components/AddressDetailModal";
 import { PhoneDetailModal } from "../components/PhoneDetailModal";
 import { useDeleteCustomerAddress, useDeleteCustomerPhone } from "../hooks/useCustomer";
 import { toast } from "sonner";
+import { CustomerDocumentsModal } from "../components/CustomerDocumentsModal";
+import { AlertTriangle, ArrowRight } from "lucide-react";
+import { useEquipmentInactivityAlerts } from "@/features/equipments/hooks/useEquipments";
 
 export default function CustomerDetailPage() {
   const { id } = useParams();
@@ -35,6 +38,7 @@ export default function CustomerDetailPage() {
 
   const { data, isLoading, error, refetch, isError, isRefetching } =
     useCustomerById(id ?? "");
+  const equipmentAlerts = useEquipmentInactivityAlerts({ page: 1, limit: 3, customerId: id, state: "ALERTA" }, Boolean(id));
   useRefetchToast(isRefetching, "Actualizando información del cliente...");
 
   const addressModal = useModal();
@@ -43,6 +47,7 @@ export default function CustomerDetailPage() {
   const editModal = useModal();
   const mapModal = useModal();
   const emailModal = useModal();
+  const documentsModal = useModal();
   const addressDetailModal = useModal();
   const phoneDetailModal = useModal();
   const deleteAddress = useDeleteCustomerAddress(id ?? "");
@@ -114,6 +119,7 @@ export default function CustomerDetailPage() {
           <div className="flex h-full">
             <div className="flex-1 max-w-5xl overflow-y-auto px-8 py-7 show-scrollbar">
               <div className="space-y-8 pb-8">
+                {equipmentAlerts.data?.meta.pagination.total ? <button type="button" onClick={() => navigate(`/equipments/alerts?search=${encodeURIComponent(data!.data.businessName)}`)} className="flex w-full items-center gap-4 rounded-2xl bg-amber-50 px-5 py-4 text-left text-amber-950 transition-colors hover:bg-amber-100/80"><span className="rounded-xl bg-white p-2.5 text-amber-600"><AlertTriangle className="h-5 w-5" /></span><span className="min-w-0 flex-1"><span className="block text-sm font-semibold">Este cliente requiere seguimiento de consumo</span><span className="mt-1 block text-xs text-amber-800/75">{equipmentAlerts.data.meta.pagination.total} {equipmentAlerts.data.meta.pagination.total === 1 ? "equipo superó" : "equipos superaron"} el plazo configurado sin pedidos relacionados.</span></span><ArrowRight className="h-4 w-4 text-amber-600" /></button> : null}
                 <section>
                   <h2 className="text-sm font-semibold text-slate-900">Perfil del cliente</h2>
                   <dl className="mt-4 grid gap-x-8 gap-y-5 sm:grid-cols-2 xl:grid-cols-4">
@@ -169,6 +175,7 @@ export default function CustomerDetailPage() {
               onOpenEditModal={editModal.open}
               onOpenNearbyVehiclesMapModal={mapModal.open}
               onOpenEmailModal={emailModal.open}
+              onOpenDocumentsModal={documentsModal.open}
             />
           </div>
         )}
@@ -224,6 +231,7 @@ export default function CustomerDetailPage() {
           onClose={emailModal.close}
         />
       ) : null}
+      <CustomerDocumentsModal customerId={id} isOpen={documentsModal.isOpen} onClose={documentsModal.close} />
     </div>
   );
 }

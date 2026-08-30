@@ -76,7 +76,11 @@ export interface InventoryDashboard {
     materialsBelowMinimum: number;
     outOfStock: number;
     availableMaterials: number;
+    healthyMaterials: number;
+    requiresRestock: number;
+    materialsWithoutMinimum: number;
     movementCount: number;
+    movementsToday: number;
   };
   activity: Array<{
     date: string;
@@ -85,4 +89,5 @@ export interface InventoryDashboard {
     adjustments: number;
   }>;
   recentMoves: StockMove[];
+  stockAlerts: InventoryMaterial[];
 }

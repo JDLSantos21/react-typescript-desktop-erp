@@ -19,6 +19,7 @@ interface StockMovementModalProps {
   onClose: () => void;
   materials: InventoryMaterial[];
   initialMaterialId?: number;
+  canAdjust?: boolean;
 }
 
 const moveLabels: Record<StockMoveType, string> = {
@@ -27,7 +28,7 @@ const moveLabels: Record<StockMoveType, string> = {
   AJUSTE: "Ajuste de existencia",
 };
 
-export function StockMovementModal({ isOpen, onClose, materials, initialMaterialId }: StockMovementModalProps) {
+export function StockMovementModal({ isOpen, onClose, materials, initialMaterialId, canAdjust = false }: StockMovementModalProps) {
   const createMove = useCreateStockMove();
   const { control, register, watch, handleSubmit, reset, formState: { errors } } = useForm<StockMoveFormInput, unknown, StockMoveFormData>({
     resolver: zodResolver(stockMoveSchema),
@@ -62,8 +63,8 @@ export function StockMovementModal({ isOpen, onClose, materials, initialMaterial
           <Controller name="type" control={control} render={({ field }) => (
             <div>
               <p className="mb-1.5 text-xs font-medium text-input-label">Tipo de movimiento</p>
-              <div className="grid grid-cols-3 gap-2">
-                {(Object.keys(moveLabels) as StockMoveType[]).map((moveType) => <Button key={moveType} type="button" variant={field.value === moveType ? "primary" : "outline"} onClick={() => field.onChange(moveType)} className="h-auto min-h-10 px-2">{moveLabels[moveType]}</Button>)}
+              <div className={`grid gap-2 ${canAdjust ? "grid-cols-3" : "grid-cols-2"}`}>
+                {(Object.keys(moveLabels) as StockMoveType[]).filter((moveType) => moveType !== "AJUSTE" || canAdjust).map((moveType) => <Button key={moveType} type="button" variant={field.value === moveType ? "primary" : "outline"} onClick={() => field.onChange(moveType)} className="h-auto min-h-10 px-2">{moveLabels[moveType]}</Button>)}
               </div>
             </div>
           )} />

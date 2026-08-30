@@ -3,12 +3,14 @@ import {
   Boxes,
   Fuel,
   Mail,
+  MapPinned,
   Package,
   ShoppingBasket,
   Truck,
   Users,
   UserRound,
   Wrench,
+  BellRing,
 } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 import { Toaster } from "sileo";
@@ -102,6 +104,18 @@ const groups: Array<{ label: string; items: SettingsItem[] }> = [
         href: "/settings/equipment/units",
         icon: Boxes,
         minimumLevel: PermissionLevel.ADVANCED_OPERATIONS,
+      },
+      {
+        label: "Ubicaciones de equipos",
+        href: "/settings/equipment/locations",
+        icon: MapPinned,
+        minimumLevel: PermissionLevel.SUPERVISION,
+      },
+      {
+        label: "Seguimiento de consumo",
+        href: "/settings/equipment/monitoring",
+        icon: BellRing,
+        minimumLevel: PermissionLevel.SUPERVISION,
       },
     ],
   },

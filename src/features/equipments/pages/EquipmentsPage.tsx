@@ -18,8 +18,8 @@ import { useDebouncedSearchFilter } from "@/shared/hooks/useDebouncedSearchFilte
 
 export default function EquipmentsPage() {
   useHeaderConfig({
-    title: "Equipos",
-    description: "Lista de equipos",
+    title: "Inventario de equipos",
+    description: "Consulta y administra los equipos registrados",
   });
 
   const navigate = useNavigate();
@@ -110,7 +110,7 @@ export default function EquipmentsPage() {
         </FeatureErrorBoundary>
       </div>
 
-      {pagination && pagination.totalPages > 1 && (
+      {pagination && (
         <div className="shrink-0 w-full left-0 px-3 bg-white py-1 border-t border-border">
           <Pagination
             currentPage={pagination.page}
